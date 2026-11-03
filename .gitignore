@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.cache/
+.env
+.env.*
+!.env.example
+.DS_Store
+results/*
+!results/.gitkeep
+!results/milestone-1/

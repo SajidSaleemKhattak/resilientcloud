@@ -1,0 +1,27 @@
+{
+  "name": "resilientcloud",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/backend/src/server.js",
+    "test": "npm run build && node --test dist/backend/test/*.test.js tools/*.test.mjs",
+    "compose": "node tools/compose.mjs",
+    "fault": "node tools/fault.mjs",
+    "traffic": "node tools/traffic.mjs",
+    "validate:m1": "node tools/validate-m1.mjs"
+  },
+  "dependencies": {
+    "express": "5.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
+  }
+}

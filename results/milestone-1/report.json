@@ -1,0 +1,62 @@
+{
+  "startedAt": "2026-11-03T10:07:47.992Z",
+  "purpose": "Milestone 1 functional smoke validation, not repeated research trials",
+  "status": "failed",
+  "recoveryEnabled": false,
+  "samples": [],
+  "checks": [],
+  "scenarios": {
+    "one": {
+      "images": [
+        {
+          "id": "sha256:077ea753849397bb5ab18dc240f6e448f5b75260684d1381dd927aff35cecf48",
+          "architecture": "arm64",
+          "digests": [
+            "resilientcloud-backend@sha256:077ea753849397bb5ab18dc240f6e448f5b75260684d1381dd927aff35cecf48"
+          ]
+        },
+        {
+          "id": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+          "architecture": "arm64",
+          "digests": [
+            "nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236"
+          ]
+        }
+      ],
+      "node": "v24.22.2"
+    }
+  },
+  "runtime": {
+    "hostNode": "v25.8.2",
+    "docker": {
+      "version": "29.7.2",
+      "architecture": "aarch64",
+      "os": "Docker Desktop"
+    },
+    "compose": "5.4.0"
+  },
+  "sourceHashes": {
+    "backend/src/app.ts": "7df0ab097bc3a34a79ce872e4a7fc698054877a20a7736ecf59bceae679c065a",
+    "backend/src/server.ts": "ef94085dc40bd1aea95fce3f219102204a079647cc1d4ecfd2ddb4c8e89a0729",
+    "backend/test/app.test.ts": "fe3c034c7c5a62a1d65d6f0742ff19c439b9f9f20334204e387e8b9a5b492180",
+    "backend/test/process.test.ts": "36a93b75fb5519aa3e83bab8ba6b94b73c8399124601ff6a8ebd6231289dfbe4",
+    "nginx/nginx.conf": "cb9b704a35d247038d056b239301270f22e82b3e3aea5feb19f60b4e2636313f",
+    "nginx/one.conf": "4285ab0eb6efe57e5dda497a6d391f77651240085ddf0e38c92f478dbb1e462f",
+    "nginx/two.conf": "fac94af3ccc82d487d03941ac8d162b673046efd074a9001e33deb49afaef757",
+    "tools/compose.mjs": "93ed919226a49983d0565fb8bd073082c18234d6caa0bb3bdbf2652dd87fe0e2",
+    "tools/docker.mjs": "aa151d14125d972e2e5d001d8f272f6570aee0a028c23e1e1ce9a2806b05f37d",
+    "tools/fault.mjs": "c6709d55b62ec47d6b8669d9e64a8c3b66db7195c3704baf967d024683aa866c",
+    "tools/fault.test.mjs": "d7fbb5f59ddb588b47a3b24559452a899c815a2da46678b09e5a1a2d134f7f4a",
+    "tools/traffic.mjs": "05d9336bace67d8432c65e9454db94341ad72ca73f874fa8473f7a97ff083db0",
+    "tools/traffic.test.mjs": "0b9ba41e3134499a814b99022008ed39075603425546128d504db69ecd752db6",
+    "tools/validate-m1.mjs": "d9aea2a667f55cfb2428fd5c89c6354460b7a5f94e419ebbc5a65ab7aa0ae88c",
+    "Dockerfile": "397867aab16e790437c0ea91ed2e4d3ab7086fab4c7ed0648f7a7e477f76bb35",
+    "compose.yaml": "0b78a79027b4810212dae07eb41c99f599bc2ae94da5e198f24cb5a7c36f4945",
+    "compose.two.yaml": "ad54fcf21f331dd30297d2095c530f22f51ec48cd1a415bcee20818e67ed8fc0",
+    "package.json": "4fd61acce9787998bdef90d0f83c27acf1a623055caa1e6c9e4050faa3d94003",
+    "package-lock.json": "fd605a9c66e15ce5742dc376b18dc09e90dd5919ca11e0a157f592ebaa57e413",
+    "tsconfig.json": "36342f75919c59f341a8163000cef600479e1d4131db3166e96b00279d9b46d9"
+  },
+  "error": "Error: Timed out: gateway ready\n    at until (file:///Users/sajid/Projects/resilientcloud/tools/validate-m1.mjs:44:9)\n    at async file:///Users/sajid/Projects/resilientcloud/tools/validate-m1.mjs:132:7",
+  "finishedAt": "2026-11-03T10:08:34.304Z"
+}

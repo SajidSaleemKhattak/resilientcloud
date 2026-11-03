@@ -1,0 +1,815 @@
+{
+  "startedAt": "2026-11-03T10:10:31.805Z",
+  "purpose": "Milestone 1 functional smoke validation, not repeated research trials",
+  "status": "passed",
+  "recoveryEnabled": false,
+  "samples": [
+    {
+      "file": "results/milestone-1/final/one-normal.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:10:42.090Z",
+      "label": "one-normal",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3001.203,
+      "instances": {
+        "backend-a": 30
+      },
+      "latencyAllMs": {
+        "p50": 5.064,
+        "p95": 7.454
+      },
+      "latencySuccessMs": {
+        "p50": 5.064,
+        "p95": 7.454
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/one-crash.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:10:50.235Z",
+      "label": "one-crash",
+      "scheduled": 80,
+      "requests": 80,
+      "successes": 20,
+      "failures": 60,
+      "dropped": 0,
+      "successRate": 0.25,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 8000.985,
+      "instances": {
+        "backend-a": 20
+      },
+      "latencyAllMs": {
+        "p50": 3.958,
+        "p95": 504.013
+      },
+      "latencySuccessMs": {
+        "p50": 5.47,
+        "p95": 6.667
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/one-after-crash-restart.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:11:01.477Z",
+      "label": "one-after-crash-restart",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3000.218,
+      "instances": {
+        "backend-a": 30
+      },
+      "latencyAllMs": {
+        "p50": 4.573,
+        "p95": 6.76
+      },
+      "latencySuccessMs": {
+        "p50": 4.573,
+        "p95": 6.76
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/one-unhealthy.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:11:09.649Z",
+      "label": "one-unhealthy",
+      "scheduled": 80,
+      "requests": 80,
+      "successes": 21,
+      "failures": 59,
+      "dropped": 0,
+      "successRate": 0.2625,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 8000.272,
+      "instances": {
+        "backend-a": 80
+      },
+      "latencyAllMs": {
+        "p50": 2.962,
+        "p95": 5.756
+      },
+      "latencySuccessMs": {
+        "p50": 3.631,
+        "p95": 6.422
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/one-after-unhealthy-restart.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:11:20.877Z",
+      "label": "one-after-unhealthy-restart",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3000.996,
+      "instances": {
+        "backend-a": 30
+      },
+      "latencyAllMs": {
+        "p50": 4.317,
+        "p95": 8.752
+      },
+      "latencySuccessMs": {
+        "p50": 4.317,
+        "p95": 8.752
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/one-dns-recreate.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:11:33.042Z",
+      "label": "one-dns-recreate",
+      "scheduled": 120,
+      "requests": 120,
+      "successes": 108,
+      "failures": 12,
+      "dropped": 0,
+      "successRate": 0.9,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 12001.614,
+      "instances": {
+        "backend-a": 108
+      },
+      "latencyAllMs": {
+        "p50": 3.647,
+        "p95": 6.969
+      },
+      "latencySuccessMs": {
+        "p50": 3.768,
+        "p95": 6.857
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/one-after-ip-change.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:11:36.156Z",
+      "label": "one-after-ip-change",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3000.992,
+      "instances": {
+        "backend-a": 30
+      },
+      "latencyAllMs": {
+        "p50": 3.98,
+        "p95": 5.651
+      },
+      "latencySuccessMs": {
+        "p50": 3.98,
+        "p95": 5.651
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/two-normal.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:11:46.993Z",
+      "label": "two-normal",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3001.156,
+      "instances": {
+        "backend-a": 15,
+        "backend-b": 15
+      },
+      "latencyAllMs": {
+        "p50": 5.024,
+        "p95": 6.515
+      },
+      "latencySuccessMs": {
+        "p50": 5.024,
+        "p95": 6.515
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/two-crash.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:11:55.130Z",
+      "label": "two-crash",
+      "scheduled": 80,
+      "requests": 80,
+      "successes": 80,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 7999.775,
+      "instances": {
+        "backend-a": 10,
+        "backend-b": 70
+      },
+      "latencyAllMs": {
+        "p50": 4.961,
+        "p95": 8.529
+      },
+      "latencySuccessMs": {
+        "p50": 4.961,
+        "p95": 8.529
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/two-after-crash-restart.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:12:06.310Z",
+      "label": "two-after-crash-restart",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3000.661,
+      "instances": {
+        "backend-b": 15,
+        "backend-a": 15
+      },
+      "latencyAllMs": {
+        "p50": 5.451,
+        "p95": 7.228
+      },
+      "latencySuccessMs": {
+        "p50": 5.451,
+        "p95": 7.228
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/two-unhealthy.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:12:14.482Z",
+      "label": "two-unhealthy",
+      "scheduled": 80,
+      "requests": 80,
+      "successes": 80,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 8000.656,
+      "instances": {
+        "backend-b": 70,
+        "backend-a": 10
+      },
+      "latencyAllMs": {
+        "p50": 3.311,
+        "p95": 6.582
+      },
+      "latencySuccessMs": {
+        "p50": 3.311,
+        "p95": 6.582
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/two-after-unhealthy-restart.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:12:25.743Z",
+      "label": "two-after-unhealthy-restart",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3000.246,
+      "instances": {
+        "backend-b": 16,
+        "backend-a": 14
+      },
+      "latencyAllMs": {
+        "p50": 5.306,
+        "p95": 8.121
+      },
+      "latencySuccessMs": {
+        "p50": 5.306,
+        "p95": 8.121
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/two-dns-recreate.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:12:37.873Z",
+      "label": "two-dns-recreate",
+      "scheduled": 120,
+      "requests": 120,
+      "successes": 120,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 11999.385,
+      "instances": {
+        "backend-a": 55,
+        "backend-b": 65
+      },
+      "latencyAllMs": {
+        "p50": 4.97,
+        "p95": 8.966
+      },
+      "latencySuccessMs": {
+        "p50": 4.97,
+        "p95": 8.966
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/final/two-after-ip-change.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:12:40.989Z",
+      "label": "two-after-ip-change",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3001.022,
+      "instances": {
+        "backend-b": 15,
+        "backend-a": 15
+      },
+      "latencyAllMs": {
+        "p50": 5.282,
+        "p95": 6.045
+      },
+      "latencySuccessMs": {
+        "p50": 5.282,
+        "p95": 6.045
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "one: isolated ports, no socket mounts, restart policies disabled, fault routes absent"
+    },
+    {
+      "name": "one: normal",
+      "instances": {
+        "backend-a": 30
+      }
+    },
+    {
+      "name": "one: crash outage, no automatic recovery"
+    },
+    {
+      "name": "one: after-crash-restart",
+      "instances": {
+        "backend-a": 30
+      }
+    },
+    {
+      "name": "one: unhealthy outage, no automatic recovery"
+    },
+    {
+      "name": "one: after-unhealthy-restart",
+      "instances": {
+        "backend-a": 30
+      }
+    },
+    {
+      "name": "one: after-ip-change",
+      "instances": {
+        "backend-a": 30
+      }
+    },
+    {
+      "name": "one: new container ID/IP reached without restarting Nginx",
+      "oldIp": "172.21.0.2",
+      "newIp": "172.21.0.4"
+    },
+    {
+      "name": "two: isolated ports, no socket mounts, restart policies disabled, fault routes absent"
+    },
+    {
+      "name": "two: normal",
+      "instances": {
+        "backend-a": 15,
+        "backend-b": 15
+      }
+    },
+    {
+      "name": "two: crash failover, no automatic recovery"
+    },
+    {
+      "name": "two: after-crash-restart",
+      "instances": {
+        "backend-b": 15,
+        "backend-a": 15
+      }
+    },
+    {
+      "name": "two: unhealthy failover, no automatic recovery"
+    },
+    {
+      "name": "two: after-unhealthy-restart",
+      "instances": {
+        "backend-b": 16,
+        "backend-a": 14
+      }
+    },
+    {
+      "name": "two: after-ip-change",
+      "instances": {
+        "backend-b": 15,
+        "backend-a": 15
+      }
+    },
+    {
+      "name": "two: new container ID/IP reached without restarting Nginx",
+      "oldIp": "172.19.0.2",
+      "newIp": "172.19.0.5"
+    }
+  ],
+  "scenarios": {
+    "one": {
+      "images": [
+        {
+          "id": "sha256:8b7f19538cc6d959d0306bc1ea15492a7711a08b0fb3e062d1e97405d22583d3",
+          "architecture": "arm64",
+          "digests": [
+            "resilientcloud-backend@sha256:8b7f19538cc6d959d0306bc1ea15492a7711a08b0fb3e062d1e97405d22583d3"
+          ]
+        },
+        {
+          "id": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+          "architecture": "arm64",
+          "digests": [
+            "nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236"
+          ]
+        }
+      ],
+      "node": "v24.22.2",
+      "crash": {
+        "fault": {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:10:44.207Z",
+          "project": "resilientcloud-m1-one",
+          "service": "backend-a",
+          "containerId": "1ce705b3e71f2a82b94a6d0672956b59c82160ee34f378a96ba772a60aa460b6",
+          "mode": "crash",
+          "signal": "SIGKILL",
+          "completedAt": "2026-11-03T10:10:44.288Z",
+          "durationMs": 81.24537500000042
+        },
+        "observed": {
+          "id": "1ce705b3e71f2a82b94a6d0672956b59c82160ee34f378a96ba772a60aa460b6",
+          "running": false,
+          "status": "exited",
+          "exitCode": 137,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:10:32.502241632Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": ""
+        },
+        "after": {
+          "id": "1ce705b3e71f2a82b94a6d0672956b59c82160ee34f378a96ba772a60aa460b6",
+          "running": false,
+          "status": "exited",
+          "exitCode": 137,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:10:32.502241632Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": ""
+        },
+        "afterFaultRequests": 58
+      },
+      "unhealthy": {
+        "fault": {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:11:03.631Z",
+          "project": "resilientcloud-m1-one",
+          "service": "backend-a",
+          "containerId": "1ce705b3e71f2a82b94a6d0672956b59c82160ee34f378a96ba772a60aa460b6",
+          "mode": "unhealthy",
+          "signal": "SIGUSR2",
+          "completedAt": "2026-11-03T10:11:03.657Z",
+          "durationMs": 25.335124999997788
+        },
+        "observed": {
+          "id": "1ce705b3e71f2a82b94a6d0672956b59c82160ee34f378a96ba772a60aa460b6",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:10:50.40317621Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.21.0.2"
+        },
+        "after": {
+          "id": "1ce705b3e71f2a82b94a6d0672956b59c82160ee34f378a96ba772a60aa460b6",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:10:50.40317621Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.21.0.2"
+        },
+        "afterFaultRequests": 58
+      },
+      "recreation": {
+        "before": {
+          "id": "1ce705b3e71f2a82b94a6d0672956b59c82160ee34f378a96ba772a60aa460b6",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "healthy",
+          "startedAt": "2026-11-03T10:11:09.846361386Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.21.0.2"
+        },
+        "after": {
+          "id": "59c59e0bb6152812cea4ac97862981759fdd78a788cbe6c68e50d231792846a7",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "healthy",
+          "startedAt": "2026-11-03T10:11:23.413607295Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.21.0.4"
+        },
+        "gatewayId": "2f1107ce9ae18f088b338c2cdb6d52941a3f898144b3e598378557e16a6784d7",
+        "gatewayStart": "2026-11-03T10:10:38.082090802Z",
+        "gatewayRestarted": false
+      }
+    },
+    "two": {
+      "images": [
+        {
+          "id": "sha256:69d58259f8b30142eb42ff4df0c995c3ce75b97065c21f4bfc18f9727f4a7bec",
+          "architecture": "arm64",
+          "digests": [
+            "resilientcloud-backend@sha256:69d58259f8b30142eb42ff4df0c995c3ce75b97065c21f4bfc18f9727f4a7bec"
+          ]
+        },
+        {
+          "id": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+          "architecture": "arm64",
+          "digests": [
+            "nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236"
+          ]
+        }
+      ],
+      "node": "v24.22.2",
+      "crash": {
+        "fault": {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:11:49.087Z",
+          "project": "resilientcloud-m1-two",
+          "service": "backend-a",
+          "containerId": "6a4cfb13ba439bb61fbe644b506b7af502d86438188ffe0881773fd4ae4282f7",
+          "mode": "crash",
+          "signal": "SIGKILL",
+          "completedAt": "2026-11-03T10:11:49.175Z",
+          "durationMs": 87.57437499999651
+        },
+        "observed": {
+          "id": "6a4cfb13ba439bb61fbe644b506b7af502d86438188ffe0881773fd4ae4282f7",
+          "running": false,
+          "status": "exited",
+          "exitCode": 137,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:11:37.334336426Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": ""
+        },
+        "after": {
+          "id": "6a4cfb13ba439bb61fbe644b506b7af502d86438188ffe0881773fd4ae4282f7",
+          "running": false,
+          "status": "exited",
+          "exitCode": 137,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:11:37.334336426Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": ""
+        },
+        "afterFaultRequests": 58
+      },
+      "unhealthy": {
+        "fault": {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:12:08.461Z",
+          "project": "resilientcloud-m1-two",
+          "service": "backend-a",
+          "containerId": "6a4cfb13ba439bb61fbe644b506b7af502d86438188ffe0881773fd4ae4282f7",
+          "mode": "unhealthy",
+          "signal": "SIGUSR2",
+          "completedAt": "2026-11-03T10:12:08.487Z",
+          "durationMs": 25.458542000007583
+        },
+        "observed": {
+          "id": "6a4cfb13ba439bb61fbe644b506b7af502d86438188ffe0881773fd4ae4282f7",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:11:55.295064712Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.19.0.2"
+        },
+        "after": {
+          "id": "6a4cfb13ba439bb61fbe644b506b7af502d86438188ffe0881773fd4ae4282f7",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:11:55.295064712Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.19.0.2"
+        },
+        "afterFaultRequests": 58
+      },
+      "recreation": {
+        "before": {
+          "id": "6a4cfb13ba439bb61fbe644b506b7af502d86438188ffe0881773fd4ae4282f7",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "healthy",
+          "startedAt": "2026-11-03T10:12:14.727313013Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.19.0.2"
+        },
+        "after": {
+          "id": "475456e257f6d003776bed6db84019b700f1b6c4fd1cacb06f38617dc0198a49",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "healthy",
+          "startedAt": "2026-11-03T10:12:28.252773089Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.19.0.5"
+        },
+        "gatewayId": "d5f0630c2e81143ce565a3523476c9677176ce3357d59de488ea82744b6af301",
+        "gatewayStart": "2026-11-03T10:11:42.930992096Z",
+        "gatewayRestarted": false
+      }
+    }
+  },
+  "runtime": {
+    "hostNode": "v25.8.2",
+    "docker": {
+      "version": "29.7.2",
+      "architecture": "aarch64",
+      "os": "Docker Desktop"
+    },
+    "compose": "5.4.0"
+  },
+  "sourceHashes": {
+    "backend/src/app.ts": "7df0ab097bc3a34a79ce872e4a7fc698054877a20a7736ecf59bceae679c065a",
+    "backend/src/server.ts": "ef94085dc40bd1aea95fce3f219102204a079647cc1d4ecfd2ddb4c8e89a0729",
+    "backend/test/app.test.ts": "fe3c034c7c5a62a1d65d6f0742ff19c439b9f9f20334204e387e8b9a5b492180",
+    "backend/test/process.test.ts": "36a93b75fb5519aa3e83bab8ba6b94b73c8399124601ff6a8ebd6231289dfbe4",
+    "nginx/nginx.conf": "cb9b704a35d247038d056b239301270f22e82b3e3aea5feb19f60b4e2636313f",
+    "nginx/one.conf": "4285ab0eb6efe57e5dda497a6d391f77651240085ddf0e38c92f478dbb1e462f",
+    "nginx/two.conf": "fac94af3ccc82d487d03941ac8d162b673046efd074a9001e33deb49afaef757",
+    "tools/compose.mjs": "93ed919226a49983d0565fb8bd073082c18234d6caa0bb3bdbf2652dd87fe0e2",
+    "tools/docker.mjs": "aff36a67577adfe275e41b1af0f69f110ab9c8a36011fcdd5224ba8e1adaac28",
+    "tools/fault.mjs": "c6709d55b62ec47d6b8669d9e64a8c3b66db7195c3704baf967d024683aa866c",
+    "tools/fault.test.mjs": "e12a26bffa2b58ff61f5d587f31a63e6623ffdcf3ad9ad26cbac686e5404d8cb",
+    "tools/traffic.mjs": "05d9336bace67d8432c65e9454db94341ad72ca73f874fa8473f7a97ff083db0",
+    "tools/traffic.test.mjs": "0b9ba41e3134499a814b99022008ed39075603425546128d504db69ecd752db6",
+    "tools/validate-m1.mjs": "f14197908597026d212459a407c7fcf66cead934c365994b8659a01edfb5f999",
+    "Dockerfile": "397867aab16e790437c0ea91ed2e4d3ab7086fab4c7ed0648f7a7e477f76bb35",
+    "compose.yaml": "f042c9d8194b4c1d3f505721c0e8891da6679c90493980fbf903e8b3763daa0d",
+    "compose.two.yaml": "ad54fcf21f331dd30297d2095c530f22f51ec48cd1a415bcee20818e67ed8fc0",
+    "package.json": "4fd61acce9787998bdef90d0f83c27acf1a623055caa1e6c9e4050faa3d94003",
+    "package-lock.json": "fd605a9c66e15ce5742dc376b18dc09e90dd5919ca11e0a157f592ebaa57e413",
+    "tsconfig.json": "36342f75919c59f341a8163000cef600479e1d4131db3166e96b00279d9b46d9"
+  },
+  "finishedAt": "2026-11-03T10:12:41.657Z"
+}

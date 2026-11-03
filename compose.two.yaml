@@ -1,0 +1,14 @@
+services:
+  backend-b:
+    extends:
+      file: compose.yaml
+      service: backend-a
+    environment:
+      INSTANCE_ID: backend-b
+
+  gateway:
+    volumes:
+      - ./nginx/two.conf:/etc/nginx/upstream.conf:ro
+    depends_on:
+      backend-b:
+        condition: service_healthy

@@ -1,0 +1,323 @@
+{
+  "startedAt": "2026-11-03T10:08:54.973Z",
+  "purpose": "Milestone 1 functional smoke validation, not repeated research trials",
+  "status": "failed",
+  "recoveryEnabled": false,
+  "samples": [
+    {
+      "file": "results/milestone-1/validated/one-normal.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:09:05.265Z",
+      "label": "one-normal",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 2999.816,
+      "instances": {
+        "backend-a": 30
+      },
+      "latencyAllMs": {
+        "p50": 4.872,
+        "p95": 10.15
+      },
+      "latencySuccessMs": {
+        "p50": 4.872,
+        "p95": 10.15
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/validated/one-crash.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:09:13.405Z",
+      "label": "one-crash",
+      "scheduled": 80,
+      "requests": 80,
+      "successes": 20,
+      "failures": 60,
+      "dropped": 0,
+      "successRate": 0.25,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 8000.242,
+      "instances": {
+        "backend-a": 20
+      },
+      "latencyAllMs": {
+        "p50": 4.049,
+        "p95": 504.271
+      },
+      "latencySuccessMs": {
+        "p50": 4.86,
+        "p95": 5.471
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/validated/one-after-crash-restart.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:09:24.573Z",
+      "label": "one-after-crash-restart",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3000.158,
+      "instances": {
+        "backend-a": 30
+      },
+      "latencyAllMs": {
+        "p50": 3.177,
+        "p95": 6.281
+      },
+      "latencySuccessMs": {
+        "p50": 3.177,
+        "p95": 6.281
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/validated/one-unhealthy.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:09:32.747Z",
+      "label": "one-unhealthy",
+      "scheduled": 80,
+      "requests": 80,
+      "successes": 20,
+      "failures": 60,
+      "dropped": 0,
+      "successRate": 0.25,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 8001.028,
+      "instances": {
+        "backend-a": 80
+      },
+      "latencyAllMs": {
+        "p50": 3.381,
+        "p95": 6.25
+      },
+      "latencySuccessMs": {
+        "p50": 4.936,
+        "p95": 7.362
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-1/validated/one-after-unhealthy-restart.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:09:43.904Z",
+      "label": "one-after-unhealthy-restart",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3000.579,
+      "instances": {
+        "backend-a": 30
+      },
+      "latencyAllMs": {
+        "p50": 4.873,
+        "p95": 7.534
+      },
+      "latencySuccessMs": {
+        "p50": 4.873,
+        "p95": 7.534
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "one: isolated ports, no socket mounts, restart policies disabled, fault routes absent"
+    },
+    {
+      "name": "one: normal",
+      "instances": {
+        "backend-a": 30
+      }
+    },
+    {
+      "name": "one: crash outage, no automatic recovery"
+    },
+    {
+      "name": "one: after-crash-restart",
+      "instances": {
+        "backend-a": 30
+      }
+    },
+    {
+      "name": "one: unhealthy outage, no automatic recovery"
+    },
+    {
+      "name": "one: after-unhealthy-restart",
+      "instances": {
+        "backend-a": 30
+      }
+    }
+  ],
+  "scenarios": {
+    "one": {
+      "images": [
+        {
+          "id": "sha256:b2aae136420bb9496756734c4f6906629e9c1449258774d9e2deb65a11cb2e82",
+          "architecture": "arm64",
+          "digests": [
+            "resilientcloud-backend@sha256:b2aae136420bb9496756734c4f6906629e9c1449258774d9e2deb65a11cb2e82"
+          ]
+        },
+        {
+          "id": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+          "architecture": "arm64",
+          "digests": [
+            "nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236"
+          ]
+        }
+      ],
+      "node": "v24.22.2",
+      "crash": {
+        "fault": {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:09:07.369Z",
+          "project": "resilientcloud-m1-one",
+          "service": "backend-a",
+          "containerId": "4e8b81a1f193db7021fd48b116d83e7bad348bbc5e2cfc142be43926bcaa2cea",
+          "mode": "crash",
+          "signal": "SIGKILL",
+          "completedAt": "2026-11-03T10:09:07.455Z",
+          "durationMs": 86.41549999999916
+        },
+        "observed": {
+          "id": "4e8b81a1f193db7021fd48b116d83e7bad348bbc5e2cfc142be43926bcaa2cea",
+          "running": false,
+          "status": "exited",
+          "exitCode": 137,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:08:55.643982962Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": ""
+        },
+        "after": {
+          "id": "4e8b81a1f193db7021fd48b116d83e7bad348bbc5e2cfc142be43926bcaa2cea",
+          "running": false,
+          "status": "exited",
+          "exitCode": 137,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:08:55.643982962Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": ""
+        },
+        "afterFaultRequests": 58
+      },
+      "unhealthy": {
+        "fault": {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:09:26.719Z",
+          "project": "resilientcloud-m1-one",
+          "service": "backend-a",
+          "containerId": "4e8b81a1f193db7021fd48b116d83e7bad348bbc5e2cfc142be43926bcaa2cea",
+          "mode": "unhealthy",
+          "signal": "SIGUSR2",
+          "completedAt": "2026-11-03T10:09:26.745Z",
+          "durationMs": 25.911334000000352
+        },
+        "observed": {
+          "id": "4e8b81a1f193db7021fd48b116d83e7bad348bbc5e2cfc142be43926bcaa2cea",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:09:13.566707554Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.21.0.2"
+        },
+        "after": {
+          "id": "4e8b81a1f193db7021fd48b116d83e7bad348bbc5e2cfc142be43926bcaa2cea",
+          "running": true,
+          "status": "running",
+          "exitCode": 0,
+          "health": "unhealthy",
+          "startedAt": "2026-11-03T10:09:13.566707554Z",
+          "restartCount": 0,
+          "restartPolicy": "no",
+          "ip": "172.21.0.2"
+        },
+        "afterFaultRequests": 59
+      }
+    }
+  },
+  "runtime": {
+    "hostNode": "v25.8.2",
+    "docker": {
+      "version": "29.7.2",
+      "architecture": "aarch64",
+      "os": "Docker Desktop"
+    },
+    "compose": "5.4.0"
+  },
+  "sourceHashes": {
+    "backend/src/app.ts": "7df0ab097bc3a34a79ce872e4a7fc698054877a20a7736ecf59bceae679c065a",
+    "backend/src/server.ts": "ef94085dc40bd1aea95fce3f219102204a079647cc1d4ecfd2ddb4c8e89a0729",
+    "backend/test/app.test.ts": "fe3c034c7c5a62a1d65d6f0742ff19c439b9f9f20334204e387e8b9a5b492180",
+    "backend/test/process.test.ts": "36a93b75fb5519aa3e83bab8ba6b94b73c8399124601ff6a8ebd6231289dfbe4",
+    "nginx/nginx.conf": "cb9b704a35d247038d056b239301270f22e82b3e3aea5feb19f60b4e2636313f",
+    "nginx/one.conf": "4285ab0eb6efe57e5dda497a6d391f77651240085ddf0e38c92f478dbb1e462f",
+    "nginx/two.conf": "fac94af3ccc82d487d03941ac8d162b673046efd074a9001e33deb49afaef757",
+    "tools/compose.mjs": "93ed919226a49983d0565fb8bd073082c18234d6caa0bb3bdbf2652dd87fe0e2",
+    "tools/docker.mjs": "aa151d14125d972e2e5d001d8f272f6570aee0a028c23e1e1ce9a2806b05f37d",
+    "tools/fault.mjs": "c6709d55b62ec47d6b8669d9e64a8c3b66db7195c3704baf967d024683aa866c",
+    "tools/fault.test.mjs": "d7fbb5f59ddb588b47a3b24559452a899c815a2da46678b09e5a1a2d134f7f4a",
+    "tools/traffic.mjs": "05d9336bace67d8432c65e9454db94341ad72ca73f874fa8473f7a97ff083db0",
+    "tools/traffic.test.mjs": "0b9ba41e3134499a814b99022008ed39075603425546128d504db69ecd752db6",
+    "tools/validate-m1.mjs": "9029c774d27dad8ba42ee5abf46111935ddc80402d9b49af645e75a871526523",
+    "Dockerfile": "397867aab16e790437c0ea91ed2e4d3ab7086fab4c7ed0648f7a7e477f76bb35",
+    "compose.yaml": "f042c9d8194b4c1d3f505721c0e8891da6679c90493980fbf903e8b3763daa0d",
+    "compose.two.yaml": "ad54fcf21f331dd30297d2095c530f22f51ec48cd1a415bcee20818e67ed8fc0",
+    "package.json": "4fd61acce9787998bdef90d0f83c27acf1a623055caa1e6c9e4050faa3d94003",
+    "package-lock.json": "fd605a9c66e15ce5742dc376b18dc09e90dd5919ca11e0a157f592ebaa57e413",
+    "tsconfig.json": "36342f75919c59f341a8163000cef600479e1d4131db3166e96b00279d9b46d9"
+  },
+  "error": "Error: Expected exactly one resilientcloud-m1-one/backend-a; found 2\n    at inspectBackend (file:///Users/sajid/Projects/resilientcloud/tools/docker.mjs:58:31)\n    at state (file:///Users/sajid/Projects/resilientcloud/tools/validate-m1.mjs:33:13)\n    at file:///Users/sajid/Projects/resilientcloud/tools/validate-m1.mjs:193:54\n    at until (file:///Users/sajid/Projects/resilientcloud/tools/validate-m1.mjs:41:15)\n    at file:///Users/sajid/Projects/resilientcloud/tools/validate-m1.mjs:193:13",
+  "finishedAt": "2026-11-03T10:09:47.519Z"
+}
