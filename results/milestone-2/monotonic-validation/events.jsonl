@@ -1,0 +1,5 @@
+{"type":"check_passed","timestamp":"2026-11-03T11:07:16.302Z","elapsedMs":13722.263208,"name":"resilientcloud-m2: runtime isolation and disabled Docker restart policies","isolation":{"reachedBackend":false,"dockerSocket":false,"gateSocket":false}}
+{"type":"check_passed","timestamp":"2026-11-03T11:07:16.398Z","elapsedMs":13818.159542,"name":"resilientcloud-m2: public routes cannot trigger faults or recovery"}
+{"type":"check_passed","timestamp":"2026-11-03T11:07:19.507Z","elapsedMs":16927.051792,"name":"resilientcloud-m2: normal routing","instances":{"backend-a":15,"backend-b":15}}
+{"type":"fault","timestamp":"2026-11-03T11:07:24.073Z","elapsedMs":21664.198582999998,"project":"resilientcloud-m2","monotonicMs":21561.538792,"service":"backend-a","containerId":"a2cae6a90021c7a2529515dc60e8d103f4ce176416e25d059d5bd857f8836e6c","mode":"crash","signal":"SIGKILL","completedAt":"2026-11-03T11:07:24.244Z","durationMs":170.76633299999958,"label":"crash","expectRecovery":true,"expectNoRecovery":false}
+{"type":"validation_finished","timestamp":"2026-11-03T11:07:30.976Z","elapsedMs":28395.825458,"status":"failed"}

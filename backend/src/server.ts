@@ -8,6 +8,8 @@ if (!/^\d+$/.test(portText) || Number(portText) > 65535) {
 const port = Number(portText);
 const faultsEnabled = process.env.FAULT_INJECTION_ENABLED === 'true';
 const backend = createBackend({ instance });
+// Local Compose test fixture for failures that a restart cannot fix.
+if (faultsEnabled && process.env.START_UNHEALTHY === 'true') backend.markUnhealthy();
 
 function log(event: string, details: Record<string, unknown> = {}) {
   console.log(JSON.stringify({ timestamp: new Date().toISOString(), event, instance, ...details }));

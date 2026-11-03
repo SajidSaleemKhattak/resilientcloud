@@ -21,7 +21,7 @@ export function injectFault({ mode, service, project }) {
     throw new Error('Fault injection is not enabled on this backend');
   }
   const started = performance.now();
-  const event = { type: 'fault', timestamp: new Date().toISOString(), project, service,
+  const event = { type: 'fault', timestamp: new Date().toISOString(), monotonicMs: started, project, service,
     containerId: target.Id, mode, signal: mode === 'crash' ? 'SIGKILL' : 'SIGUSR2' };
   // Signal the exact inspected ID, never a caller-supplied name or shell expression.
   docker(['kill', '--signal', event.signal, target.Id]);

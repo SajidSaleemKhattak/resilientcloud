@@ -1,0 +1,5 @@
+# Local validation fixture. Only the test backend starts unhealthy after every restart.
+services:
+  backend-a:
+    environment:
+      START_UNHEALTHY: "true"

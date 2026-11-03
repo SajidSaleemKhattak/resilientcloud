@@ -24,7 +24,7 @@ No listed CLI is missing. Docker is now available. No system software was instal
 - **Traffic:** Nginx balances requests across both instances on a private Compose application network. Publish only the UI/gateway port on loopback. Configure passive upstream failure detection, bounded timeouts, and safe retries for idempotent demo GET requests. Nginx may expose failed requests before detecting a problem; measure this. Open-source Nginx passive checks are separate from controller probes.
 - **Networking:** service-name DNS inside Compose; do not publish backend ports. Backends use an internal application network; only Nginx also joins an edge network to enable its loopback host port. Later, route dashboard status reads through a small read-only status service with no Docker socket or restart capability. A separate internal network/shared event volume connects monitoring output to this service; the dashboard and public APIs cannot command the controller.
 - **Recovery controller:** isolated Node.js service probes backend readiness, records timestamped state transitions, and restarts only eligible project backend containers. Require consecutive failures, probe timeouts, cooldown, bounded retries, and an exhausted/manual-intervention state. Log reason, target, action, and outcome; never accept public commands.
-- **Docker boundary:** the controller uses a private Docker API gate that authorizes only inspection and restart of the exact two backend container IDs, verified against Compose project/service labels. Reject other containers and all create, exec, delete, image, and host operations. Only this gate receives the Docker socket; do not publish it. A socket mount grants powerful host-level access even if mounted read-only, so the gate is a trusted local component and must fail closed. Test its authorization boundary before enabling recovery.
+- **Docker boundary:** the controller uses a private Unix-socket gate, with no gate network or published port. It authorizes only inspection/restart of freshly validated backend IDs, checking project/service/directory/role labels, instance identity and app-network membership. It rejects stale IDs and all other operations; legitimate recreation requires revalidation. Only the gate receives Docker's socket. A read-only socket mount still allows API mutations, so this gate is trusted and must fail closed.
 
 ## Failure semantics
 
@@ -52,9 +52,9 @@ Generate tables/charts from saved data only; retain commands, configuration, mac
 
 ## Two-day delivery order
 
-**Milestone 1 — local backend and failover foundation (Day 1, current):** TypeScript/Express identity/readiness/API, pinned ARM64 builds, one/two-backend Compose configurations, Nginx passive failover and DNS re-resolution, restart policies disabled, scoped signal-based local fault injection, JSONL traffic generator, tests, exact README commands. Validate crash vs unhealthy-running behavior, restart rejoin, and recreation with a forced IP change. No dashboard or recovery controller in this milestone.
+**Milestone 1 — local backend and failover foundation (completed):** TypeScript/Express identity/readiness/API, pinned ARM64 builds, one/two-backend Compose configurations, Nginx passive failover and DNS re-resolution, restart policies disabled, scoped signal-based local fault injection, JSONL traffic generator, tests, exact README commands. Crash, unhealthy, restart and forced-IP-change behavior validated; original evidence preserved.
 
-**Milestone 2 — isolated recovery (remaining Day 1 / Day 2):** controller state transitions, bounded actions, Docker authorization gate, event output, read-only status path, and security tests. Enable scenario C only after validation.
+**Milestone 2 — isolated recovery (completed):** controller state transitions, bounded actions, Docker authorization gate, persisted events/checkpoints, read-only status, and security tests. Scenario C validated locally with controller recovery enabled and Docker restart policies disabled.
 
 **Milestone 3 — evidence and presentation (Day 2):** repeated A/B/C experiment matrix, actual comparisons, React/TypeScript dashboard, GitHub Actions, architecture diagram, and scholarship demo documentation. Prioritize reproducible CLI evidence over visual polish. If recovery cannot be validated in time, report it as incomplete and retain the measured baseline/failover results.
 
@@ -68,7 +68,18 @@ Generate tables/charts from saved data only; retain commands, configuration, mac
 
 **Milestone 1 completed, 2026-11-03.** Evidence: `results/milestone-1/final/report.json` and adjacent raw JSONL/logs. At 10 requests/second, normal samples returned 30/30 successes; eight-second crash samples returned 20/80 with one backend and 80/80 with two; unhealthy samples returned 21/80 and 80/80. Samples include pre-fault traffic. Both scenarios rejoined after manual restart and after a verified IP change without restarting Nginx. Recovery remained disabled. Initial connectivity and test-helper label failures are preserved separately; neither is marked passed. No milestone 1 runtime blocker remains.
 
-Milestone smoke checks are functional validation, not the three-repetition research experiment matrix above. Future milestones and cloud deployment remain pending.
+### Milestone 2 progress
+
+- [x] Bounded probes; 3 consecutive failures; explicit healthy/suspected/recovering/cooldown/exhausted states.
+- [x] Two attempts per incident, durable budgets, cooldown, two-probe readiness verification, and exhausted latch across controller restart.
+- [x] Private Unix Docker gate; foreign/stale/mismatched targets and unauthorized actions rejected; legitimate recreation revalidated.
+- [x] Persistent timestamped event journals outside backends and read-only status with snapshot/per-backend staleness.
+- [x] 45 automated tests (including late-verification and UTC-jump regressions), TypeScript checks, ARM64 builds, and 16 live integration checks passed.
+- [x] Real fault timings, sibling availability, transient suppression, persistent exhaustion, and disabled recovery recorded; README/design documentation updated.
+
+**Milestone 2 completed, 2026-11-03.** Checkpoint evidence is `results/milestone-2/validated/`; earlier passing and failed attempts remain separate. Crash detection/recovery: 1.275/2.294 seconds; unhealthy: 1.303/2.294 seconds, using calibrated monotonic clocks (uncertainty about ±44–47 ms plus scheduling effects). Clock mapping is checked before/after each fault; idle sleep was prevented during the final run. Persistent failure consumed exactly two attempts and remained exhausted after controller restart. Disabled recovery issued no restarts; transient failure stayed below threshold. Of 710 actual client requests, 708 succeeded and 2 returned 504 during the enabled crash sample; no dropped slots. Healthy sibling probes stayed successful. No milestone-2 runtime blocker remains; offline rearming and component/host resilience remain limitations described in `docs/RECOVERY.md`.
+
+Milestone smoke checks are functional validation, not the three-repetition research experiment matrix above. Dashboard, CI, repeated comparisons and hosting evaluation remain pending. Cloud deployment still requires local validation, a confirmed zero-cost option, and explicit approval.
 
 ## Tests, CI, and documentation
 

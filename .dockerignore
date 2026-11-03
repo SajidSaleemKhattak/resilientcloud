@@ -5,3 +5,6 @@
 !backend/
 !backend/src/
 !backend/src/**
+!recovery/
+!recovery/**
+recovery/*.test.mjs

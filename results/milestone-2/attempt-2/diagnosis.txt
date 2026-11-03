@@ -1,0 +1,7 @@
+This attempt failed after the crash sample. Its original report and raw evidence are preserved.
+
+The original runner incorrectly required zero client-visible failures to establish sibling availability. The crash sample recorded 98 successes and 2 HTTP 504 responses out of 100 requests; both 504 records show only the failed upstream address. The healthy sibling served requests, and controller/gate journals show one restart followed by two successful readiness checks and recovery_verified.
+
+A second runner error obscured the first assertion: timing extraction required observationEndedAt, which was never assigned after the first assertion failed. The report therefore said missing detection/recovery despite those events being present in the raw controller journal.
+
+Corrections: retain all gateway failures as measured results, assert successful sibling traffic during recovery plus successful sibling readiness probes and unchanged sibling start time, and derive partial-attempt timing without masking the original failure. Isolation and recovery policy were unchanged. This attempt remains failed, not retrospectively marked passed.

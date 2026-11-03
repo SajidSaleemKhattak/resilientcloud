@@ -8,3 +8,4 @@ dist/
 results/*
 !results/.gitkeep
 !results/milestone-1/
+!results/milestone-2/

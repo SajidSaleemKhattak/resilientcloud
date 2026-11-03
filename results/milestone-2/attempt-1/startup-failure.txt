@@ -1,0 +1,13 @@
+Command: node tools/validate-m2.mjs --out results/milestone-2/attempt-1
+Exit status: 1
+Runtime: Node.js v25.8.2
+
+The runner failed to parse before creating its event journal or starting containers.
+Reported error:
+file:///Users/sajid/Projects/resilientcloud/tools/validate-m2.mjs:287
+        const fault = { ...injectFault({ mode: 'unhealthy', service: 'backend-a', project }), label: 'recreated-backend', expectRecovery: true };
+              ^
+SyntaxError: Identifier 'fault' has already been declared
+
+Correction: give the recreated-backend fault a separate variable name.
+No runtime validation was executed or passed in this attempt.

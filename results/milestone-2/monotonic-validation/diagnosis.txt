@@ -1,0 +1,3 @@
+Failed validation: traffic generator recorded 36 skipped scheduler slots in the crash window. Actual issued requests were retained (64 requests, 64 successes); skipped slots were not fabricated as requests. Host and VM elapsed-clock mapping also changed during the pause, so the earlier single calibration could not support reliable cross-process timing.
+
+The next run samples the monotonic clock mapping immediately before and after each fault and rejects unstable mappings. It runs under macOS caffeinate -i to prevent idle sleep for the duration of validation, without changing system settings. This failed attempt remains unchanged.

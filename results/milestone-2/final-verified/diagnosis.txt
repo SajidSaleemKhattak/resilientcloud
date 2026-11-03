@@ -1,0 +1,4 @@
+This validation failed on a cross-clock poll even though crash recovery occurred.
+The recorded container/host UTC offset was approximately -17 seconds and Docker's UTC clock subsequently jumped forward during the trial. The runner compared an uncorrected container recovery timestamp against the host injection timestamp and timed out. Raw journals retain successful threshold confirmation, restart and readiness verification.
+
+Corrections: operational verification polls compare newly observed verification values rather than UTC ordering; timing calculation maps Linux monotonic timestamps to the runner's monotonic clock using timed samples. Controller policy deadlines and cooldowns also use monotonic elapsed time, with regression tests for forward/backward wall-clock jumps. UTC remains in raw evidence for audit. This failed attempt is preserved unchanged.

@@ -1,0 +1,81 @@
+x-recovery: &recovery
+  image: resilientcloud-recovery:m2
+  build:
+    context: .
+    dockerfile: recovery/Dockerfile
+  restart: "no"
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  mem_limit: 128m
+  cpus: 0.5
+
+services:
+  gate:
+    <<: *recovery
+    command: [node, recovery/gate-server.mjs]
+    user: "0:0"
+    cap_add: [CHOWN]
+    network_mode: none
+    environment:
+      PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+      PROJECT_DIRECTORY: ${PROJECT_DIRECTORY:?use the project Compose wrapper}
+      APP_NETWORK: ${COMPOSE_PROJECT_NAME}_app
+      DATA_DIR: /audit
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - gate-runtime:/run/gate
+      - gate-data:/audit
+    healthcheck:
+      test: [CMD, node, -e, "process.exit(require('node:fs').statSync('/run/gate/gate.sock').isSocket()?0:1)"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+
+  controller:
+    <<: *recovery
+    command: [node, recovery/controller.mjs]
+    environment:
+      RECOVERY_ENABLED: ${RECOVERY_ENABLED:-true}
+      PROBE_INTERVAL_MS: "500"
+      PROBE_TIMEOUT_MS: "300"
+      FAILURE_THRESHOLD: "3"
+      MAX_RESTART_ATTEMPTS: "2"
+      VERIFY_TIMEOUT_MS: "4000"
+      COOLDOWN_MS: "2000"
+      GATE_SOCKET: /run/gate/gate.sock
+      GATE_TIMEOUT_MS: "14000"
+      DATA_DIR: /data
+    networks: [app]
+    volumes:
+      - gate-runtime:/run/gate:ro
+      - controller-data:/data
+    depends_on:
+      gate:
+        condition: service_healthy
+
+  status:
+    <<: *recovery
+    command: [node, recovery/status.mjs]
+    environment:
+      DATA_DIR: /data
+    networks: [status-read]
+    volumes:
+      - controller-data:/data:ro
+
+  gateway:
+    volumes:
+      - ./nginx/recovery.conf:/etc/nginx/nginx.conf:ro
+    networks: [app, edge, status-read]
+    depends_on:
+      status:
+        condition: service_started
+
+networks:
+  status-read:
+    internal: true
+
+volumes:
+  gate-runtime:
+  gate-data:
+  controller-data:

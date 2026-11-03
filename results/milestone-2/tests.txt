@@ -1,0 +1,58 @@
+
+> resilientcloud@0.1.0 test
+> npm run build && node --test dist/backend/test/*.test.js tools/*.test.mjs recovery/*.test.mjs
+
+
+> resilientcloud@0.1.0 build
+> tsc
+
+✔ healthy service identifies its instance in body and response header (50.791417ms)
+✔ an unhealthy service stays alive, returns 503, and requires fresh state to recover (13.636125ms)
+✔ HTTP has no fault controls and does not accept application mutations (6.146584ms)
+✔ instance IDs cannot inject response headers (0.407583ms)
+✔ SIGUSR2 produces an unhealthy running process and a new process restores readiness (312.766958ms)
+✔ disabled fault injection ignores SIGUSR2 without changing readiness (104.913875ms)
+✔ SIGKILL terminates the backend process (97.534875ms)
+✔ persistent test fixture survives process recreation and requires fault opt-in (318.408083ms)
+✔ threshold requires consecutive failures and transient readiness failure never restarts (3.112334ms)
+✔ Docker acceptance alone cannot establish recovery; repeated readiness and stable cooldown are required (0.901084ms)
+✔ persistent failure exhausts exactly the configured attempts and stays latched even if readiness returns (1.280417ms)
+✔ disabled recovery probes and confirms failures without issuing a restart (0.522584ms)
+✔ flapping during cooldown does not reset the incident budget (0.612959ms)
+✔ checkpoint resumes an in-flight consumed attempt without blindly restarting again (0.461167ms)
+✔ ambiguous restart timeout is verified before another bounded attempt; stale replacement is revalidated (0.508917ms)
+✔ inspection failure cannot cause an unvalidated restart; persistence failure prevents Docker mutation (0.512417ms)
+✔ verification refuses identity changing while readiness response is in flight (0.394833ms)
+✔ malformed persisted state fails closed and missing checkpoint with existing journal cannot reset budgets (8.804417ms)
+✔ persistent store serializes complete events and atomic status checkpoints (117.919167ms)
+✔ readiness validates HTTP status, backend identity and ready boolean, never just reachable process (0.564625ms)
+✔ HTTP helper has an absolute full-body timeout and response-size bound (60.45625ms)
+✔ configuration rejects unsafe or unbounded controls (0.175875ms)
+✔ valid backend inspection exposes only approved fields and fixed filtered Docker requests (2.322333ms)
+✔ foreign or stale IDs never reach Docker restart; recreation needs fresh validation (0.648541ms)
+✔ mismatched labels, identity, network, inspect ID and ambiguous discovery fail closed (4.52425ms)
+✔ unsupported operation and target rejected before Docker; audit failure prevents restart (0.302958ms)
+✔ per-service operation lock prevents overlapping restart decisions (0.162375ms)
+✔ real Unix HTTP gate rejects raw Docker operations, URL tricks, bodies and public mutation paths (31.300625ms)
+✔ Docker socket transport enforces absolute timeout, response bound and HTTP errors (52.500333ms)
+✔ audit records survive writer recreation and remain valid timestamped JSONL (12.294875ms)
+✔ status is read-only, handles missing data, and labels stale snapshots (67.209042ms)
+✔ fault CLI accepts only the two backend services and known local projects (0.972458ms)
+✔ target checks reject foreign labels, wrong directory, role, service and malformed IDs (0.313875ms)
+✔ Compose wrapper refuses attached and separate project/file overrides (431.890792ms)
+✔ records actual HTTP outcomes, identities, and measured latency (261.159208ms)
+✔ timeouts and concurrency saturation produce failures and distinct skipped slots (264.47775ms)
+✔ preserves gateway attempt headers even when the client receives a successful response (100.876833ms)
+✔ falls back to body identity; aborted responses stay failures (200.959291ms)
+✔ scheduler delay records missed slots without issuing a catch-up burst (203.130292ms)
+✔ rejects malformed CLI arguments, unsafe paths, and nonlocal or credential-bearing URLs (2.082125ms)
+✔ output refuses overwrites and symlink parents/leaves (11.535375ms)
+✔ CLI serializes concurrent completions into complete JSONL and accounts for every scheduled slot (553.233958ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1778.439458

@@ -10,9 +10,9 @@ interface StartedBackend {
   stop(): Promise<void>;
 }
 
-async function startBackend(faultsEnabled: boolean): Promise<StartedBackend> {
+async function startBackend(faultsEnabled: boolean, startUnhealthy = false): Promise<StartedBackend> {
   const child = spawn(process.execPath, [fileURLToPath(new URL('../src/server.js', import.meta.url))], {
-    env: { ...process.env, PORT: '0', INSTANCE_ID: 'process-test', FAULT_INJECTION_ENABLED: String(faultsEnabled) },
+    env: { ...process.env, PORT: '0', INSTANCE_ID: 'process-test', FAULT_INJECTION_ENABLED: String(faultsEnabled), START_UNHEALTHY: String(startUnhealthy) },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
   const url = await new Promise<string>((resolve, reject) => {
@@ -108,4 +108,17 @@ test('SIGKILL terminates the backend process', async (t) => {
   const [code, signal] = await exited;
   assert.equal(code, null);
   assert.equal(signal, 'SIGKILL');
+});
+
+test('persistent test fixture survives process recreation and requires fault opt-in', async (t) => {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const backend = await startBackend(true, true);
+    t.after(backend.stop);
+    await waitForStatus(`${backend.url}/ready`, 503);
+    await waitForStatus(`${backend.url}/live`, 200);
+    await backend.stop();
+  }
+  const production = await startBackend(false, true);
+  t.after(production.stop);
+  await waitForStatus(`${production.url}/ready`, 200);
 });

@@ -1,0 +1,420 @@
+{
+  "startedAt": "2026-11-03T10:29:55.357Z",
+  "status": "failed",
+  "checks": [
+    {
+      "name": "resilientcloud-m2: runtime isolation and disabled Docker restart policies",
+      "isolation": {
+        "reachedBackend": false,
+        "dockerSocket": false,
+        "gateSocket": false
+      }
+    },
+    {
+      "name": "resilientcloud-m2: public routes cannot trigger faults or recovery"
+    },
+    {
+      "name": "resilientcloud-m2: normal routing",
+      "instances": {
+        "backend-a": 15,
+        "backend-b": 15
+      }
+    }
+  ],
+  "samples": [
+    {
+      "file": "results/milestone-2/attempt-2/resilientcloud-m2-normal.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:30:12.877Z",
+      "label": "resilientcloud-m2-normal",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3000.751,
+      "instances": {
+        "backend-a": 15,
+        "backend-b": 15
+      },
+      "latencyAllMs": {
+        "p50": 2.538,
+        "p95": 5.53
+      },
+      "latencySuccessMs": {
+        "p50": 2.538,
+        "p95": 5.53
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-2/attempt-2/resilientcloud-m2-crash.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:30:23.088Z",
+      "label": "resilientcloud-m2-crash",
+      "scheduled": 100,
+      "requests": 100,
+      "successes": 98,
+      "failures": 2,
+      "dropped": 0,
+      "successRate": 0.98,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 9999.735,
+      "instances": {
+        "backend-a": 37,
+        "backend-b": 61
+      },
+      "latencyAllMs": {
+        "p50": 2.183,
+        "p95": 8.292
+      },
+      "latencySuccessMs": {
+        "p50": 2.176,
+        "p95": 6.236
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    }
+  ],
+  "scenarios": {
+    "resilientcloud-m2": {
+      "recoveryEnabled": true,
+      "faults": [
+        {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:30:14.578Z",
+          "project": "resilientcloud-m2",
+          "service": "backend-a",
+          "containerId": "7322a3baa13f16a0bae1fb2e7892fdd223973be468de70281d3405aed3a4b20b",
+          "mode": "crash",
+          "signal": "SIGKILL",
+          "completedAt": "2026-11-03T10:30:14.661Z",
+          "durationMs": 83.16437500000029,
+          "label": "crash",
+          "expectRecovery": true,
+          "expectNoRecovery": false,
+          "observed": {
+            "id": "7322a3baa13f16a0bae1fb2e7892fdd223973be468de70281d3405aed3a4b20b",
+            "running": false,
+            "status": "exited",
+            "exitCode": 137,
+            "health": "unhealthy",
+            "startedAt": "2026-11-03T10:29:57.426152751Z",
+            "restartCount": 0,
+            "restartPolicy": "no",
+            "ip": ""
+          },
+          "verifiedSnapshot": {
+            "schemaVersion": 1,
+            "updatedAt": "2026-11-03T10:30:16.702Z",
+            "runId": "6f9209c8-7e4f-4205-ab35-166e970e7c51",
+            "recoveryEnabled": true,
+            "config": {
+              "intervalMs": 500,
+              "probeTimeoutMs": 300,
+              "failureThreshold": 3,
+              "maxAttempts": 2,
+              "verifyTimeoutMs": 4000,
+              "verifySuccesses": 2,
+              "cooldownMs": 2000
+            },
+            "backends": {
+              "backend-a": {
+                "state": "cooldown",
+                "failures": 0,
+                "attempts": 1,
+                "manualIntervention": false,
+                "containerId": "7322a3baa13f16a0bae1fb2e7892fdd223973be468de70281d3405aed3a4b20b",
+                "lastProbe": {
+                  "ok": true,
+                  "reason": null,
+                  "status": 200,
+                  "instance": "backend-a",
+                  "latencyMs": 0.8996670000015001,
+                  "timestamp": "2026-11-03T10:30:16.699Z"
+                },
+                "lastReadyAt": "2026-11-03T10:30:16.699Z",
+                "failureConfirmedAt": "2026-11-03T10:30:15.703Z",
+                "recoveryVerifiedAt": "2026-11-03T10:30:16.700Z",
+                "verificationSuccesses": 2,
+                "verificationDeadline": 1793701819777,
+                "attemptTargetId": "7322a3baa13f16a0bae1fb2e7892fdd223973be468de70281d3405aed3a4b20b",
+                "restartOutcome": "accepted",
+                "cooldownUntil": 1793701818700,
+                "stableSince": 1793701816700,
+                "observationAgeMs": 87,
+                "stale": false
+              },
+              "backend-b": {
+                "state": "healthy",
+                "failures": 0,
+                "attempts": 0,
+                "manualIntervention": false,
+                "containerId": "e0a9d66617d3b8cee57ce32f3b208398278003e0f4f62409a0018fd0e4ed83f5",
+                "lastProbe": {
+                  "ok": true,
+                  "reason": null,
+                  "status": 200,
+                  "instance": "backend-b",
+                  "latencyMs": 0.40583300000071176,
+                  "timestamp": "2026-11-03T10:30:16.691Z"
+                },
+                "lastReadyAt": "2026-11-03T10:30:16.691Z",
+                "failureConfirmedAt": null,
+                "recoveryVerifiedAt": null,
+                "verificationSuccesses": 0,
+                "verificationDeadline": null,
+                "attemptTargetId": null,
+                "restartOutcome": null,
+                "cooldownUntil": null,
+                "stableSince": null,
+                "observationAgeMs": 95,
+                "stale": false
+              }
+            },
+            "available": true,
+            "stale": false,
+            "ageMs": 84
+          },
+          "measurement": {
+            "detectionMs": null,
+            "recoveryMs": null,
+            "readinessAfterConfirmationMs": null,
+            "clockUncertaintyMs": 44.5,
+            "failureConfirmedEvent": null,
+            "recoveryVerifiedEvent": null,
+            "recoveryObserved": false
+          }
+        }
+      ],
+      "clock": {
+        "hostBefore": 1793701803830,
+        "containerNow": 1793701803909,
+        "hostAfter": 1793701803919,
+        "offsetMs": 34.5,
+        "uncertaintyMs": 44.5,
+        "samples": [
+          {
+            "hostBefore": 1793701803830,
+            "containerNow": 1793701803909,
+            "hostAfter": 1793701803919,
+            "offsetMs": 34.5,
+            "uncertaintyMs": 44.5
+          },
+          {
+            "hostBefore": 1793701803919,
+            "containerNow": 1793701804002,
+            "hostAfter": 1793701804012,
+            "offsetMs": 36.5,
+            "uncertaintyMs": 46.5
+          },
+          {
+            "hostBefore": 1793701804012,
+            "containerNow": 1793701804094,
+            "hostAfter": 1793701804103,
+            "offsetMs": 36.5,
+            "uncertaintyMs": 45.5
+          }
+        ]
+      },
+      "config": {
+        "intervalMs": 500,
+        "probeTimeoutMs": 300,
+        "failureThreshold": 3,
+        "maxAttempts": 2,
+        "verifyTimeoutMs": 4000,
+        "verifySuccesses": 2,
+        "cooldownMs": 2000
+      },
+      "runtime": {
+        "backend-a": {
+          "id": "7322a3baa13f16a0bae1fb2e7892fdd223973be468de70281d3405aed3a4b20b",
+          "image": "sha256:518d304e6902dc733d5969ed586ea5a9719b04453f4dc44ac96fa4c5d7d4ef5e",
+          "networks": [
+            "resilientcloud-m2_app"
+          ],
+          "mounts": [],
+          "ports": {
+            "3000/tcp": null
+          },
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:29:57.426152751Z"
+        },
+        "backend-b": {
+          "id": "e0a9d66617d3b8cee57ce32f3b208398278003e0f4f62409a0018fd0e4ed83f5",
+          "image": "sha256:518d304e6902dc733d5969ed586ea5a9719b04453f4dc44ac96fa4c5d7d4ef5e",
+          "networks": [
+            "resilientcloud-m2_app"
+          ],
+          "mounts": [],
+          "ports": {
+            "3000/tcp": null
+          },
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:29:57.422831959Z"
+        },
+        "gate": {
+          "id": "fc2c830e65571dbf09792eb4cad9d023513637550c409f0226b886869c17bf39",
+          "image": "sha256:0bf9d8c3a4e81231c03d2a7a17277d71a220a8f922959866aea3f3fbfc6ea180",
+          "networks": [
+            "none"
+          ],
+          "mounts": [
+            {
+              "type": "volume",
+              "destination": "/run/gate",
+              "writable": true
+            },
+            {
+              "type": "volume",
+              "destination": "/audit",
+              "writable": true
+            },
+            {
+              "type": "bind",
+              "destination": "/var/run/docker.sock",
+              "writable": false
+            }
+          ],
+          "ports": {},
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:29:57.430235251Z"
+        },
+        "controller": {
+          "id": "d6065f966301265977631b8b53c3636f2af193735b7d975889292af24e41bb59",
+          "image": "sha256:0bf9d8c3a4e81231c03d2a7a17277d71a220a8f922959866aea3f3fbfc6ea180",
+          "networks": [
+            "resilientcloud-m2_app"
+          ],
+          "mounts": [
+            {
+              "type": "volume",
+              "destination": "/run/gate",
+              "writable": false
+            },
+            {
+              "type": "volume",
+              "destination": "/data",
+              "writable": true
+            }
+          ],
+          "ports": {},
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:29:59.023669168Z"
+        },
+        "status": {
+          "id": "905d0692f1a1cbdf2acff871b998ac512c21a9d9ac45f9bb3dc265578b910513",
+          "image": "sha256:0bf9d8c3a4e81231c03d2a7a17277d71a220a8f922959866aea3f3fbfc6ea180",
+          "networks": [
+            "resilientcloud-m2_status-read"
+          ],
+          "mounts": [
+            {
+              "type": "volume",
+              "destination": "/data",
+              "writable": false
+            }
+          ],
+          "ports": {},
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:29:57.431040626Z"
+        },
+        "gateway": {
+          "id": "a7c88666724b7a8056d75423edce2ff9851c328dafb889fb4a4aa2007bc4bc12",
+          "image": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+          "networks": [
+            "resilientcloud-m2_app",
+            "resilientcloud-m2_edge",
+            "resilientcloud-m2_status-read"
+          ],
+          "mounts": [
+            {
+              "type": "bind",
+              "destination": "/etc/nginx/nginx.conf",
+              "writable": false
+            },
+            {
+              "type": "bind",
+              "destination": "/etc/nginx/upstream.conf",
+              "writable": false
+            }
+          ],
+          "ports": {
+            "8080/tcp": [
+              {
+                "HostIp": "127.0.0.1",
+                "HostPort": "18083"
+              }
+            ]
+          },
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:30:03.11839592Z"
+        }
+      },
+      "controllerEventsFile": "resilientcloud-m2-controller.events.jsonl",
+      "gateEventsFile": "resilientcloud-m2-gate.events.jsonl"
+    }
+  },
+  "purpose": "Milestone 2 functional validation with real measurements, not repeated research trials",
+  "timingDefinitions": {
+    "faultInjection": "Host UTC immediately before the fault command; command completion is recorded separately.",
+    "detectionMs": "First controller failure_confirmed minus fault injection, adjusted by measured container-host clock offset.",
+    "recoveryMs": "First controller recovery_verified minus fault injection, adjusted by measured container-host clock offset. This requires consecutive readiness successes, not Docker restart acceptance.",
+    "readinessAfterConfirmationMs": "Controller monotonic recovery_verified elapsedMs minus failure_confirmed elapsedMs within the same runId.",
+    "uncertainty": "Cross-process timing uncertainty is at least half the clock-sample command round-trip. Probe cadence, fault command duration and scheduler delay also affect detection. Values are smoke observations, not guarantees."
+  },
+  "runtime": {
+    "hostNode": "v25.8.2",
+    "docker": "29.7.2 aarch64",
+    "compose": "5.4.0"
+  },
+  "sourceHashes": {
+    "backend/src/app.ts": "7df0ab097bc3a34a79ce872e4a7fc698054877a20a7736ecf59bceae679c065a",
+    "backend/src/server.ts": "24443d2c77605d5245987ef083dca89d4f1fb0d209f7f00365764536b8c6e880",
+    "backend/test/app.test.ts": "fe3c034c7c5a62a1d65d6f0742ff19c439b9f9f20334204e387e8b9a5b492180",
+    "backend/test/process.test.ts": "315e98fc9d24838a15e97fbe25bada8f4c10f3d64659f679be231791c9cd95ba",
+    "nginx/nginx.conf": "cb9b704a35d247038d056b239301270f22e82b3e3aea5feb19f60b4e2636313f",
+    "nginx/one.conf": "4285ab0eb6efe57e5dda497a6d391f77651240085ddf0e38c92f478dbb1e462f",
+    "nginx/recovery.conf": "b8e5a7592082c55ecd07061b3a00ca4e39952f97c624092c9eb1dd8807400345",
+    "nginx/two.conf": "fac94af3ccc82d487d03941ac8d162b673046efd074a9001e33deb49afaef757",
+    "tools/compose.mjs": "e442595ac33cfcb6370a8bbefb4816e49270f1e29c76170bf7c3fd948756f7ae",
+    "tools/docker.mjs": "1378830ea3a3f1b5e3db15283b1be8673c8ef0a35f77c33875092e7e72051d3a",
+    "tools/fault.mjs": "c6709d55b62ec47d6b8669d9e64a8c3b66db7195c3704baf967d024683aa866c",
+    "tools/fault.test.mjs": "e12a26bffa2b58ff61f5d587f31a63e6623ffdcf3ad9ad26cbac686e5404d8cb",
+    "tools/traffic.mjs": "05d9336bace67d8432c65e9454db94341ad72ca73f874fa8473f7a97ff083db0",
+    "tools/traffic.test.mjs": "0b9ba41e3134499a814b99022008ed39075603425546128d504db69ecd752db6",
+    "tools/validate-m1.mjs": "f14197908597026d212459a407c7fcf66cead934c365994b8659a01edfb5f999",
+    "tools/validate-m2.mjs": "2104175deacc1ab1ef128a25167473542a96d95c915599809b1d5efcc75d1ea3",
+    "recovery/Dockerfile": "9eaea8fd93062883d592506d10c3e0c5db4464503857661c3bfc1ea2c50f7c38",
+    "recovery/controller.mjs": "941d8a2f184062d999667eb00e1639154465cfd4dfcca433368e548e6398b593",
+    "recovery/controller.test.mjs": "12c1faff812c5ab0a6571e92db27a64fd6c4e02e232d434877d7bb9f4d817723",
+    "recovery/gate-core.mjs": "3ccccf80301a8a515dd5ebfd04334578f56fdf1f72e08910c4677add1484f483",
+    "recovery/gate-server.mjs": "03870c507780a5ab7c98e92c5027e95a2fbbbc40509f3da1b3aa491a3780c328",
+    "recovery/gate.test.mjs": "91b84df94e1000bdcd3780062b28388a265cf59c269845d13eb6f46ec4dc1985",
+    "recovery/status.mjs": "855aab4bf50aa0aff271dbe095fe0d5d4c55b5ab7cf0104f0dc942f939f2a422",
+    "recovery/status.test.mjs": "2708e7d4d474acec6ac1773b6028409fa49bc5f7b1c2761c4f20b7af15ee3ca3",
+    "Dockerfile": "397867aab16e790437c0ea91ed2e4d3ab7086fab4c7ed0648f7a7e477f76bb35",
+    "compose.yaml": "f042c9d8194b4c1d3f505721c0e8891da6679c90493980fbf903e8b3763daa0d",
+    "compose.two.yaml": "ad54fcf21f331dd30297d2095c530f22f51ec48cd1a415bcee20818e67ed8fc0",
+    "compose.recovery.yaml": "4eb34b108b43fa87c66832e6a0bcb3fac61fc94425a48235928891ae4ddd7b71",
+    "compose.persistent-test.yaml": "71761774d53b4a263c7f8f3c3fd04e1537bcd028ab87e17cb6e3ef4cbc91e16e",
+    "package.json": "881fef7717f3c74f2aa4e2589239e72f10e9a270fc2a57427fda2c1fdd19f310",
+    "package-lock.json": "fd605a9c66e15ce5742dc376b18dc09e90dd5919ca11e0a157f592ebaa57e413",
+    "tsconfig.json": "36342f75919c59f341a8163000cef600479e1d4131db3166e96b00279d9b46d9"
+  },
+  "error": "AssertionError [ERR_ASSERTION]: Missing measured detection/recovery for crash\n    at deriveTimings (file:///Users/sajid/Projects/resilientcloud/tools/validate-m2.mjs:140:38)\n    at file:///Users/sajid/Projects/resilientcloud/tools/validate-m2.mjs:382:31\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+  "finishedAt": "2026-11-03T10:30:24.141Z"
+}

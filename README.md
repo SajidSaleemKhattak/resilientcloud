@@ -1,6 +1,6 @@
 # ResilientCloud
 
-A local failure-detection and recovery research prototype for a Cloud and Network Infrastructures master's scholarship application. Milestone 1 implements the TypeScript/Express backends, Nginx traffic failover, local fault injection, and measured traffic. The dashboard and recovery controller are later milestones; all container restart policies are disabled here.
+A local failure-detection and recovery research prototype for a Cloud and Network Infrastructures master's scholarship application. Milestone 1 supplies Express backends and Nginx failover; milestone 2 adds an isolated recovery controller, private Docker gate, persisted events, and read-only status. The dashboard remains a later milestone. Docker restart policies remain disabled in every scenario.
 
 Cloud deployment is **deferred until local validation and a zero-cost hosting option are confirmed**, followed by explicit approval to deploy. Two containers on one Mac do not protect against host, Docker VM, power, or host-network failure.
 
@@ -36,7 +36,7 @@ flowchart LR
     Operator[Local fault CLI] -. Docker signal to validated project backend .-> A
 ```
 
-Only Nginx publishes a host port, bound to loopback. Backends have no published ports and only join the internal `app` network. Nginx also joins an `edge` network so its host port is reachable; using only an internal network prevented host access during the initial validation attempt. No service mounts the Docker socket. Docker control exists only in the local CLI, which validates the project name, service name, working-directory label, backend role label, and exact container ID before signalling a backend.
+Only Nginx publishes a host port, bound to loopback. Backends have no published ports and only join the internal `app` network. Nginx also joins an `edge` network so its host port is reachable; using only an internal network prevented host access during the initial validation attempt. In the one/two scenarios, no service mounts Docker's socket. In the recovery scenario, only the isolated gate mounts it; the controller reaches the gate through a private Unix socket. The local fault CLI validates the project name, service name, working-directory label, backend role label, and exact container ID before signalling a backend.
 
 | Endpoint | Healthy response | Injected unhealthy response | Exposed through gateway |
 | --- | --- | --- | --- |
@@ -94,7 +94,55 @@ npm run compose -- two restart --no-deps backend-a
 
 `unhealthy` sends SIGUSR2 with test fault injection enabled. The process remains alive, `/live` stays 200, and `/ready` plus `/api` return 503. Docker subsequently marks it unhealthy. This state persists until a manual restart. A second signal does not clear it. `start` alone does not repair an already running unhealthy process; use the explicit `restart` command above.
 
-**Traffic failover** sends eligible requests to the surviving backend; **container recovery** restores the failed backend. This milestone demonstrates failover and manual recovery only. A stopped container or unhealthy service stays failed without operator action. Nginx may return 502 for an unreachable backend, pass through a 503, or retry another backend and return 200. Read the recorded upstream attempts to distinguish these cases.
+**Traffic failover** sends eligible requests to the surviving backend; **container recovery** restores the failed backend. The `one` and `two` scenarios demonstrate failover/manual recovery: failed services remain failed without operator action. The `recovery` scenario below enables controller-directed restarts. Nginx may expose 502/503/504 errors or retry another backend and return 200. Read the recorded upstream attempts to distinguish these cases.
+
+## Automatic recovery (milestone 2)
+
+Stop the active manual scenario before switching to recovery. These commands use only local Docker resources:
+
+```sh
+npm run compose -- two down
+npm run compose -- recovery up -d --build
+curl -s http://127.0.0.1:8080/status
+npm run fault -- crash backend-a
+curl -s http://127.0.0.1:8080/status
+```
+
+Wait for `backend-a` to return to `healthy`, then run `npm run fault -- unhealthy backend-a`. Read `/status` repeatedly or inspect the persisted journals; Docker restart acceptance is not proof of recovery. To keep monitoring but disable recovery:
+
+```sh
+RECOVERY_ENABLED=false npm run compose -- recovery up -d
+```
+
+Re-enable with `RECOVERY_ENABLED=true npm run compose -- recovery up -d`. This is local configuration, never an HTTP control. `npm run compose -- recovery down` stops the stack while retaining named volumes containing events and recovery budgets.
+
+Live validation reserves loopback ports **18083/18084** and dedicated project names. It refuses existing validation projects/volumes and writes a new evidence directory:
+
+```sh
+npm test
+npm run typecheck
+run_id="$(date -u +%Y%m%dT%H%M%SZ)"
+npm run validate:m2 -- --out "results/milestone-2/run-${run_id}"
+```
+
+Keep the Mac awake during experiments. The final validated run used `caffeinate -i node tools/validate-m2.mjs --out results/milestone-2/validated`; on a new run choose a new output directory. This prevents idle sleep for that command without changing system settings.
+
+The runner tests both recoverable faults, disabled recovery, a transient failure, persistent failure/exhaustion, budget persistence, sibling availability, container recreation, gate authorization, public-route denial, and status freshness. It saves raw evidence before removing only its own test containers and volumes; export failures preserve the volumes. See [recovery design and timing definitions](docs/RECOVERY.md).
+
+**Milestone 2 validated on 2026-11-03:** all 45 automated tests, TypeScript checks, ARM64 builds, and 16 live integration checks passed. [Final passing report](results/milestone-2/validated/report.json), [unit-test output](results/milestone-2/tests-monotonic.txt), and [attempt index](results/milestone-2/README.md) retain the evidence. Milestone-1 artifacts remain unchanged.
+
+| Fault / mode | Detection delay | Verified recovery delay |
+| --- | --- | --- |
+| Crash, recovery enabled | 1.275 s | 2.294 s |
+| Unhealthy running service, enabled | 1.303 s | 2.294 s |
+| Recreated backend, then unhealthy | 0.678 s | 1.666 s |
+| Persistent fault, enabled | 1.331 s | Not observed; exhausted after 2 attempts |
+| Crash, recovery disabled | 1.319 s | Not observed |
+| Unhealthy, recovery disabled | 1.475 s | Not observed |
+
+Delays start at the fault command and use calibrated monotonic clocks; per-fault calibration uncertainty was approximately ±44–47 ms, with additional probe/scheduling effects. Before/after mapping drift stayed below 2.3 ms. Two successful readiness probes establish recovery. The transient fault stayed below the threshold and caused no restart. The exhausted budget survived controller restart. Gate authorization and public-route tests passed; sibling probes remained healthy throughout the fault windows. The recreated-backend timing includes any suspicion accumulated during recreation, so it is not a fresh steady-state fault trial.
+
+The final run recorded **710 actual requests, 708 successful, 2 HTTP 504 failures, zero dropped slots**. The 10-second enabled-recovery crash sample had 98/100 successes; disabled recovery and both unhealthy samples had 100/100. The persistent-failure sample had 200/200 successes through the surviving backend. These windows include pre-fault traffic and do not establish zero downtime or a performance advantage from a single trial. Earlier runner, clock-mismatch, and scheduler-pause failures are preserved and explained in the attempt index. No milestone-2 runtime blocker remains.
 
 ## Record traffic
 
@@ -145,7 +193,7 @@ Crash containers exited with code 137 and stayed stopped. Unhealthy containers s
 
 Recreation changed backend-a from `172.21.0.2` to `172.21.0.4` in the one-backend test and `172.19.0.2` to `172.19.0.5` in the two-backend test. Container IDs changed, traffic returned to backend-a, and gateway start times stayed unchanged. These addresses are recorded evidence, not configuration to reuse.
 
-No milestone 1 runtime checks remain blocked. Dashboard, controller, CI workflow, repeated trials, and hosting evaluation remain future milestones. The final runner removed its own validation containers/networks; no unrelated Docker cleanup was used.
+No milestone 1 runtime checks remain blocked. These historical results are preserved unchanged. Milestone 2 adds the controller separately; dashboard, CI workflow, repeated trials, and hosting evaluation remain future work. The milestone-1 runner removed its own validation containers/networks; no unrelated Docker cleanup was used.
 
 These short samples are functional smoke checks, not the repeated research experiment matrix. They cannot establish zero downtime, production reliability, or statistically robust performance differences. Later milestones must compare one backend, two backends without automatic recovery, and two with automatic recovery using repeated trials and genuine saved measurements. No automatic-recovery results exist in milestone 1.
 
@@ -153,4 +201,4 @@ These short samples are functional smoke checks, not the repeated research exper
 
 `backend/` contains the service and HTTP/process tests; `Dockerfile`, `compose*.yaml`, and `nginx/` define the runtime; `tools/` contains guarded Docker commands, failure injection, traffic generation, tests, and validation. Build output, dependencies, local caches, and ordinary new results are Git-ignored. The selected milestone evidence is retained for review.
 
-See [PLAN.md](PLAN.md) for remaining milestones: isolated recovery controller, read-only React/TypeScript dashboard, repeatable comparisons, GitHub Actions, and final documentation. No deployment or publishing is part of these local commands.
+`recovery/`, `compose.recovery.yaml`, and `nginx/recovery.conf` add the controller, private gate, and read-only status service. `compose.persistent-test.yaml` is an opt-in local fault fixture. See [PLAN.md](PLAN.md) for remaining milestones: React/TypeScript dashboard, repeated comparisons, GitHub Actions, and final documentation. No deployment or publishing is part of these local commands.

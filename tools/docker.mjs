@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 export const root = realpathSync(fileURLToPath(new URL('..', import.meta.url)));
-export const projects = ['resilientcloud', 'resilientcloud-m1-one', 'resilientcloud-m1-two'];
+export const projects = ['resilientcloud', 'resilientcloud-m1-one', 'resilientcloud-m1-two', 'resilientcloud-m2', 'resilientcloud-m2-disabled'];
 let environment;
 
 // Use the selected local daemon, with an empty project-local Docker auth config.
@@ -20,7 +20,7 @@ export function dockerEnvironment() {
   writeFileSync(path.join(config, 'config.json'), JSON.stringify({
     auths: {}, ...(existsSync(macPlugins) ? { cliPluginsExtraDirs: [macPlugins] } : {}),
   }));
-  environment = { ...process.env, DOCKER_CONFIG: config, DOCKER_HOST: endpoint };
+  environment = { ...process.env, DOCKER_CONFIG: config, DOCKER_HOST: endpoint, PROJECT_DIRECTORY: root };
   delete environment.DOCKER_CONTEXT;
   return environment;
 }
@@ -33,9 +33,10 @@ export function docker(args, options = {}) {
 }
 
 export function composeArgs(project, scenario, args) {
-  if (!projects.includes(project) || !['one', 'two'].includes(scenario)) throw new Error('Invalid project/scenario');
+  if (!projects.includes(project) || !['one', 'two', 'recovery'].includes(scenario)) throw new Error('Invalid project/scenario');
   return ['compose', '--project-directory', root, '-p', project, '-f', path.join(root, 'compose.yaml'),
-    ...(scenario === 'two' ? ['-f', path.join(root, 'compose.two.yaml')] : []), ...args];
+    ...(scenario !== 'one' ? ['-f', path.join(root, 'compose.two.yaml')] : []),
+    ...(scenario === 'recovery' ? ['-f', path.join(root, 'compose.recovery.yaml')] : []), ...args];
 }
 
 export function assertBackend(container, project, service) {

@@ -1,0 +1,59 @@
+
+> resilientcloud@0.1.0 test
+> npm run build && node --test dist/backend/test/*.test.js tools/*.test.mjs recovery/*.test.mjs
+
+
+> resilientcloud@0.1.0 build
+> tsc
+
+✔ healthy service identifies its instance in body and response header (68.291333ms)
+✔ an unhealthy service stays alive, returns 503, and requires fresh state to recover (13.733125ms)
+✔ HTTP has no fault controls and does not accept application mutations (8.23575ms)
+✔ instance IDs cannot inject response headers (0.278583ms)
+✔ SIGUSR2 produces an unhealthy running process and a new process restores readiness (356.593417ms)
+✔ disabled fault injection ignores SIGUSR2 without changing readiness (109.873417ms)
+✔ SIGKILL terminates the backend process (102.418791ms)
+✔ persistent test fixture survives process recreation and requires fault opt-in (321.493958ms)
+✔ threshold requires consecutive failures and transient readiness failure never restarts (5.391292ms)
+✔ Docker acceptance alone cannot establish recovery; repeated readiness and stable cooldown are required (0.986875ms)
+✔ persistent failure exhausts exactly the configured attempts and stays latched even if readiness returns (1.763458ms)
+✔ disabled recovery probes and confirms failures without issuing a restart (0.718708ms)
+✔ flapping during cooldown does not reset the incident budget (1.352958ms)
+✔ checkpoint resumes an in-flight consumed attempt without blindly restarting again (0.47875ms)
+✔ ambiguous restart timeout is verified before another bounded attempt; stale replacement is revalidated (1.4595ms)
+✔ inspection failure cannot cause an unvalidated restart; persistence failure prevents Docker mutation (0.620083ms)
+✔ verification refuses identity changing while readiness response is in flight (0.451791ms)
+✔ malformed persisted state fails closed and missing checkpoint with existing journal cannot reset budgets (10.585416ms)
+✔ persistent store serializes complete events and atomic status checkpoints (169.884042ms)
+✔ readiness validates HTTP status, backend identity and ready boolean, never just reachable process (0.952542ms)
+✔ HTTP helper has an absolute full-body timeout and response-size bound (59.901ms)
+✔ configuration rejects unsafe or unbounded controls (0.172708ms)
+✔ verification caps I/O to remaining budget and rejects readiness completing after the deadline (0.438209ms)
+✔ valid backend inspection exposes only approved fields and fixed filtered Docker requests (3.316583ms)
+✔ foreign or stale IDs never reach Docker restart; recreation needs fresh validation (0.904625ms)
+✔ mismatched labels, identity, network, inspect ID and ambiguous discovery fail closed (3.219541ms)
+✔ unsupported operation and target rejected before Docker; audit failure prevents restart (0.293208ms)
+✔ per-service operation lock prevents overlapping restart decisions (0.157ms)
+✔ real Unix HTTP gate rejects raw Docker operations, URL tricks, bodies and public mutation paths (47.029583ms)
+✔ Docker socket transport enforces absolute timeout, response bound and HTTP errors (52.521083ms)
+✔ audit records survive writer recreation and remain valid timestamped JSONL (12.951334ms)
+✔ status is read-only, handles missing data, and labels stale snapshots (68.83975ms)
+✔ fault CLI accepts only the two backend services and known local projects (1.640042ms)
+✔ target checks reject foreign labels, wrong directory, role, service and malformed IDs (0.646625ms)
+✔ Compose wrapper refuses attached and separate project/file overrides (498.000375ms)
+✔ records actual HTTP outcomes, identities, and measured latency (263.37425ms)
+✔ timeouts and concurrency saturation produce failures and distinct skipped slots (266.538709ms)
+✔ preserves gateway attempt headers even when the client receives a successful response (100.588833ms)
+✔ falls back to body identity; aborted responses stay failures (200.845583ms)
+✔ scheduler delay records missed slots without issuing a catch-up burst (200.650542ms)
+✔ rejects malformed CLI arguments, unsafe paths, and nonlocal or credential-bearing URLs (1.073459ms)
+✔ output refuses overwrites and symlink parents/leaves (9.042667ms)
+✔ CLI serializes concurrent completions into complete JSONL and accounts for every scheduled slot (550.625834ms)
+ℹ tests 43
+ℹ suites 0
+ℹ pass 43
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1750.512625

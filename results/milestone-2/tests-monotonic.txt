@@ -1,0 +1,61 @@
+
+> resilientcloud@0.1.0 test
+> npm run build && node --test dist/backend/test/*.test.js tools/*.test.mjs recovery/*.test.mjs
+
+
+> resilientcloud@0.1.0 build
+> tsc
+
+✔ healthy service identifies its instance in body and response header (53.498334ms)
+✔ an unhealthy service stays alive, returns 503, and requires fresh state to recover (12.459125ms)
+✔ HTTP has no fault controls and does not accept application mutations (6.532958ms)
+✔ instance IDs cannot inject response headers (0.275458ms)
+✔ SIGUSR2 produces an unhealthy running process and a new process restores readiness (298.314875ms)
+✔ disabled fault injection ignores SIGUSR2 without changing readiness (105.264ms)
+✔ SIGKILL terminates the backend process (105.091667ms)
+✔ persistent test fixture survives process recreation and requires fault opt-in (303.288166ms)
+✔ threshold requires consecutive failures and transient readiness failure never restarts (5.204ms)
+✔ Docker acceptance alone cannot establish recovery; repeated readiness and stable cooldown are required (2.416542ms)
+✔ persistent failure exhausts exactly the configured attempts and stays latched even if readiness returns (2.799125ms)
+✔ disabled recovery probes and confirms failures without issuing a restart (0.624958ms)
+✔ flapping during cooldown does not reset the incident budget (0.587375ms)
+✔ checkpoint resumes an in-flight consumed attempt without blindly restarting again (0.646458ms)
+✔ ambiguous restart timeout is verified before another bounded attempt; stale replacement is revalidated (1.349208ms)
+✔ inspection failure cannot cause an unvalidated restart; persistence failure prevents Docker mutation (0.718291ms)
+✔ verification refuses identity changing while readiness response is in flight (0.447958ms)
+✔ malformed persisted state fails closed and missing checkpoint with existing journal cannot reset budgets (10.955833ms)
+✔ persistent store serializes complete events and atomic status checkpoints (97.813958ms)
+✔ readiness validates HTTP status, backend identity and ready boolean, never just reachable process (0.512209ms)
+✔ HTTP helper has an absolute full-body timeout and response-size bound (58.677416ms)
+✔ configuration rejects unsafe or unbounded controls (0.167209ms)
+✔ verification caps I/O to remaining budget and rejects readiness completing after the deadline (0.449167ms)
+✔ wall-clock jumps cannot expire or extend the monotonic verification budget (0.311042ms)
+✔ wall-clock jumps cannot skip the stable cooldown (0.437084ms)
+✔ valid backend inspection exposes only approved fields and fixed filtered Docker requests (3.6805ms)
+✔ foreign or stale IDs never reach Docker restart; recreation needs fresh validation (0.798083ms)
+✔ mismatched labels, identity, network, inspect ID and ambiguous discovery fail closed (3.183917ms)
+✔ unsupported operation and target rejected before Docker; audit failure prevents restart (0.364959ms)
+✔ per-service operation lock prevents overlapping restart decisions (0.386083ms)
+✔ real Unix HTTP gate rejects raw Docker operations, URL tricks, bodies and public mutation paths (27.966375ms)
+✔ Docker socket transport enforces absolute timeout, response bound and HTTP errors (46.469541ms)
+✔ audit records survive writer recreation and remain valid timestamped JSONL (14.21525ms)
+✔ status is read-only, handles missing data, and labels stale snapshots (56.190792ms)
+✔ fault CLI accepts only the two backend services and known local projects (0.866833ms)
+✔ target checks reject foreign labels, wrong directory, role, service and malformed IDs (0.29625ms)
+✔ Compose wrapper refuses attached and separate project/file overrides (436.679875ms)
+✔ records actual HTTP outcomes, identities, and measured latency (260.302333ms)
+✔ timeouts and concurrency saturation produce failures and distinct skipped slots (264.022167ms)
+✔ preserves gateway attempt headers even when the client receives a successful response (101.588208ms)
+✔ falls back to body identity; aborted responses stay failures (200.104625ms)
+✔ scheduler delay records missed slots without issuing a catch-up burst (202.985291ms)
+✔ rejects malformed CLI arguments, unsafe paths, and nonlocal or credential-bearing URLs (1.964708ms)
+✔ output refuses overwrites and symlink parents/leaves (13.288833ms)
+✔ CLI serializes concurrent completions into complete JSONL and accounts for every scheduled slot (553.476292ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 45
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1766.599708

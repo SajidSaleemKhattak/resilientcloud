@@ -1,0 +1,1344 @@
+{
+  "startedAt": "2026-11-03T10:31:33.015Z",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "resilientcloud-m2: runtime isolation and disabled Docker restart policies",
+      "isolation": {
+        "reachedBackend": false,
+        "dockerSocket": false,
+        "gateSocket": false
+      }
+    },
+    {
+      "name": "resilientcloud-m2: public routes cannot trigger faults or recovery"
+    },
+    {
+      "name": "resilientcloud-m2: normal routing",
+      "instances": {
+        "backend-a": 15,
+        "backend-b": 15
+      }
+    },
+    {
+      "name": "resilientcloud-m2: crash readiness-verified recovery; sibling serves traffic"
+    },
+    {
+      "name": "resilientcloud-m2: unhealthy readiness-verified recovery; sibling serves traffic"
+    },
+    {
+      "name": "resilientcloud-m2: transient below failure threshold causes no restart"
+    },
+    {
+      "name": "resilientcloud-m2: legitimate recreation revalidated, stale ID rejected, replacement recovered"
+    },
+    {
+      "name": "resilientcloud-m2: persistent failure bounded at 2 attempts; exhausted budget survives controller restart"
+    },
+    {
+      "name": "resilientcloud-m2: gate rejects foreign targets, gateway, unauthorized operations and extra fields"
+    },
+    {
+      "name": "resilientcloud-m2: gate fails closed for mismatched backend labels"
+    },
+    {
+      "name": "resilientcloud-m2: read-only status explicitly becomes stale when controller stops"
+    },
+    {
+      "name": "resilientcloud-m2-disabled: runtime isolation and disabled Docker restart policies",
+      "isolation": {
+        "reachedBackend": false,
+        "dockerSocket": false,
+        "gateSocket": false
+      }
+    },
+    {
+      "name": "resilientcloud-m2-disabled: public routes cannot trigger faults or recovery"
+    },
+    {
+      "name": "resilientcloud-m2-disabled: normal routing",
+      "instances": {
+        "backend-a": 15,
+        "backend-b": 15
+      }
+    },
+    {
+      "name": "resilientcloud-m2-disabled: crash remains failed with recovery disabled; sibling serves traffic"
+    },
+    {
+      "name": "resilientcloud-m2-disabled: unhealthy remains failed with recovery disabled; sibling serves traffic"
+    }
+  ],
+  "samples": [
+    {
+      "file": "results/milestone-2/attempt-3/resilientcloud-m2-normal.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:31:50.208Z",
+      "label": "resilientcloud-m2-normal",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3000.284,
+      "instances": {
+        "backend-a": 15,
+        "backend-b": 15
+      },
+      "latencyAllMs": {
+        "p50": 2.209,
+        "p95": 5.377
+      },
+      "latencySuccessMs": {
+        "p50": 2.209,
+        "p95": 5.377
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-2/attempt-3/resilientcloud-m2-crash.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:32:00.382Z",
+      "label": "resilientcloud-m2-crash",
+      "scheduled": 100,
+      "requests": 100,
+      "successes": 98,
+      "failures": 2,
+      "dropped": 0,
+      "successRate": 0.98,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 9999.868,
+      "instances": {
+        "backend-a": 37,
+        "backend-b": 61
+      },
+      "latencyAllMs": {
+        "p50": 1.952,
+        "p95": 6.214
+      },
+      "latencySuccessMs": {
+        "p50": 1.948,
+        "p95": 6.126
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-2/attempt-3/resilientcloud-m2-unhealthy.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:32:10.638Z",
+      "label": "resilientcloud-m2-unhealthy",
+      "scheduled": 100,
+      "requests": 100,
+      "successes": 100,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 10000.289,
+      "instances": {
+        "backend-b": 66,
+        "backend-a": 34
+      },
+      "latencyAllMs": {
+        "p50": 1.94,
+        "p95": 5.213
+      },
+      "latencySuccessMs": {
+        "p50": 1.94,
+        "p95": 5.213
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-2/attempt-3/resilientcloud-m2-transient.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:32:15.810Z",
+      "label": "resilientcloud-m2-transient",
+      "scheduled": 50,
+      "requests": 50,
+      "successes": 50,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 5000.708,
+      "instances": {
+        "backend-b": 25,
+        "backend-a": 25
+      },
+      "latencyAllMs": {
+        "p50": 2.543,
+        "p95": 317.087
+      },
+      "latencySuccessMs": {
+        "p50": 2.543,
+        "p95": 317.087
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-2/attempt-3/resilientcloud-m2-persistent.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:32:41.849Z",
+      "label": "resilientcloud-m2-persistent",
+      "scheduled": 200,
+      "requests": 200,
+      "successes": 200,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 20000.988,
+      "instances": {
+        "backend-a": 1,
+        "backend-b": 199
+      },
+      "latencyAllMs": {
+        "p50": 1.915,
+        "p95": 6.381
+      },
+      "latencySuccessMs": {
+        "p50": 1.915,
+        "p95": 6.381
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-2/attempt-3/resilientcloud-m2-disabled-normal.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:33:06.339Z",
+      "label": "resilientcloud-m2-disabled-normal",
+      "scheduled": 30,
+      "requests": 30,
+      "successes": 30,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 3001.146,
+      "instances": {
+        "backend-a": 15,
+        "backend-b": 15
+      },
+      "latencyAllMs": {
+        "p50": 2.013,
+        "p95": 5.933
+      },
+      "latencySuccessMs": {
+        "p50": 2.013,
+        "p95": 5.933
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-2/attempt-3/resilientcloud-m2-disabled-crash.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:33:16.552Z",
+      "label": "resilientcloud-m2-disabled-crash",
+      "scheduled": 100,
+      "requests": 100,
+      "successes": 98,
+      "failures": 2,
+      "dropped": 0,
+      "successRate": 0.98,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 10001.539,
+      "instances": {
+        "backend-a": 8,
+        "backend-b": 90
+      },
+      "latencyAllMs": {
+        "p50": 2.068,
+        "p95": 8.462
+      },
+      "latencySuccessMs": {
+        "p50": 2.015,
+        "p95": 8.128
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    },
+    {
+      "file": "results/milestone-2/attempt-3/resilientcloud-m2-disabled-unhealthy.jsonl",
+      "type": "summary",
+      "timestamp": "2026-11-03T10:33:27.491Z",
+      "label": "resilientcloud-m2-disabled-unhealthy",
+      "scheduled": 100,
+      "requests": 100,
+      "successes": 100,
+      "failures": 0,
+      "dropped": 0,
+      "successRate": 1,
+      "achievedRequestsPerSecond": 10,
+      "wallDurationMs": 10001.612,
+      "instances": {
+        "backend-b": 99,
+        "backend-a": 1
+      },
+      "latencyAllMs": {
+        "p50": 2.039,
+        "p95": 5.873
+      },
+      "latencySuccessMs": {
+        "p50": 2.039,
+        "p95": 5.873
+      },
+      "definitions": {
+        "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+        "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+        "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+        "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+        "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+      }
+    }
+  ],
+  "scenarios": {
+    "resilientcloud-m2": {
+      "recoveryEnabled": true,
+      "faults": [
+        {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:31:51.861Z",
+          "project": "resilientcloud-m2",
+          "service": "backend-a",
+          "containerId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+          "mode": "crash",
+          "signal": "SIGKILL",
+          "completedAt": "2026-11-03T10:31:51.962Z",
+          "durationMs": 101.59779200000048,
+          "label": "crash",
+          "expectRecovery": true,
+          "expectNoRecovery": false,
+          "observed": {
+            "id": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+            "running": false,
+            "status": "exited",
+            "exitCode": 137,
+            "health": "unhealthy",
+            "startedAt": "2026-11-03T10:31:34.796341004Z",
+            "restartCount": 0,
+            "restartPolicy": "no",
+            "ip": ""
+          },
+          "verifiedSnapshot": {
+            "schemaVersion": 1,
+            "updatedAt": "2026-11-03T10:31:54.120Z",
+            "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+            "recoveryEnabled": true,
+            "config": {
+              "intervalMs": 500,
+              "probeTimeoutMs": 300,
+              "failureThreshold": 3,
+              "maxAttempts": 2,
+              "verifyTimeoutMs": 4000,
+              "verifySuccesses": 2,
+              "cooldownMs": 2000
+            },
+            "backends": {
+              "backend-a": {
+                "state": "cooldown",
+                "failures": 0,
+                "attempts": 1,
+                "manualIntervention": false,
+                "containerId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+                "lastProbe": {
+                  "ok": true,
+                  "reason": null,
+                  "status": 200,
+                  "instance": "backend-a",
+                  "latencyMs": 1.5876250000001164,
+                  "timestamp": "2026-11-03T10:31:54.115Z"
+                },
+                "lastReadyAt": "2026-11-03T10:31:54.115Z",
+                "failureConfirmedAt": "2026-11-03T10:31:53.109Z",
+                "recoveryVerifiedAt": "2026-11-03T10:31:54.118Z",
+                "verificationSuccesses": 2,
+                "verificationDeadline": 1793701917196,
+                "attemptTargetId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+                "restartOutcome": "accepted",
+                "cooldownUntil": 1793701916118,
+                "stableSince": 1793701914118,
+                "observationAgeMs": 70,
+                "stale": false
+              },
+              "backend-b": {
+                "state": "healthy",
+                "failures": 0,
+                "attempts": 0,
+                "manualIntervention": false,
+                "containerId": "f573833a9c04fbbc17aa4248c38a2847f0c8c7680415d469fcb6db77bd92e395",
+                "lastProbe": {
+                  "ok": true,
+                  "reason": null,
+                  "status": 200,
+                  "instance": "backend-b",
+                  "latencyMs": 0.7489999999997963,
+                  "timestamp": "2026-11-03T10:31:54.104Z"
+                },
+                "lastReadyAt": "2026-11-03T10:31:54.104Z",
+                "failureConfirmedAt": null,
+                "recoveryVerifiedAt": null,
+                "verificationSuccesses": 0,
+                "verificationDeadline": null,
+                "attemptTargetId": null,
+                "restartOutcome": null,
+                "cooldownUntil": null,
+                "stableSince": null,
+                "observationAgeMs": 81,
+                "stale": false
+              }
+            },
+            "available": true,
+            "stale": false,
+            "ageMs": 65
+          },
+          "observationEndedAt": "2026-11-03T10:32:00.465Z",
+          "measurement": {
+            "detectionMs": 1214,
+            "recoveryMs": 2225,
+            "readinessAfterConfirmationMs": 1011.0069170000024,
+            "clockUncertaintyMs": 44,
+            "failureConfirmedEvent": {
+              "type": "failure_confirmed",
+              "timestamp": "2026-11-03T10:31:53.109Z",
+              "elapsedMs": 16582.060923999998,
+              "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+              "service": "backend-a",
+              "state": "suspected_failure",
+              "failures": 3,
+              "attempts": 0,
+              "containerId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+              "recoveryEnabled": true
+            },
+            "recoveryVerifiedEvent": {
+              "type": "recovery_verified",
+              "timestamp": "2026-11-03T10:31:54.120Z",
+              "elapsedMs": 17593.067841,
+              "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+              "service": "backend-a",
+              "state": "cooldown",
+              "failures": 0,
+              "attempts": 1,
+              "containerId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+              "targetId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+              "currentId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+              "restartOutcome": "accepted",
+              "verificationSuccesses": 2,
+              "failureConfirmedAt": "2026-11-03T10:31:53.109Z",
+              "readinessVerifiedAt": "2026-11-03T10:31:54.118Z"
+            },
+            "recoveryObserved": true,
+            "siblingProbes": 17,
+            "siblingFailedProbes": 0
+          }
+        },
+        {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:32:02.080Z",
+          "project": "resilientcloud-m2",
+          "service": "backend-a",
+          "containerId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+          "mode": "unhealthy",
+          "signal": "SIGUSR2",
+          "completedAt": "2026-11-03T10:32:02.105Z",
+          "durationMs": 24.679250000001048,
+          "label": "unhealthy",
+          "expectRecovery": true,
+          "expectNoRecovery": false,
+          "observed": {
+            "id": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+            "running": true,
+            "status": "running",
+            "exitCode": 0,
+            "health": "healthy",
+            "startedAt": "2026-11-03T10:31:53.138383805Z",
+            "restartCount": 0,
+            "restartPolicy": "no",
+            "ip": "172.22.0.2"
+          },
+          "verifiedSnapshot": {
+            "schemaVersion": 1,
+            "updatedAt": "2026-11-03T10:32:04.152Z",
+            "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+            "recoveryEnabled": true,
+            "config": {
+              "intervalMs": 500,
+              "probeTimeoutMs": 300,
+              "failureThreshold": 3,
+              "maxAttempts": 2,
+              "verifyTimeoutMs": 4000,
+              "verifySuccesses": 2,
+              "cooldownMs": 2000
+            },
+            "backends": {
+              "backend-a": {
+                "state": "cooldown",
+                "failures": 0,
+                "attempts": 1,
+                "manualIntervention": false,
+                "containerId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+                "lastProbe": {
+                  "ok": true,
+                  "reason": null,
+                  "status": 200,
+                  "instance": "backend-a",
+                  "latencyMs": 1.7637080000022252,
+                  "timestamp": "2026-11-03T10:32:04.147Z"
+                },
+                "lastReadyAt": "2026-11-03T10:32:04.147Z",
+                "failureConfirmedAt": "2026-11-03T10:32:03.136Z",
+                "recoveryVerifiedAt": "2026-11-03T10:32:04.149Z",
+                "verificationSuccesses": 2,
+                "verificationDeadline": 1793701927275,
+                "attemptTargetId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+                "restartOutcome": "accepted",
+                "cooldownUntil": 1793701926149,
+                "stableSince": 1793701924149,
+                "observationAgeMs": 40,
+                "stale": false
+              },
+              "backend-b": {
+                "state": "healthy",
+                "failures": 0,
+                "attempts": 0,
+                "manualIntervention": false,
+                "containerId": "f573833a9c04fbbc17aa4248c38a2847f0c8c7680415d469fcb6db77bd92e395",
+                "lastProbe": {
+                  "ok": true,
+                  "reason": null,
+                  "status": 200,
+                  "instance": "backend-b",
+                  "latencyMs": 1.1633750000000873,
+                  "timestamp": "2026-11-03T10:32:04.132Z"
+                },
+                "lastReadyAt": "2026-11-03T10:32:04.132Z",
+                "failureConfirmedAt": null,
+                "recoveryVerifiedAt": null,
+                "verificationSuccesses": 0,
+                "verificationDeadline": null,
+                "attemptTargetId": null,
+                "restartOutcome": null,
+                "cooldownUntil": null,
+                "stableSince": null,
+                "observationAgeMs": 55,
+                "stale": false
+              }
+            },
+            "available": true,
+            "stale": false,
+            "ageMs": 35
+          },
+          "observationEndedAt": "2026-11-03T10:32:10.683Z",
+          "measurement": {
+            "detectionMs": 1022,
+            "recoveryMs": 2038,
+            "readinessAfterConfirmationMs": 1016.5498750000006,
+            "clockUncertaintyMs": 44,
+            "failureConfirmedEvent": {
+              "type": "failure_confirmed",
+              "timestamp": "2026-11-03T10:32:03.136Z",
+              "elapsedMs": 26607.711054,
+              "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+              "service": "backend-a",
+              "state": "suspected_failure",
+              "failures": 3,
+              "attempts": 0,
+              "containerId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+              "recoveryEnabled": true
+            },
+            "recoveryVerifiedEvent": {
+              "type": "recovery_verified",
+              "timestamp": "2026-11-03T10:32:04.152Z",
+              "elapsedMs": 27624.260929,
+              "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+              "service": "backend-a",
+              "state": "cooldown",
+              "failures": 0,
+              "attempts": 1,
+              "containerId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+              "targetId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+              "currentId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+              "restartOutcome": "accepted",
+              "verificationSuccesses": 2,
+              "failureConfirmedAt": "2026-11-03T10:32:03.136Z",
+              "readinessVerifiedAt": "2026-11-03T10:32:04.149Z"
+            },
+            "recoveryObserved": true,
+            "siblingProbes": 17,
+            "siblingFailedProbes": 0
+          }
+        },
+        {
+          "type": "fault",
+          "label": "transient",
+          "timestamp": "2026-11-03T10:32:10.716Z",
+          "mode": "SIGSTOP_then_SIGCONT",
+          "expectNoRecovery": true,
+          "suspectedSnapshot": {
+            "schemaVersion": 1,
+            "updatedAt": "2026-11-03T10:32:11.455Z",
+            "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+            "recoveryEnabled": true,
+            "config": {
+              "intervalMs": 500,
+              "probeTimeoutMs": 300,
+              "failureThreshold": 3,
+              "maxAttempts": 2,
+              "verifyTimeoutMs": 4000,
+              "verifySuccesses": 2,
+              "cooldownMs": 2000
+            },
+            "backends": {
+              "backend-a": {
+                "state": "suspected_failure",
+                "failures": 1,
+                "attempts": 0,
+                "manualIntervention": false,
+                "containerId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+                "lastProbe": {
+                  "ok": false,
+                  "reason": "timeout",
+                  "status": null,
+                  "latencyMs": 301.62158400000044,
+                  "timestamp": "2026-11-03T10:32:11.449Z"
+                },
+                "lastReadyAt": "2026-11-03T10:32:10.645Z",
+                "failureConfirmedAt": null,
+                "recoveryVerifiedAt": "2026-11-03T10:32:04.149Z",
+                "verificationSuccesses": 2,
+                "verificationDeadline": 1793701927275,
+                "attemptTargetId": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+                "restartOutcome": "accepted",
+                "cooldownUntil": null,
+                "stableSince": null,
+                "observationAgeMs": 28,
+                "stale": false
+              },
+              "backend-b": {
+                "state": "healthy",
+                "failures": 0,
+                "attempts": 0,
+                "manualIntervention": false,
+                "containerId": "f573833a9c04fbbc17aa4248c38a2847f0c8c7680415d469fcb6db77bd92e395",
+                "lastProbe": {
+                  "ok": true,
+                  "reason": null,
+                  "status": 200,
+                  "instance": "backend-b",
+                  "latencyMs": 0.6677500000005239,
+                  "timestamp": "2026-11-03T10:32:11.146Z"
+                },
+                "lastReadyAt": "2026-11-03T10:32:11.146Z",
+                "failureConfirmedAt": null,
+                "recoveryVerifiedAt": null,
+                "verificationSuccesses": 0,
+                "verificationDeadline": null,
+                "attemptTargetId": null,
+                "restartOutcome": null,
+                "cooldownUntil": null,
+                "stableSince": null,
+                "observationAgeMs": 331,
+                "stale": false
+              }
+            },
+            "available": true,
+            "stale": false,
+            "ageMs": 22
+          },
+          "completedAt": "2026-11-03T10:32:11.527Z",
+          "observationEndedAt": "2026-11-03T10:32:15.871Z",
+          "measurement": {
+            "detectionMs": null,
+            "recoveryMs": null,
+            "readinessAfterConfirmationMs": null,
+            "clockUncertaintyMs": 44,
+            "failureConfirmedEvent": null,
+            "recoveryVerifiedEvent": null,
+            "recoveryObserved": false,
+            "siblingProbes": 10,
+            "siblingFailedProbes": 0
+          }
+        },
+        {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:32:16.974Z",
+          "project": "resilientcloud-m2",
+          "service": "backend-a",
+          "containerId": "998c6c762d7dc2457c1da2fabb948a076a1e16e1458bac7b058b4966fbd8d5cb",
+          "mode": "unhealthy",
+          "signal": "SIGUSR2",
+          "completedAt": "2026-11-03T10:32:16.993Z",
+          "durationMs": 19.108124999998836,
+          "label": "recreated-backend",
+          "expectRecovery": true,
+          "observationEndedAt": "2026-11-03T10:32:21.703Z",
+          "measurement": {
+            "detectionMs": 1175,
+            "recoveryMs": 2188,
+            "readinessAfterConfirmationMs": 1012.8651670000036,
+            "clockUncertaintyMs": 44,
+            "failureConfirmedEvent": {
+              "type": "failure_confirmed",
+              "timestamp": "2026-11-03T10:32:18.183Z",
+              "elapsedMs": 41655.191893999996,
+              "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+              "service": "backend-a",
+              "state": "suspected_failure",
+              "failures": 3,
+              "attempts": 0,
+              "containerId": "998c6c762d7dc2457c1da2fabb948a076a1e16e1458bac7b058b4966fbd8d5cb",
+              "recoveryEnabled": true
+            },
+            "recoveryVerifiedEvent": {
+              "type": "recovery_verified",
+              "timestamp": "2026-11-03T10:32:19.196Z",
+              "elapsedMs": 42668.057061,
+              "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+              "service": "backend-a",
+              "state": "cooldown",
+              "failures": 0,
+              "attempts": 1,
+              "containerId": "998c6c762d7dc2457c1da2fabb948a076a1e16e1458bac7b058b4966fbd8d5cb",
+              "targetId": "998c6c762d7dc2457c1da2fabb948a076a1e16e1458bac7b058b4966fbd8d5cb",
+              "currentId": "998c6c762d7dc2457c1da2fabb948a076a1e16e1458bac7b058b4966fbd8d5cb",
+              "restartOutcome": "accepted",
+              "verificationSuccesses": 2,
+              "failureConfirmedAt": "2026-11-03T10:32:18.183Z",
+              "readinessVerifiedAt": "2026-11-03T10:32:19.193Z"
+            },
+            "recoveryObserved": true,
+            "siblingProbes": 10,
+            "siblingFailedProbes": 0
+          }
+        },
+        {
+          "type": "fault",
+          "label": "persistent",
+          "timestamp": "2026-11-03T10:32:21.703Z",
+          "mode": "START_UNHEALTHY",
+          "expectNoRecovery": true,
+          "completedAt": "2026-11-03T10:32:22.090Z",
+          "exhaustedSnapshot": {
+            "schemaVersion": 1,
+            "updatedAt": "2026-11-03T10:32:34.247Z",
+            "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+            "recoveryEnabled": true,
+            "config": {
+              "intervalMs": 500,
+              "probeTimeoutMs": 300,
+              "failureThreshold": 3,
+              "maxAttempts": 2,
+              "verifyTimeoutMs": 4000,
+              "verifySuccesses": 2,
+              "cooldownMs": 2000
+            },
+            "backends": {
+              "backend-a": {
+                "state": "exhausted",
+                "failures": 25,
+                "attempts": 2,
+                "manualIntervention": true,
+                "containerId": "6cfc7ab054dd717a72a7902b76daf989a6066ed0618a3976c4b0fd122a0d796f",
+                "lastProbe": {
+                  "ok": false,
+                  "reason": "readiness_failed",
+                  "status": 503,
+                  "instance": "backend-a",
+                  "latencyMs": 1.7184999999954016,
+                  "timestamp": "2026-11-03T10:32:34.235Z"
+                },
+                "lastReadyAt": "2026-11-03T10:32:21.680Z",
+                "failureConfirmedAt": "2026-11-03T10:32:23.202Z",
+                "recoveryVerifiedAt": "2026-11-03T10:32:19.193Z",
+                "verificationSuccesses": 0,
+                "verificationDeadline": 1793701953849,
+                "attemptTargetId": "6cfc7ab054dd717a72a7902b76daf989a6066ed0618a3976c4b0fd122a0d796f",
+                "restartOutcome": "accepted",
+                "cooldownUntil": 1793701949708,
+                "stableSince": null,
+                "observationAgeMs": 81,
+                "stale": false
+              },
+              "backend-b": {
+                "state": "healthy",
+                "failures": 0,
+                "attempts": 0,
+                "manualIntervention": false,
+                "containerId": "f573833a9c04fbbc17aa4248c38a2847f0c8c7680415d469fcb6db77bd92e395",
+                "lastProbe": {
+                  "ok": true,
+                  "reason": null,
+                  "status": 200,
+                  "instance": "backend-b",
+                  "latencyMs": 1.0660419999985606,
+                  "timestamp": "2026-11-03T10:32:34.235Z"
+                },
+                "lastReadyAt": "2026-11-03T10:32:34.235Z",
+                "failureConfirmedAt": null,
+                "recoveryVerifiedAt": null,
+                "verificationSuccesses": 0,
+                "verificationDeadline": null,
+                "attemptTargetId": null,
+                "restartOutcome": null,
+                "cooldownUntil": null,
+                "stableSince": null,
+                "observationAgeMs": 81,
+                "stale": false
+              }
+            },
+            "available": true,
+            "stale": false,
+            "ageMs": 69
+          },
+          "observationEndedAt": "2026-11-03T10:32:41.860Z",
+          "measurement": {
+            "detectionMs": 1465,
+            "recoveryMs": null,
+            "readinessAfterConfirmationMs": null,
+            "clockUncertaintyMs": 44,
+            "failureConfirmedEvent": {
+              "type": "failure_confirmed",
+              "timestamp": "2026-11-03T10:32:23.202Z",
+              "elapsedMs": 46673.987646,
+              "runId": "4aafbbe1-359d-4e66-9055-770a528658e8",
+              "service": "backend-a",
+              "state": "suspected_failure",
+              "failures": 3,
+              "attempts": 0,
+              "containerId": "6cfc7ab054dd717a72a7902b76daf989a6066ed0618a3976c4b0fd122a0d796f",
+              "recoveryEnabled": true
+            },
+            "recoveryVerifiedEvent": null,
+            "recoveryObserved": false,
+            "siblingProbes": 40,
+            "siblingFailedProbes": 0
+          }
+        }
+      ],
+      "clock": {
+        "hostBefore": 1793701901265,
+        "containerNow": 1793701901343,
+        "hostAfter": 1793701901353,
+        "offsetMs": 34,
+        "uncertaintyMs": 44,
+        "samples": [
+          {
+            "hostBefore": 1793701901171,
+            "containerNow": 1793701901254,
+            "hostAfter": 1793701901265,
+            "offsetMs": 36,
+            "uncertaintyMs": 47
+          },
+          {
+            "hostBefore": 1793701901265,
+            "containerNow": 1793701901343,
+            "hostAfter": 1793701901353,
+            "offsetMs": 34,
+            "uncertaintyMs": 44
+          },
+          {
+            "hostBefore": 1793701901353,
+            "containerNow": 1793701901432,
+            "hostAfter": 1793701901443,
+            "offsetMs": 34,
+            "uncertaintyMs": 45
+          }
+        ]
+      },
+      "config": {
+        "intervalMs": 500,
+        "probeTimeoutMs": 300,
+        "failureThreshold": 3,
+        "maxAttempts": 2,
+        "verifyTimeoutMs": 4000,
+        "verifySuccesses": 2,
+        "cooldownMs": 2000
+      },
+      "runtime": {
+        "backend-a": {
+          "id": "7af732881359f2bc5ec9df9006ebe17e2c41400766bb4e5f6408542e8e9845eb",
+          "image": "sha256:015f748b65727e971dbf0e555e70359c6e198235746ff082875894f11b43654b",
+          "networks": [
+            "resilientcloud-m2_app"
+          ],
+          "mounts": [],
+          "ports": {
+            "3000/tcp": null
+          },
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:31:34.796341004Z"
+        },
+        "backend-b": {
+          "id": "f573833a9c04fbbc17aa4248c38a2847f0c8c7680415d469fcb6db77bd92e395",
+          "image": "sha256:015f748b65727e971dbf0e555e70359c6e198235746ff082875894f11b43654b",
+          "networks": [
+            "resilientcloud-m2_app"
+          ],
+          "mounts": [],
+          "ports": {
+            "3000/tcp": null
+          },
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:31:34.795176963Z"
+        },
+        "gate": {
+          "id": "30b00de958b2d3721a6da6431789487ebc397c5f9e7f35cdd42affbf30a3c780",
+          "image": "sha256:e8d1dae3a8142441e110394ea1a5795ee665375b7c731efa229ce9333f6e6047",
+          "networks": [
+            "none"
+          ],
+          "mounts": [
+            {
+              "type": "bind",
+              "destination": "/var/run/docker.sock",
+              "writable": false
+            },
+            {
+              "type": "volume",
+              "destination": "/run/gate",
+              "writable": true
+            },
+            {
+              "type": "volume",
+              "destination": "/audit",
+              "writable": true
+            }
+          ],
+          "ports": {},
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:31:34.800573254Z"
+        },
+        "controller": {
+          "id": "19d0f4073cef109d670936f78d372bed71b69fa05d9f8be0e2c8f7cc0ca64d9d",
+          "image": "sha256:e8d1dae3a8142441e110394ea1a5795ee665375b7c731efa229ce9333f6e6047",
+          "networks": [
+            "resilientcloud-m2_app"
+          ],
+          "mounts": [
+            {
+              "type": "volume",
+              "destination": "/run/gate",
+              "writable": false
+            },
+            {
+              "type": "volume",
+              "destination": "/data",
+              "writable": true
+            }
+          ],
+          "ports": {},
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:31:36.404627797Z"
+        },
+        "status": {
+          "id": "8e87a79fc46a889533577aa5a1398b3016ef1fd3ecc1dcab4f8ce2c244d688c7",
+          "image": "sha256:e8d1dae3a8142441e110394ea1a5795ee665375b7c731efa229ce9333f6e6047",
+          "networks": [
+            "resilientcloud-m2_status-read"
+          ],
+          "mounts": [
+            {
+              "type": "volume",
+              "destination": "/data",
+              "writable": false
+            }
+          ],
+          "ports": {},
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:31:34.800173588Z"
+        },
+        "gateway": {
+          "id": "54eb85d9a9321b86a3206e3c63ffc7b5bc73e13091ce142f42213b5f8821f461",
+          "image": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+          "networks": [
+            "resilientcloud-m2_app",
+            "resilientcloud-m2_edge",
+            "resilientcloud-m2_status-read"
+          ],
+          "mounts": [
+            {
+              "type": "bind",
+              "destination": "/etc/nginx/nginx.conf",
+              "writable": false
+            },
+            {
+              "type": "bind",
+              "destination": "/etc/nginx/upstream.conf",
+              "writable": false
+            }
+          ],
+          "ports": {
+            "8080/tcp": [
+              {
+                "HostIp": "127.0.0.1",
+                "HostPort": "18083"
+              }
+            ]
+          },
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:31:40.450774424Z"
+        }
+      },
+      "controllerEventsFile": "resilientcloud-m2-controller.events.jsonl",
+      "gateEventsFile": "resilientcloud-m2-gate.events.jsonl"
+    },
+    "resilientcloud-m2-disabled": {
+      "recoveryEnabled": false,
+      "faults": [
+        {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:33:08.009Z",
+          "project": "resilientcloud-m2-disabled",
+          "service": "backend-a",
+          "containerId": "024f600956436fe7b21918b9600f6b8fdbe17897b048e2da2ab2bbd4f7715e83",
+          "mode": "crash",
+          "signal": "SIGKILL",
+          "completedAt": "2026-11-03T10:33:08.083Z",
+          "durationMs": 73.58129200000258,
+          "label": "crash",
+          "expectRecovery": false,
+          "expectNoRecovery": true,
+          "observed": {
+            "id": "024f600956436fe7b21918b9600f6b8fdbe17897b048e2da2ab2bbd4f7715e83",
+            "running": false,
+            "status": "exited",
+            "exitCode": 137,
+            "health": "unhealthy",
+            "startedAt": "2026-11-03T10:32:50.890972762Z",
+            "restartCount": 0,
+            "restartPolicy": "no",
+            "ip": ""
+          },
+          "observationEndedAt": "2026-11-03T10:33:16.629Z",
+          "measurement": {
+            "detectionMs": 1189,
+            "recoveryMs": null,
+            "readinessAfterConfirmationMs": null,
+            "clockUncertaintyMs": 45,
+            "failureConfirmedEvent": {
+              "type": "failure_confirmed",
+              "timestamp": "2026-11-03T10:33:09.231Z",
+              "elapsedMs": 16575.880799,
+              "runId": "87a7a4d9-63e8-4284-99a4-c4aab8254376",
+              "service": "backend-a",
+              "state": "suspected_failure",
+              "failures": 3,
+              "attempts": 0,
+              "containerId": "024f600956436fe7b21918b9600f6b8fdbe17897b048e2da2ab2bbd4f7715e83",
+              "recoveryEnabled": false
+            },
+            "recoveryVerifiedEvent": null,
+            "recoveryObserved": false,
+            "siblingProbes": 17,
+            "siblingFailedProbes": 0
+          }
+        },
+        {
+          "type": "fault",
+          "timestamp": "2026-11-03T10:33:18.946Z",
+          "project": "resilientcloud-m2-disabled",
+          "service": "backend-a",
+          "containerId": "024f600956436fe7b21918b9600f6b8fdbe17897b048e2da2ab2bbd4f7715e83",
+          "mode": "unhealthy",
+          "signal": "SIGUSR2",
+          "completedAt": "2026-11-03T10:33:18.970Z",
+          "durationMs": 23.92462499999965,
+          "label": "unhealthy",
+          "expectRecovery": false,
+          "expectNoRecovery": true,
+          "observed": {
+            "id": "024f600956436fe7b21918b9600f6b8fdbe17897b048e2da2ab2bbd4f7715e83",
+            "running": true,
+            "status": "running",
+            "exitCode": 0,
+            "health": "starting",
+            "startedAt": "2026-11-03T10:33:16.716928843Z",
+            "restartCount": 0,
+            "restartPolicy": "no",
+            "ip": "172.21.0.3"
+          },
+          "observationEndedAt": "2026-11-03T10:33:27.547Z",
+          "measurement": {
+            "detectionMs": 1296,
+            "recoveryMs": null,
+            "readinessAfterConfirmationMs": null,
+            "clockUncertaintyMs": 45,
+            "failureConfirmedEvent": {
+              "type": "failure_confirmed",
+              "timestamp": "2026-11-03T10:33:20.275Z",
+              "elapsedMs": 27620.257513,
+              "runId": "87a7a4d9-63e8-4284-99a4-c4aab8254376",
+              "service": "backend-a",
+              "state": "suspected_failure",
+              "failures": 3,
+              "attempts": 0,
+              "containerId": "024f600956436fe7b21918b9600f6b8fdbe17897b048e2da2ab2bbd4f7715e83",
+              "recoveryEnabled": false
+            },
+            "recoveryVerifiedEvent": null,
+            "recoveryObserved": false,
+            "siblingProbes": 17,
+            "siblingFailedProbes": 0
+          }
+        }
+      ],
+      "clock": {
+        "hostBefore": 1793701977446,
+        "containerNow": 1793701977524,
+        "hostAfter": 1793701977536,
+        "offsetMs": 33,
+        "uncertaintyMs": 45,
+        "samples": [
+          {
+            "hostBefore": 1793701977259,
+            "containerNow": 1793701977346,
+            "hostAfter": 1793701977355,
+            "offsetMs": 39,
+            "uncertaintyMs": 48
+          },
+          {
+            "hostBefore": 1793701977355,
+            "containerNow": 1793701977436,
+            "hostAfter": 1793701977446,
+            "offsetMs": 35.5,
+            "uncertaintyMs": 45.5
+          },
+          {
+            "hostBefore": 1793701977446,
+            "containerNow": 1793701977524,
+            "hostAfter": 1793701977536,
+            "offsetMs": 33,
+            "uncertaintyMs": 45
+          }
+        ]
+      },
+      "config": {
+        "intervalMs": 500,
+        "probeTimeoutMs": 300,
+        "failureThreshold": 3,
+        "maxAttempts": 2,
+        "verifyTimeoutMs": 4000,
+        "verifySuccesses": 2,
+        "cooldownMs": 2000
+      },
+      "runtime": {
+        "backend-a": {
+          "id": "024f600956436fe7b21918b9600f6b8fdbe17897b048e2da2ab2bbd4f7715e83",
+          "image": "sha256:9326c719470dd5e2a5c135c2e46642cb02216817525f439688dfe1d82a74392f",
+          "networks": [
+            "resilientcloud-m2-disabled_app"
+          ],
+          "mounts": [],
+          "ports": {
+            "3000/tcp": null
+          },
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:32:50.890972762Z"
+        },
+        "backend-b": {
+          "id": "5ee9a5c303fd7fdb2f78cd0cb44366ac7922b739dcf9d3b8a0816dee91f07ed0",
+          "image": "sha256:9326c719470dd5e2a5c135c2e46642cb02216817525f439688dfe1d82a74392f",
+          "networks": [
+            "resilientcloud-m2-disabled_app"
+          ],
+          "mounts": [],
+          "ports": {
+            "3000/tcp": null
+          },
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:32:50.889071929Z"
+        },
+        "gate": {
+          "id": "a4cfe848f997fba8507d29ad8109ec1ce99edb84b9cf2047cb9a9154f16aa09d",
+          "image": "sha256:b3d4fbd8714c4d056a1a14a8d7c5971bf34a969ecae033502314952f47542a29",
+          "networks": [
+            "none"
+          ],
+          "mounts": [
+            {
+              "type": "volume",
+              "destination": "/run/gate",
+              "writable": true
+            },
+            {
+              "type": "volume",
+              "destination": "/audit",
+              "writable": true
+            },
+            {
+              "type": "bind",
+              "destination": "/var/run/docker.sock",
+              "writable": false
+            }
+          ],
+          "ports": {},
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:32:50.891553804Z"
+        },
+        "controller": {
+          "id": "787162514d7991856c5ac61b7f9e627f7d1cba6f5c202923a2dc2f11a60a4e89",
+          "image": "sha256:b3d4fbd8714c4d056a1a14a8d7c5971bf34a969ecae033502314952f47542a29",
+          "networks": [
+            "resilientcloud-m2-disabled_app"
+          ],
+          "mounts": [
+            {
+              "type": "volume",
+              "destination": "/run/gate",
+              "writable": false
+            },
+            {
+              "type": "volume",
+              "destination": "/data",
+              "writable": true
+            }
+          ],
+          "ports": {},
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:32:52.490539554Z"
+        },
+        "status": {
+          "id": "d207ff950dc917104036f52a567edd869a99e86e5493b54838ab3e0e8771d6d6",
+          "image": "sha256:b3d4fbd8714c4d056a1a14a8d7c5971bf34a969ecae033502314952f47542a29",
+          "networks": [
+            "resilientcloud-m2-disabled_status-read"
+          ],
+          "mounts": [
+            {
+              "type": "volume",
+              "destination": "/data",
+              "writable": false
+            }
+          ],
+          "ports": {},
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:32:50.889656512Z"
+        },
+        "gateway": {
+          "id": "45b126e12a72b2eb752e2280595a2ea6f5fa43a4b6ce9df2aad6aa165e5ac092",
+          "image": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+          "networks": [
+            "resilientcloud-m2-disabled_app",
+            "resilientcloud-m2-disabled_edge",
+            "resilientcloud-m2-disabled_status-read"
+          ],
+          "mounts": [
+            {
+              "type": "bind",
+              "destination": "/etc/nginx/nginx.conf",
+              "writable": false
+            },
+            {
+              "type": "bind",
+              "destination": "/etc/nginx/upstream.conf",
+              "writable": false
+            }
+          ],
+          "ports": {
+            "8080/tcp": [
+              {
+                "HostIp": "127.0.0.1",
+                "HostPort": "18084"
+              }
+            ]
+          },
+          "restartPolicy": "no",
+          "startedAt": "2026-11-03T10:32:56.561956917Z"
+        }
+      },
+      "controllerEventsFile": "resilientcloud-m2-disabled-controller.events.jsonl",
+      "gateEventsFile": "resilientcloud-m2-disabled-gate.events.jsonl"
+    }
+  },
+  "purpose": "Milestone 2 functional validation with real measurements, not repeated research trials",
+  "timingDefinitions": {
+    "faultInjection": "Host UTC immediately before the fault command; command completion is recorded separately.",
+    "detectionMs": "First controller failure_confirmed minus fault injection, adjusted by measured container-host clock offset.",
+    "recoveryMs": "First controller recovery_verified minus fault injection, adjusted by measured container-host clock offset. This requires consecutive readiness successes, not Docker restart acceptance.",
+    "readinessAfterConfirmationMs": "Controller monotonic recovery_verified elapsedMs minus failure_confirmed elapsedMs within the same runId.",
+    "uncertainty": "Cross-process timing uncertainty is at least half the clock-sample command round-trip. Probe cadence, fault command duration and scheduler delay also affect detection. Values are smoke observations, not guarantees."
+  },
+  "runtime": {
+    "hostNode": "v25.8.2",
+    "docker": "29.7.2 aarch64",
+    "compose": "5.4.0"
+  },
+  "sourceHashes": {
+    "backend/src/app.ts": "7df0ab097bc3a34a79ce872e4a7fc698054877a20a7736ecf59bceae679c065a",
+    "backend/src/server.ts": "24443d2c77605d5245987ef083dca89d4f1fb0d209f7f00365764536b8c6e880",
+    "backend/test/app.test.ts": "fe3c034c7c5a62a1d65d6f0742ff19c439b9f9f20334204e387e8b9a5b492180",
+    "backend/test/process.test.ts": "315e98fc9d24838a15e97fbe25bada8f4c10f3d64659f679be231791c9cd95ba",
+    "nginx/nginx.conf": "cb9b704a35d247038d056b239301270f22e82b3e3aea5feb19f60b4e2636313f",
+    "nginx/one.conf": "4285ab0eb6efe57e5dda497a6d391f77651240085ddf0e38c92f478dbb1e462f",
+    "nginx/recovery.conf": "b8e5a7592082c55ecd07061b3a00ca4e39952f97c624092c9eb1dd8807400345",
+    "nginx/two.conf": "fac94af3ccc82d487d03941ac8d162b673046efd074a9001e33deb49afaef757",
+    "tools/compose.mjs": "e442595ac33cfcb6370a8bbefb4816e49270f1e29c76170bf7c3fd948756f7ae",
+    "tools/docker.mjs": "1378830ea3a3f1b5e3db15283b1be8673c8ef0a35f77c33875092e7e72051d3a",
+    "tools/fault.mjs": "c6709d55b62ec47d6b8669d9e64a8c3b66db7195c3704baf967d024683aa866c",
+    "tools/fault.test.mjs": "e12a26bffa2b58ff61f5d587f31a63e6623ffdcf3ad9ad26cbac686e5404d8cb",
+    "tools/traffic.mjs": "05d9336bace67d8432c65e9454db94341ad72ca73f874fa8473f7a97ff083db0",
+    "tools/traffic.test.mjs": "0b9ba41e3134499a814b99022008ed39075603425546128d504db69ecd752db6",
+    "tools/validate-m1.mjs": "f14197908597026d212459a407c7fcf66cead934c365994b8659a01edfb5f999",
+    "tools/validate-m2.mjs": "a7d11506a33c8960b244cace73dbe9ed004db6b6a72cdc07f3d92c23c516b84e",
+    "recovery/Dockerfile": "9eaea8fd93062883d592506d10c3e0c5db4464503857661c3bfc1ea2c50f7c38",
+    "recovery/controller.mjs": "941d8a2f184062d999667eb00e1639154465cfd4dfcca433368e548e6398b593",
+    "recovery/controller.test.mjs": "12c1faff812c5ab0a6571e92db27a64fd6c4e02e232d434877d7bb9f4d817723",
+    "recovery/gate-core.mjs": "3ccccf80301a8a515dd5ebfd04334578f56fdf1f72e08910c4677add1484f483",
+    "recovery/gate-server.mjs": "03870c507780a5ab7c98e92c5027e95a2fbbbc40509f3da1b3aa491a3780c328",
+    "recovery/gate.test.mjs": "91b84df94e1000bdcd3780062b28388a265cf59c269845d13eb6f46ec4dc1985",
+    "recovery/status.mjs": "855aab4bf50aa0aff271dbe095fe0d5d4c55b5ab7cf0104f0dc942f939f2a422",
+    "recovery/status.test.mjs": "2708e7d4d474acec6ac1773b6028409fa49bc5f7b1c2761c4f20b7af15ee3ca3",
+    "Dockerfile": "397867aab16e790437c0ea91ed2e4d3ab7086fab4c7ed0648f7a7e477f76bb35",
+    "compose.yaml": "f042c9d8194b4c1d3f505721c0e8891da6679c90493980fbf903e8b3763daa0d",
+    "compose.two.yaml": "ad54fcf21f331dd30297d2095c530f22f51ec48cd1a415bcee20818e67ed8fc0",
+    "compose.recovery.yaml": "4eb34b108b43fa87c66832e6a0bcb3fac61fc94425a48235928891ae4ddd7b71",
+    "compose.persistent-test.yaml": "71761774d53b4a263c7f8f3c3fd04e1537bcd028ab87e17cb6e3ef4cbc91e16e",
+    "package.json": "881fef7717f3c74f2aa4e2589239e72f10e9a270fc2a57427fda2c1fdd19f310",
+    "package-lock.json": "fd605a9c66e15ce5742dc376b18dc09e90dd5919ca11e0a157f592ebaa57e413",
+    "tsconfig.json": "36342f75919c59f341a8163000cef600479e1d4131db3166e96b00279d9b46d9"
+  },
+  "finishedAt": "2026-11-03T10:33:29.499Z"
+}
