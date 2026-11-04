@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-11-04T17:49:16.907Z",
+  "status": "passed",
+  "bundle": ".cache/aws-bundle-2026-11-04T17-47-39-802Z",
+  "sourceCheckpoint": "b032fb5e077248caa8d53db5ababb1efac62f5ec",
+  "sourceWasClean": true,
+  "checksumChecks": [
+    "images.tar: OK",
+    "files.tar.gz: OK",
+    "release.json: OK"
+  ],
+  "imageLoad": [
+    "Loaded image: resilientcloud-backend:aws",
+    "Loaded image: resilientcloud-recovery:aws",
+    "Loaded image: resilientcloud-gateway:aws",
+    "Loaded image: resilientcloud-https:aws"
+  ],
+  "architecture": "arm64",
+  "preparedScriptsMatchBundle": true,
+  "noCredentialsOrDependenciesInFileArchive": true,
+  "localProfileResourcesCleaned": true,
+  "tests": {
+    "backendControllerToolsPassed": 60,
+    "localHttpsRequests": 350,
+    "failedRequests": 0,
+    "skippedRequests": 0,
+    "configModes": [
+      "faults disabled",
+      "authenticated admin opt-in"
+    ]
+  },
+  "applicationAndMilestoneEvidenceUnchangedSince": "7eecc34",
+  "awsAccountAccess": false,
+  "provisioned": false,
+  "deployed": false,
+  "notExecuted": [
+    "EC2 launch/account capacity check",
+    "Ubuntu host bootstrap",
+    "public-domain ACME issuance",
+    "EC2 resource measurement",
+    "host journal maintenance"
+  ]
+}
