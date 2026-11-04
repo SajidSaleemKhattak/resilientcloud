@@ -1,0 +1,10 @@
+id,configuration,fault,repetition,valid,wholeRequests,wholeSuccesses,wholeSuccessRate,postFaultRequests,postFaultSuccesses,postFaultSuccessRate,p95LatencyMs,detectionMs,recoveryMs,skipped
+A-control-1,A,control,1,true,40,40,1,,,,8.415,,,0
+B-control-1,B,control,1,true,40,40,1,,,,5.655,,,0
+C-control-1,C,control,1,true,40,40,1,,,,6.147,,,0
+A-crash-1,A,crash,1,true,40,10,0.25,30,0,0,503.879,1482.0621474990621,,0
+B-crash-1,B,crash,1,true,40,39,0.975,30,29,0.9666666666666667,501.396,1336.46256450098,,0
+C-crash-1,C,crash,1,true,40,39,0.975,30,29,0.9666666666666667,501.106,1487.6913975002244,2492.447231499478,0
+A-unhealthy-1,A,unhealthy,1,true,40,10,0.25,30,0,0,4.65,1402.9833970004693,,0
+B-unhealthy-1,B,unhealthy,1,true,40,40,1,30,30,1,6.097,1450.8491674996912,,0
+C-unhealthy-1,C,unhealthy,1,true,40,40,1,30,30,1,5.368,1375.533438500017,2391.80556449946,0

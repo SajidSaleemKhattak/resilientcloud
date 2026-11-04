@@ -1,0 +1,16 @@
+
+Running 2 tests using 1 worker
+
+[31mConfiguration Error: HTML reporter output folder clashes with the tests output folder:[39m
+
+    html reporter folder: [1m/Users/sajid/Projects/resilientcloud/results/milestone-3/dashboard-live/browser-healthy/report[22m
+    test results folder: [1m/Users/sajid/Projects/resilientcloud/results/milestone-3/dashboard-live/browser-healthy[22m
+
+HTML reporter will clear its output directory prior to being generated, which will lead to the artifact loss.
+
+(node:2018) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/live.spec.ts:7:1 › actual local telemetry: healthy (533ms)
+  ✓  2 tests/live.spec.ts:46:1 › saved experiment chart reads the actual saved summary (575ms)
+
+  2 passed (1.7s)

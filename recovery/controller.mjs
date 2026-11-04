@@ -17,7 +17,10 @@ export function loadConfig(env = process.env) {
     return value;
   }
   if (env.RECOVERY_ENABLED !== undefined && !['true', 'false'].includes(env.RECOVERY_ENABLED)) throw new Error('Invalid RECOVERY_ENABLED');
+  const monitored = env.MONITORED_SERVICES ?? 'backend-a,backend-b';
+  if (!['backend-a', 'backend-a,backend-b'].includes(monitored)) throw new Error('Invalid MONITORED_SERVICES');
   return {
+    services: monitored.split(','),
     intervalMs: integer('PROBE_INTERVAL_MS', 500, 50, 60_000),
     probeTimeoutMs: integer('PROBE_TIMEOUT_MS', 300, 20, 10_000),
     failureThreshold: integer('FAILURE_THRESHOLD', 3, 2, 100),
@@ -138,6 +141,8 @@ function initialBackend() {
 export class RecoveryController {
   constructor({ config, store, inspect, restart, probe, now = Date.now, monotonic = () => performance.now(), runId = randomUUID() }) {
     this.config = config;
+    this.services = config.services ?? SERVICES;
+    if (!['backend-a', 'backend-a,backend-b'].includes(this.services.join(','))) throw new Error('invalid_monitored_services');
     this.store = store;
     this.inspect = inspect ?? ((service, timeoutMs = config.gateTimeoutMs) => gateRequest({ ...config, gateTimeoutMs: timeoutMs }, service));
     this.restart = restart ?? ((service, id) => gateRequest(config, service, id));
@@ -156,6 +161,7 @@ export class RecoveryController {
   snapshot() {
     return structuredClone({ schemaVersion: 1, updatedAt: new Date(this.wall()).toISOString(), runId: this.runId,
       recoveryEnabled: this.config.recoveryEnabled,
+      monitoredServices: this.services,
       config: { intervalMs: this.config.intervalMs, probeTimeoutMs: this.config.probeTimeoutMs,
         failureThreshold: this.config.failureThreshold, maxAttempts: this.config.maxAttempts,
         verifyTimeoutMs: this.config.verifyTimeoutMs, verifySuccesses: this.config.verifySuccesses, cooldownMs: this.config.cooldownMs },
@@ -174,7 +180,8 @@ export class RecoveryController {
     const saved = await this.store.load();
     if (saved) {
       if (saved.schemaVersion !== 1 || !saved.backends) throw new Error('invalid_checkpoint');
-      for (const service of SERVICES) {
+      if (Object.keys(saved.backends).sort().join(',') !== this.services.join(',')) throw new Error('invalid_checkpoint_service_set_changed');
+      for (const service of this.services) {
         const b = saved.backends[service];
         if (!b || !STATES.includes(b.state) || !Number.isInteger(b.attempts) || b.attempts < 0
           || !Number.isInteger(b.failures) || b.failures < 0 || typeof b.manualIntervention !== 'boolean'
@@ -189,7 +196,7 @@ export class RecoveryController {
         if (b.state === 'recovering') this.backends[service].verificationDeadline = this.now() + this.config.verifyTimeoutMs;
         if (b.state === 'cooldown') this.backends[service].cooldownUntil = this.now() + this.config.cooldownMs;
       }
-    } else for (const service of SERVICES) this.backends[service] = initialBackend();
+    } else for (const service of this.services) this.backends[service] = initialBackend();
     await this.record('controller_started', undefined, { resumed: Boolean(saved), recoveryEnabled: this.config.recoveryEnabled });
   }
   async transition(service, next, reason) {
@@ -229,7 +236,7 @@ export class RecoveryController {
     }
   }
   async step(service) {
-    if (!SERVICES.includes(service)) throw new Error('invalid_service');
+    if (!this.services.includes(service)) throw new Error('invalid_service');
     if (this.failed) throw new Error('persistence_failed');
     if (this.locks.has(service)) throw new Error('overlapping_service_step');
     this.locks.add(service);
@@ -340,7 +347,7 @@ export class RecoveryController {
     signal?.addEventListener('abort', () => stopped.abort(), { once: true });
     if (signal?.aborted) return;
     try {
-      await Promise.all(SERVICES.map(async service => {
+      await Promise.all(this.services.map(async service => {
         while (!stopped.signal.aborted) {
           const start = this.monotonic();
           await this.step(service);

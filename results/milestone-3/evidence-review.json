@@ -1,0 +1,17 @@
+{
+  "summaryDeterministic": true,
+  "evidenceHashesVerified": 108,
+  "trials": 27,
+  "invalidOrFailedFunctionalChecks": [],
+  "whole": {
+    "requests": 20250,
+    "successes": 16645,
+    "failures": 3605,
+    "skipped": 0
+  },
+  "clockUncertaintyMs": {
+    "min": 40.517542000394315,
+    "max": 44.087937500327826
+  },
+  "largestMappingDriftMs": 13.29655549954623
+}

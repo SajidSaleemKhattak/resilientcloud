@@ -1,0 +1,8 @@
+
+> resilientcloud@0.1.0 dashboard:typecheck
+> npm --prefix dashboard run typecheck
+
+
+> resilientcloud-dashboard@0.1.0 typecheck
+> tsc --noEmit
+

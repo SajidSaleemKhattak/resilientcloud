@@ -1,0 +1,15 @@
+# Identical observation/control-plane resources for A, B and C.
+services:
+  backend-a:
+    image: ${EXPERIMENT_BACKEND_IMAGE:-resilientcloud-backend:m1}
+  gate:
+    image: ${EXPERIMENT_RECOVERY_IMAGE:-resilientcloud-recovery:m2}
+  controller:
+    image: ${EXPERIMENT_RECOVERY_IMAGE:-resilientcloud-recovery:m2}
+    environment:
+      MONITORED_SERVICES: ${MONITORED_SERVICES:-backend-a,backend-b}
+  status:
+    image: ${EXPERIMENT_RECOVERY_IMAGE:-resilientcloud-recovery:m2}
+  gateway:
+    volumes:
+      - ./nginx/experiment.conf:/etc/nginx/nginx.conf:ro

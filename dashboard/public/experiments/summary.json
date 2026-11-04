@@ -1,0 +1,4236 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-04T10:01:37.705Z",
+  "status": "passed",
+  "purpose": "Repeated local A/B/C experiments; three independent repetitions per group",
+  "protocol": {
+    "baselineSeconds": 15,
+    "observationSeconds": 60,
+    "guardSeconds": 1,
+    "rate": 10,
+    "concurrency": 8,
+    "timeoutMs": 2500,
+    "repetitions": 3,
+    "controller": {
+      "intervalMs": 500,
+      "probeTimeoutMs": 300,
+      "failureThreshold": 3,
+      "maxAttempts": 2,
+      "verifyTimeoutMs": 4000,
+      "verifySuccesses": 2,
+      "cooldownMs": 2000
+    }
+  },
+  "runtime": {
+    "hostNode": "v25.8.2",
+    "docker": "29.7.2 aarch64",
+    "compose": "5.4.0"
+  },
+  "sourceHashes": {
+    "Dockerfile": "397867aab16e790437c0ea91ed2e4d3ab7086fab4c7ed0648f7a7e477f76bb35",
+    "compose.yaml": "f042c9d8194b4c1d3f505721c0e8891da6679c90493980fbf903e8b3763daa0d",
+    "compose.two.yaml": "ad54fcf21f331dd30297d2095c530f22f51ec48cd1a415bcee20818e67ed8fc0",
+    "compose.recovery.yaml": "aefcbb5dc61106abe50c800e3caadacecfe2f712798c847e004eecccefb23e8c",
+    "compose.experiment.yaml": "cdb1a206aef1818e1eecf6e8ccfac6069c034e39685e43f282689ebcaea3fcc6",
+    "compose.experiment-two.yaml": "126a616ff02fb90045a5fe1cacf29ed68674f198eb66a9cb7eb216ee8438d73a",
+    "nginx/one.conf": "4285ab0eb6efe57e5dda497a6d391f77651240085ddf0e38c92f478dbb1e462f",
+    "nginx/two.conf": "fac94af3ccc82d487d03941ac8d162b673046efd074a9001e33deb49afaef757",
+    "nginx/experiment.conf": "b8e5a7592082c55ecd07061b3a00ca4e39952f97c624092c9eb1dd8807400345",
+    "tools/docker.mjs": "f8e407649a7f8a0b8670c0ff2229ff4386b2080220e1b6b8f2b388ab1b3cc70c",
+    "tools/fault.mjs": "bec82c9d139c0c5d5aa59a4bb7c48463a6787ec53122d8cf7ca87a552367a552",
+    "tools/traffic.mjs": "85082e08954d2afe07e24d16bc5df02a3bfe0ad4778e1d302fa07a11a67e105e",
+    "tools/experiments.mjs": "f0e3481440c7a7d0c376728d606652fbee641fe7ab98bffa2e9fb135c333a879",
+    "tools/experiments-worker.mjs": "0f5aaf71e0042771c31de3cf5bd8ced37c6daa70879b8f8c508b2d6d2d574e76",
+    "tools/experiments-summary.mjs": "b85ebfd7bb1baeb21f762f7e80ee0ffee75bc3b9d255aec517cafc722e2310ed",
+    "package.json": "0952eae5686b6641f88f99bf08fd4cb2a0293173a91015160caac5d18af34898",
+    "package-lock.json": "fd605a9c66e15ce5742dc376b18dc09e90dd5919ca11e0a157f592ebaa57e413",
+    "backend/src/app.ts": "7df0ab097bc3a34a79ce872e4a7fc698054877a20a7736ecf59bceae679c065a",
+    "backend/src/server.ts": "24443d2c77605d5245987ef083dca89d4f1fb0d209f7f00365764536b8c6e880",
+    "recovery/Dockerfile": "9eaea8fd93062883d592506d10c3e0c5db4464503857661c3bfc1ea2c50f7c38",
+    "recovery/controller.mjs": "1f1bff7b9bd26097628f2cf530a2c411f9a4905fa2f649e447753612617fa846",
+    "recovery/gate-core.mjs": "3ccccf80301a8a515dd5ebfd04334578f56fdf1f72e08910c4677add1484f483",
+    "recovery/gate-server.mjs": "03870c507780a5ab7c98e92c5027e95a2fbbbc40509f3da1b3aa491a3780c328",
+    "recovery/status.mjs": "1bb427c81093d3fb852ce039557a0c87eaa8055cd01c4b4e6f520192ff68d63b"
+  },
+  "definitions": {
+    "windows": "Traffic runs baseline+observation+2 guard seconds. Fault command is scheduled after the leading guard and baseline; actual command start anchors exactly15s baseline+60s observation (smoke uses1s+3s). Controls use the same scheduled anchor. Guard requests remain in raw evidence and are counted separately.",
+    "wholeSuccessRate": "Complete2xx requests / all actually launched requests within [anchor-baseline,anchor+observation). Whole includes baseline and postfault traffic.",
+    "postFaultSuccessRate": "Complete2xx requests / all actually launched requests within [actual fault command start,command start+observation). Inflight pre-fault launches are excluded; command duration is recorded. Controls have null postFault and separate observation metrics.",
+    "skipped": "Scheduled slots skipped by generator for scheduler lag or concurrency limit. Excluded from request success denominators and explicitly counted by scheduled time; skipped slots in the analysis window invalidate that trial. Guard drops remain visible.",
+    "latency": "Request launch to full body or terminal error; nearest-rank p50/p95. latencyMs includes HTTP failures/timeouts; successfulLatencyMs includes only complete2xx.",
+    "detectionMs": "First failure_confirmed event after fault command start, on calibrated controller Linux monotonic clock, minus host fault-command start. Requires3 consecutive failed probes.",
+    "recoveryMs": "First recovery_verified event after fault command start minus that start, using calibrated monotonic clocks. Requires2 readiness successes with stable revalidated container identity; never Docker restart acceptance alone. Null means not observed within the60s window (or not applicable for controls).",
+    "firstSiblingSuccessMs": "Earliest completed successful response from backend-b among requests launched after fault start and completed inside the observation window. Measures survivor availability after injection, not onset of continuous availability or restoration of backend-a.",
+    "firstTargetSuccessAfterVerificationMs": "Earliest completed successful response from backend-a among requests launched after recovery verification and completed inside the observation window, measured from fault start.",
+    "longestFailureIntervalMs": "Time from first failed request launch in each consecutive failure sequence to next successful request launch, censored at window end; maximum across sequences. Sampling metric, not proof of continuous outage.",
+    "clock": "3 timed Dockerexec samples before/after each trial; select minimumroundtrip midpoint mapping hosthrtime to VMhrtime. Halfroundtrip is mapping uncertainty; reject drift above summed uncertainties+100ms.",
+    "trialValidity": "Fresh resources; healthy initial readiness and both instances reached before two-backend trials; intended fault verified; no skipped slots in measured window; valid clock mapping. HTTP errors, absent detection/recovery, sibling failures and unexpected controller actions are measured outcomes, never grounds to discard a trial. Separate functionalChecks report expected behavior.",
+    "summaryGeneration": "Derived JSON/CSV are deterministic for a fixed manifest and raw journals. generatedAt uses the final manifest timestamp (latest completed trial while a matrix is running); evidenceHashes identify the raw inputs."
+  },
+  "trials": [
+    {
+      "id": "A-control-1",
+      "configuration": "A",
+      "fault": "control",
+      "repetition": 1,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/A-control-1",
+      "startedAt": "2026-11-04T09:23:12.218Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 750
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.619,
+          "p95": 6.015
+        },
+        "successfulLatencyMs": {
+          "p50": 3.619,
+          "p95": 6.015
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": null,
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 600
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.535,
+          "p95": 6.015
+        },
+        "successfulLatencyMs": {
+          "p50": 3.535,
+          "p95": 6.015
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:24:36.277Z",
+        "label": "A-control-1",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 76999.882,
+        "instances": {
+          "backend-a": 770
+        },
+        "latencyAllMs": {
+          "p50": 3.632,
+          "p95": 6.009
+        },
+        "latencySuccessMs": {
+          "p50": 3.632,
+          "p95": 6.009
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": null,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 44.087937500327826,
+      "mappingDriftMs": 1.4806815003976226,
+      "stableClock": true,
+      "siblingProbes": 0,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": null,
+      "signalDurationMs": null,
+      "functionalChecks": {
+        "siblingAvailable": null,
+        "noFalseActionInControl": true,
+        "failureDetected": null,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "B-control-1",
+      "configuration": "B",
+      "fault": "control",
+      "repetition": 1,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/B-control-1",
+      "startedAt": "2026-11-04T09:24:37.527Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 375,
+          "backend-b": 375
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.574,
+          "p95": 6.775
+        },
+        "successfulLatencyMs": {
+          "p50": 3.574,
+          "p95": 6.775
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": null,
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 300,
+          "backend-b": 300
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.665,
+          "p95": 6.775
+        },
+        "successfulLatencyMs": {
+          "p50": 3.665,
+          "p95": 6.775
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:26:01.636Z",
+        "label": "B-control-1",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77000.185,
+        "instances": {
+          "backend-a": 385,
+          "backend-b": 385
+        },
+        "latencyAllMs": {
+          "p50": 3.522,
+          "p95": 6.775
+        },
+        "latencySuccessMs": {
+          "p50": 3.522,
+          "p95": 6.775
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": null,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.528603999875486,
+      "mappingDriftMs": 1.3852440007030964,
+      "stableClock": true,
+      "siblingProbes": 119,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": null,
+      "signalDurationMs": null,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": true,
+        "failureDetected": null,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "C-control-1",
+      "configuration": "C",
+      "fault": "control",
+      "repetition": 1,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/C-control-1",
+      "startedAt": "2026-11-04T09:26:02.950Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 375,
+          "backend-a": 375
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.74,
+          "p95": 5.503
+        },
+        "successfulLatencyMs": {
+          "p50": 3.74,
+          "p95": 5.503
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": null,
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 300,
+          "backend-a": 300
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.796,
+          "p95": 5.532
+        },
+        "successfulLatencyMs": {
+          "p50": 3.796,
+          "p95": 5.532
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:27:27.030Z",
+        "label": "C-control-1",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.381,
+        "instances": {
+          "backend-b": 385,
+          "backend-a": 385
+        },
+        "latencyAllMs": {
+          "p50": 3.759,
+          "p95": 5.503
+        },
+        "latencySuccessMs": {
+          "p50": 3.759,
+          "p95": 5.503
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": null,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.40539549989626,
+      "mappingDriftMs": 3.106972999870777,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": null,
+      "signalDurationMs": null,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": true,
+        "failureDetected": null,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": null,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "A-crash-1",
+      "configuration": "A",
+      "fault": "crash",
+      "repetition": 1,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/A-crash-1",
+      "startedAt": "2026-11-04T09:27:28.350Z",
+      "whole": {
+        "requests": 750,
+        "successes": 150,
+        "failures": 600,
+        "successRate": 0.2,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 150,
+          "unknown": 600
+        },
+        "statuses": {
+          "200": 150,
+          "502": 591,
+          "504": 9
+        },
+        "latencyMs": {
+          "p50": 2.428,
+          "p95": 4.537
+        },
+        "successfulLatencyMs": {
+          "p50": 3.429,
+          "p95": 4.996
+        },
+        "longestFailureIntervalMs": 59962.41512500029
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "unknown": 600
+        },
+        "statuses": {
+          "502": 591,
+          "504": 9
+        },
+        "latencyMs": {
+          "p50": 2.361,
+          "p95": 3.389
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59962.41512500029
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "unknown": 600
+        },
+        "statuses": {
+          "502": 591,
+          "504": 9
+        },
+        "latencyMs": {
+          "p50": 2.361,
+          "p95": 3.389
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59962.41512500029
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:28:52.356Z",
+        "label": "A-crash-1",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 161,
+        "failures": 609,
+        "dropped": 0,
+        "successRate": 0.20909090909090908,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77000.729,
+        "instances": {
+          "backend-a": 161
+        },
+        "latencyAllMs": {
+          "p50": 2.43,
+          "p95": 4.558
+        },
+        "latencySuccessMs": {
+          "p50": 3.429,
+          "p95": 4.996
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1028.0853610010818,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 42.04327100003138,
+      "mappingDriftMs": 0.38045249972492456,
+      "stableClock": true,
+      "siblingProbes": 0,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16063.325749999844,
+      "signalDurationMs": 93.95320799999172,
+      "functionalChecks": {
+        "siblingAvailable": null,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "B-crash-1",
+      "configuration": "B",
+      "fault": "crash",
+      "repetition": 1,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/B-crash-1",
+      "startedAt": "2026-11-04T09:28:53.589Z",
+      "whole": {
+        "requests": 750,
+        "successes": 749,
+        "failures": 1,
+        "successRate": 0.9986666666666667,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 674,
+          "backend-a": 75,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 749,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.125,
+          "p95": 4.831
+        },
+        "successfulLatencyMs": {
+          "p50": 3.125,
+          "p95": 4.831
+        },
+        "longestFailureIntervalMs": 100.54720799997449
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 599,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.1,
+          "p95": 4.675
+        },
+        "successfulLatencyMs": {
+          "p50": 3.1,
+          "p95": 4.675
+        },
+        "longestFailureIntervalMs": 100.54720799997449
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 599,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.1,
+          "p95": 4.675
+        },
+        "successfulLatencyMs": {
+          "p50": 3.1,
+          "p95": 4.675
+        },
+        "longestFailureIntervalMs": 100.54720799997449
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:30:17.664Z",
+        "label": "B-crash-1",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 769,
+        "failures": 1,
+        "dropped": 0,
+        "successRate": 0.9987012987012988,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77002.202,
+        "instances": {
+          "backend-a": 81,
+          "backend-b": 688
+        },
+        "latencyAllMs": {
+          "p50": 3.125,
+          "p95": 4.867
+        },
+        "latencySuccessMs": {
+          "p50": 3.125,
+          "p95": 4.865
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1478.2085484992713,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": 32.76870799995959,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.18120849970728,
+      "mappingDriftMs": 2.6623050002381206,
+      "stableClock": true,
+      "siblingProbes": 119,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16069.748292000033,
+      "signalDurationMs": 94.59674999996787,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "C-crash-1",
+      "configuration": "C",
+      "fault": "crash",
+      "repetition": 1,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/C-crash-1",
+      "startedAt": "2026-11-04T09:30:18.984Z",
+      "whole": {
+        "requests": 750,
+        "successes": 749,
+        "failures": 1,
+        "successRate": 0.9986666666666667,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 389,
+          "backend-a": 360,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 749,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.314,
+          "p95": 5.054
+        },
+        "successfulLatencyMs": {
+          "p50": 3.314,
+          "p95": 4.988
+        },
+        "longestFailureIntervalMs": 100.70741599984467
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 314,
+          "unknown": 1,
+          "backend-a": 285
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.287,
+          "p95": 4.933
+        },
+        "successfulLatencyMs": {
+          "p50": 3.287,
+          "p95": 4.933
+        },
+        "longestFailureIntervalMs": 100.70741599984467
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 314,
+          "unknown": 1,
+          "backend-a": 285
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.287,
+          "p95": 4.933
+        },
+        "successfulLatencyMs": {
+          "p50": 3.287,
+          "p95": 4.933
+        },
+        "longestFailureIntervalMs": 100.70741599984467
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:31:43.065Z",
+        "label": "C-crash-1",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 769,
+        "failures": 1,
+        "dropped": 0,
+        "successRate": 0.9987012987012988,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.382,
+        "instances": {
+          "backend-a": 370,
+          "backend-b": 399
+        },
+        "latencyAllMs": {
+          "p50": 3.311,
+          "p95": 5.054
+        },
+        "latencySuccessMs": {
+          "p50": 3.311,
+          "p95": 4.988
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1461.7917999997735,
+      "recoveryMs": 2459.245174999349,
+      "recoveryObserved": true,
+      "firstSiblingSuccessMs": 65.83325099945068,
+      "firstTargetSuccessAfterVerificationMs": 3168.003250999376,
+      "recoveryAttempts": 1,
+      "clockUncertaintyMs": 41.41762499976903,
+      "mappingDriftMs": 13.29655549954623,
+      "stableClock": true,
+      "siblingProbes": 119,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16037.306749000214,
+      "signalDurationMs": 106.62112500000512,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": true,
+        "disabledRecoveryNoRestart": null,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "A-unhealthy-1",
+      "configuration": "A",
+      "fault": "unhealthy",
+      "repetition": 1,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/A-unhealthy-1",
+      "startedAt": "2026-11-04T09:31:44.587Z",
+      "whole": {
+        "requests": 750,
+        "successes": 150,
+        "failures": 600,
+        "successRate": 0.2,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 750
+        },
+        "statuses": {
+          "200": 150,
+          "503": 600
+        },
+        "latencyMs": {
+          "p50": 3.122,
+          "p95": 4.492
+        },
+        "successfulLatencyMs": {
+          "p50": 3.365,
+          "p95": 4.928
+        },
+        "longestFailureIntervalMs": 59957.73304199986
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 600
+        },
+        "statuses": {
+          "503": 600
+        },
+        "latencyMs": {
+          "p50": 3.103,
+          "p95": 4.358
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59957.73304199986
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 600
+        },
+        "statuses": {
+          "503": 600
+        },
+        "latencyMs": {
+          "p50": 3.103,
+          "p95": 4.358
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59957.73304199986
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:33:08.578Z",
+        "label": "A-unhealthy-1",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 161,
+        "failures": 609,
+        "dropped": 0,
+        "successRate": 0.20909090909090908,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77002.175,
+        "instances": {
+          "backend-a": 770
+        },
+        "latencyAllMs": {
+          "p50": 3.13,
+          "p95": 4.497
+        },
+        "latencySuccessMs": {
+          "p50": 3.365,
+          "p95": 4.913
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1034.5283825006336,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 42.70795850036666,
+      "mappingDriftMs": 1.352305999957025,
+      "stableClock": true,
+      "siblingProbes": 0,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16058.165082999505,
+      "signalDurationMs": 22.3082080000313,
+      "functionalChecks": {
+        "siblingAvailable": null,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "B-unhealthy-1",
+      "configuration": "B",
+      "fault": "unhealthy",
+      "repetition": 1,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/B-unhealthy-1",
+      "startedAt": "2026-11-04T09:33:09.801Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 675,
+          "backend-a": 75
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.138,
+          "p95": 4.846
+        },
+        "successfulLatencyMs": {
+          "p50": 3.138,
+          "p95": 4.846
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 600
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.097,
+          "p95": 4.585
+        },
+        "successfulLatencyMs": {
+          "p50": 3.097,
+          "p95": 4.585
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 600
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.097,
+          "p95": 4.585
+        },
+        "successfulLatencyMs": {
+          "p50": 3.097,
+          "p95": 4.585
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:34:33.889Z",
+        "label": "B-unhealthy-1",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.679,
+        "instances": {
+          "backend-a": 81,
+          "backend-b": 689
+        },
+        "latencyAllMs": {
+          "p50": 3.138,
+          "p95": 4.846
+        },
+        "latencySuccessMs": {
+          "p50": 3.138,
+          "p95": 4.846
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1438.3610295001417,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": 46.26070800051093,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.065562499687076,
+      "mappingDriftMs": 3.089703000150621,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16056.108291999437,
+      "signalDurationMs": 23.4173750000773,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "C-unhealthy-1",
+      "configuration": "C",
+      "fault": "unhealthy",
+      "repetition": 1,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/C-unhealthy-1",
+      "startedAt": "2026-11-04T09:34:35.210Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 389,
+          "backend-a": 361
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.185,
+          "p95": 4.813
+        },
+        "successfulLatencyMs": {
+          "p50": 3.185,
+          "p95": 4.813
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 314,
+          "backend-a": 286
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.163,
+          "p95": 4.811
+        },
+        "successfulLatencyMs": {
+          "p50": 3.163,
+          "p95": 4.811
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 314,
+          "backend-a": 286
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.163,
+          "p95": 4.811
+        },
+        "successfulLatencyMs": {
+          "p50": 3.163,
+          "p95": 4.811
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:35:59.247Z",
+        "label": "C-unhealthy-1",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 76999.825,
+        "instances": {
+          "backend-a": 371,
+          "backend-b": 399
+        },
+        "latencyAllMs": {
+          "p50": 3.198,
+          "p95": 4.813
+        },
+        "latencySuccessMs": {
+          "p50": 3.198,
+          "p95": 4.813
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1050.5368415005505,
+      "recoveryMs": 2058.618175501004,
+      "recoveryObserved": true,
+      "firstSiblingSuccessMs": 57.66529200039804,
+      "firstTargetSuccessAfterVerificationMs": 2961.72829200048,
+      "recoveryAttempts": 1,
+      "clockUncertaintyMs": 41.77541649993509,
+      "mappingDriftMs": -0.10921450052410364,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16045.759707999416,
+      "signalDurationMs": 21.300166999921203,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": true,
+        "disabledRecoveryNoRestart": null,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "A-crash-2",
+      "configuration": "A",
+      "fault": "crash",
+      "repetition": 2,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/A-crash-2",
+      "startedAt": "2026-11-04T09:36:00.603Z",
+      "whole": {
+        "requests": 750,
+        "successes": 150,
+        "failures": 600,
+        "successRate": 0.2,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 150,
+          "unknown": 600
+        },
+        "statuses": {
+          "200": 150,
+          "502": 589,
+          "504": 11
+        },
+        "latencyMs": {
+          "p50": 2.172,
+          "p95": 4.316
+        },
+        "successfulLatencyMs": {
+          "p50": 3.456,
+          "p95": 4.945
+        },
+        "longestFailureIntervalMs": 59938.783125000075
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "unknown": 600
+        },
+        "statuses": {
+          "502": 589,
+          "504": 11
+        },
+        "latencyMs": {
+          "p50": 2.116,
+          "p95": 3.254
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59938.783125000075
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "unknown": 600
+        },
+        "statuses": {
+          "502": 589,
+          "504": 11
+        },
+        "latencyMs": {
+          "p50": 2.116,
+          "p95": 3.254
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59938.783125000075
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:37:24.599Z",
+        "label": "A-crash-2",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 161,
+        "failures": 609,
+        "dropped": 0,
+        "successRate": 0.20909090909090908,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 76999.69,
+        "instances": {
+          "backend-a": 161
+        },
+        "latencyAllMs": {
+          "p50": 2.172,
+          "p95": 4.461
+        },
+        "latencySuccessMs": {
+          "p50": 3.475,
+          "p95": 4.945
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1047.5631324993446,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.89916650019586,
+      "mappingDriftMs": 1.7547845002263784,
+      "stableClock": true,
+      "siblingProbes": 0,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16039.828250000253,
+      "signalDurationMs": 78.80924999993294,
+      "functionalChecks": {
+        "siblingAvailable": null,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "B-crash-2",
+      "configuration": "B",
+      "fault": "crash",
+      "repetition": 2,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/B-crash-2",
+      "startedAt": "2026-11-04T09:37:25.848Z",
+      "whole": {
+        "requests": 750,
+        "successes": 749,
+        "failures": 1,
+        "successRate": 0.9986666666666667,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 674,
+          "backend-a": 75,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 749,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.176,
+          "p95": 4.575
+        },
+        "successfulLatencyMs": {
+          "p50": 3.176,
+          "p95": 4.572
+        },
+        "longestFailureIntervalMs": 99.58741699997336
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 599,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.134,
+          "p95": 4.474
+        },
+        "successfulLatencyMs": {
+          "p50": 3.134,
+          "p95": 4.474
+        },
+        "longestFailureIntervalMs": 99.58741699997336
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 599,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.134,
+          "p95": 4.474
+        },
+        "successfulLatencyMs": {
+          "p50": 3.134,
+          "p95": 4.474
+        },
+        "longestFailureIntervalMs": 99.58741699997336
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:38:49.902Z",
+        "label": "B-crash-2",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 769,
+        "failures": 1,
+        "dropped": 0,
+        "successRate": 0.9987012987012988,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77002.032,
+        "instances": {
+          "backend-a": 81,
+          "backend-b": 688
+        },
+        "latencyAllMs": {
+          "p50": 3.174,
+          "p95": 4.6
+        },
+        "latencySuccessMs": {
+          "p50": 3.174,
+          "p95": 4.597
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1051.145507001318,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": 64.53770800027996,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 42.086499999742955,
+      "mappingDriftMs": 1.662681001238525,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16040.489291999489,
+      "signalDurationMs": 85.08849999995437,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "C-crash-2",
+      "configuration": "C",
+      "fault": "crash",
+      "repetition": 2,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/C-crash-2",
+      "startedAt": "2026-11-04T09:38:51.205Z",
+      "whole": {
+        "requests": 750,
+        "successes": 749,
+        "failures": 1,
+        "successRate": 0.9986666666666667,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 389,
+          "backend-a": 360,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 749,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.373,
+          "p95": 4.93
+        },
+        "successfulLatencyMs": {
+          "p50": 3.373,
+          "p95": 4.858
+        },
+        "longestFailureIntervalMs": 100.79725000075996
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 314,
+          "unknown": 1,
+          "backend-a": 285
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.323,
+          "p95": 4.829
+        },
+        "successfulLatencyMs": {
+          "p50": 3.323,
+          "p95": 4.829
+        },
+        "longestFailureIntervalMs": 100.79725000075996
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 314,
+          "unknown": 1,
+          "backend-a": 285
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.323,
+          "p95": 4.829
+        },
+        "successfulLatencyMs": {
+          "p50": 3.323,
+          "p95": 4.829
+        },
+        "longestFailureIntervalMs": 100.79725000075996
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:40:15.306Z",
+        "label": "C-crash-2",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 769,
+        "failures": 1,
+        "dropped": 0,
+        "successRate": 0.9987012987012988,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.206,
+        "instances": {
+          "backend-a": 370,
+          "backend-b": 399
+        },
+        "latencyAllMs": {
+          "p50": 3.38,
+          "p95": 4.976
+        },
+        "latencySuccessMs": {
+          "p50": 3.38,
+          "p95": 4.971
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1433.008402501233,
+      "recoveryMs": 2433.0090285008773,
+      "recoveryObserved": true,
+      "firstSiblingSuccessMs": 48.288041001185775,
+      "firstTargetSuccessAfterVerificationMs": 3151.5470410007983,
+      "recoveryAttempts": 1,
+      "clockUncertaintyMs": 42.38839550036937,
+      "mappingDriftMs": 0.4045979995280504,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16054.96895899903,
+      "signalDurationMs": 88.49312499992084,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": true,
+        "disabledRecoveryNoRestart": null,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "A-unhealthy-2",
+      "configuration": "A",
+      "fault": "unhealthy",
+      "repetition": 2,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/A-unhealthy-2",
+      "startedAt": "2026-11-04T09:40:16.656Z",
+      "whole": {
+        "requests": 750,
+        "successes": 150,
+        "failures": 600,
+        "successRate": 0.2,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 750
+        },
+        "statuses": {
+          "200": 150,
+          "503": 600
+        },
+        "latencyMs": {
+          "p50": 3.114,
+          "p95": 4.514
+        },
+        "successfulLatencyMs": {
+          "p50": 3.39,
+          "p95": 4.82
+        },
+        "longestFailureIntervalMs": 59946.783416000195
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 600
+        },
+        "statuses": {
+          "503": 600
+        },
+        "latencyMs": {
+          "p50": 3.048,
+          "p95": 4.391
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59946.783416000195
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 600
+        },
+        "statuses": {
+          "503": 600
+        },
+        "latencyMs": {
+          "p50": 3.048,
+          "p95": 4.391
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59946.783416000195
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:41:40.694Z",
+        "label": "A-unhealthy-2",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 161,
+        "failures": 609,
+        "dropped": 0,
+        "successRate": 0.20909090909090908,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.736,
+        "instances": {
+          "backend-a": 770
+        },
+        "latencyAllMs": {
+          "p50": 3.114,
+          "p95": 4.525
+        },
+        "latencySuccessMs": {
+          "p50": 3.39,
+          "p95": 4.793
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1051.1456955000758,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.89043749962002,
+      "mappingDriftMs": -0.5097774993628263,
+      "stableClock": true,
+      "siblingProbes": 0,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16047.422331999987,
+      "signalDurationMs": 22.059249999932945,
+      "functionalChecks": {
+        "siblingAvailable": null,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "B-unhealthy-2",
+      "configuration": "B",
+      "fault": "unhealthy",
+      "repetition": 2,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/B-unhealthy-2",
+      "startedAt": "2026-11-04T09:41:41.938Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 675,
+          "backend-a": 75
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.004,
+          "p95": 4.613
+        },
+        "successfulLatencyMs": {
+          "p50": 3.004,
+          "p95": 4.613
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 600
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 2.978,
+          "p95": 4.507
+        },
+        "successfulLatencyMs": {
+          "p50": 2.978,
+          "p95": 4.507
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 600
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 2.978,
+          "p95": 4.507
+        },
+        "successfulLatencyMs": {
+          "p50": 2.978,
+          "p95": 4.507
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:43:06.006Z",
+        "label": "B-unhealthy-2",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.83,
+        "instances": {
+          "backend-a": 81,
+          "backend-b": 689
+        },
+        "latencyAllMs": {
+          "p50": 3.036,
+          "p95": 4.613
+        },
+        "latencySuccessMs": {
+          "p50": 3.036,
+          "p95": 4.613
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1059.1349669992924,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": 66.6223749993369,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.12474999995902,
+      "mappingDriftMs": 1.3828695006668568,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16036.203625001013,
+      "signalDurationMs": 19.22674999991432,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "C-unhealthy-2",
+      "configuration": "C",
+      "fault": "unhealthy",
+      "repetition": 2,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/C-unhealthy-2",
+      "startedAt": "2026-11-04T09:43:07.428Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 388,
+          "backend-a": 362
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.084,
+          "p95": 4.672
+        },
+        "successfulLatencyMs": {
+          "p50": 3.084,
+          "p95": 4.672
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 313,
+          "backend-a": 287
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.008,
+          "p95": 4.632
+        },
+        "successfulLatencyMs": {
+          "p50": 3.008,
+          "p95": 4.632
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 313,
+          "backend-a": 287
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.008,
+          "p95": 4.632
+        },
+        "successfulLatencyMs": {
+          "p50": 3.008,
+          "p95": 4.632
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:44:31.526Z",
+        "label": "C-unhealthy-2",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77000.527,
+        "instances": {
+          "backend-a": 373,
+          "backend-b": 397
+        },
+        "latencyAllMs": {
+          "p50": 3.088,
+          "p95": 4.672
+        },
+        "latencySuccessMs": {
+          "p50": 3.088,
+          "p95": 4.672
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1056.6837160000578,
+      "recoveryMs": 2063.791842000559,
+      "recoveryObserved": true,
+      "firstSiblingSuccessMs": 66.87874899990857,
+      "firstTargetSuccessAfterVerificationMs": 2669.563748999499,
+      "recoveryAttempts": 1,
+      "clockUncertaintyMs": 42.832750000059605,
+      "mappingDriftMs": 0.301702500320971,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16035.735251000151,
+      "signalDurationMs": 19.939625000115484,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": true,
+        "disabledRecoveryNoRestart": null,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "A-control-2",
+      "configuration": "A",
+      "fault": "control",
+      "repetition": 2,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/A-control-2",
+      "startedAt": "2026-11-04T09:44:32.886Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 750
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.158,
+          "p95": 5.146
+        },
+        "successfulLatencyMs": {
+          "p50": 3.158,
+          "p95": 5.146
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": null,
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 600
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.157,
+          "p95": 5.151
+        },
+        "successfulLatencyMs": {
+          "p50": 3.157,
+          "p95": 5.151
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:45:56.873Z",
+        "label": "A-control-2",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.271,
+        "instances": {
+          "backend-a": 770
+        },
+        "latencyAllMs": {
+          "p50": 3.167,
+          "p95": 5.151
+        },
+        "latencySuccessMs": {
+          "p50": 3.167,
+          "p95": 5.151
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": null,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 42.16414549993351,
+      "mappingDriftMs": 2.138348000124097,
+      "stableClock": true,
+      "siblingProbes": 0,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": null,
+      "signalDurationMs": null,
+      "functionalChecks": {
+        "siblingAvailable": null,
+        "noFalseActionInControl": true,
+        "failureDetected": null,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "B-control-2",
+      "configuration": "B",
+      "fault": "control",
+      "repetition": 2,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/B-control-2",
+      "startedAt": "2026-11-04T09:45:58.146Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 375,
+          "backend-b": 375
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.27,
+          "p95": 4.734
+        },
+        "successfulLatencyMs": {
+          "p50": 3.27,
+          "p95": 4.734
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": null,
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 300,
+          "backend-b": 300
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.208,
+          "p95": 4.635
+        },
+        "successfulLatencyMs": {
+          "p50": 3.208,
+          "p95": 4.635
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:47:22.235Z",
+        "label": "B-control-2",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77000.303,
+        "instances": {
+          "backend-a": 385,
+          "backend-b": 385
+        },
+        "latencyAllMs": {
+          "p50": 3.279,
+          "p95": 4.738
+        },
+        "latencySuccessMs": {
+          "p50": 3.279,
+          "p95": 4.738
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": null,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.25524999992922,
+      "mappingDriftMs": 0.8427849989384413,
+      "stableClock": true,
+      "siblingProbes": 119,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": null,
+      "signalDurationMs": null,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": true,
+        "failureDetected": null,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "C-control-2",
+      "configuration": "C",
+      "fault": "control",
+      "repetition": 2,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/C-control-2",
+      "startedAt": "2026-11-04T09:47:23.613Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 375,
+          "backend-b": 375
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.214,
+          "p95": 4.812
+        },
+        "successfulLatencyMs": {
+          "p50": 3.214,
+          "p95": 4.812
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": null,
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 300,
+          "backend-b": 300
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.2,
+          "p95": 4.778
+        },
+        "successfulLatencyMs": {
+          "p50": 3.2,
+          "p95": 4.778
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:48:47.704Z",
+        "label": "C-control-2",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 76999.855,
+        "instances": {
+          "backend-a": 385,
+          "backend-b": 385
+        },
+        "latencyAllMs": {
+          "p50": 3.211,
+          "p95": 4.812
+        },
+        "latencySuccessMs": {
+          "p50": 3.211,
+          "p95": 4.812
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": null,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 40.517542000394315,
+      "mappingDriftMs": 3.9706179993227124,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": null,
+      "signalDurationMs": null,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": true,
+        "failureDetected": null,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": null,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "A-unhealthy-3",
+      "configuration": "A",
+      "fault": "unhealthy",
+      "repetition": 3,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/A-unhealthy-3",
+      "startedAt": "2026-11-04T09:48:49.066Z",
+      "whole": {
+        "requests": 750,
+        "successes": 150,
+        "failures": 600,
+        "successRate": 0.2,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 750
+        },
+        "statuses": {
+          "200": 150,
+          "503": 600
+        },
+        "latencyMs": {
+          "p50": 3.116,
+          "p95": 4.439
+        },
+        "successfulLatencyMs": {
+          "p50": 3.324,
+          "p95": 5.306
+        },
+        "longestFailureIntervalMs": 59967.018666999415
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 600
+        },
+        "statuses": {
+          "503": 600
+        },
+        "latencyMs": {
+          "p50": 3.097,
+          "p95": 4.38
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59967.018666999415
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 600
+        },
+        "statuses": {
+          "503": 600
+        },
+        "latencyMs": {
+          "p50": 3.097,
+          "p95": 4.38
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59967.018666999415
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:50:13.080Z",
+        "label": "A-unhealthy-3",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 161,
+        "failures": 609,
+        "dropped": 0,
+        "successRate": 0.20909090909090908,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.271,
+        "instances": {
+          "backend-a": 770
+        },
+        "latencyAllMs": {
+          "p50": 3.115,
+          "p95": 4.449
+        },
+        "latencySuccessMs": {
+          "p50": 3.356,
+          "p95": 5.306
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1122.8242160007358,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.116832999978215,
+      "mappingDriftMs": 0.6887855008244514,
+      "stableClock": true,
+      "siblingProbes": 0,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16068.410333999433,
+      "signalDurationMs": 26.56091700005345,
+      "functionalChecks": {
+        "siblingAvailable": null,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "B-unhealthy-3",
+      "configuration": "B",
+      "fault": "unhealthy",
+      "repetition": 3,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/B-unhealthy-3",
+      "startedAt": "2026-11-04T09:50:14.373Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 675,
+          "backend-a": 75
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.098,
+          "p95": 4.636
+        },
+        "successfulLatencyMs": {
+          "p50": 3.098,
+          "p95": 4.636
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 600
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.056,
+          "p95": 4.498
+        },
+        "successfulLatencyMs": {
+          "p50": 3.056,
+          "p95": 4.498
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 600
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.056,
+          "p95": 4.498
+        },
+        "successfulLatencyMs": {
+          "p50": 3.056,
+          "p95": 4.498
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:51:38.403Z",
+        "label": "B-unhealthy-3",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77002.363,
+        "instances": {
+          "backend-a": 81,
+          "backend-b": 689
+        },
+        "latencyAllMs": {
+          "p50": 3.101,
+          "p95": 4.644
+        },
+        "latencySuccessMs": {
+          "p50": 3.101,
+          "p95": 4.644
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1072.946964500472,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": 65.93654100038111,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.03479149984196,
+      "mappingDriftMs": 0.28007650189101696,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16036.66145899985,
+      "signalDurationMs": 20.840624999953434,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "C-unhealthy-3",
+      "configuration": "C",
+      "fault": "unhealthy",
+      "repetition": 3,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/C-unhealthy-3",
+      "startedAt": "2026-11-04T09:51:39.730Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 391,
+          "backend-a": 359
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.278,
+          "p95": 4.686
+        },
+        "successfulLatencyMs": {
+          "p50": 3.278,
+          "p95": 4.686
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 316,
+          "backend-a": 284
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.242,
+          "p95": 4.608
+        },
+        "successfulLatencyMs": {
+          "p50": 3.242,
+          "p95": 4.608
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 316,
+          "backend-a": 284
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.242,
+          "p95": 4.608
+        },
+        "successfulLatencyMs": {
+          "p50": 3.242,
+          "p95": 4.608
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:53:03.817Z",
+        "label": "C-unhealthy-3",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77002.2,
+        "instances": {
+          "backend-a": 369,
+          "backend-b": 401
+        },
+        "latencyAllMs": {
+          "p50": 3.278,
+          "p95": 4.686
+        },
+        "latencySuccessMs": {
+          "p50": 3.278,
+          "p95": 4.686
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1066.79271500092,
+      "recoveryMs": 2069.5213410006836,
+      "recoveryObserved": true,
+      "firstSiblingSuccessMs": 71.88595800008625,
+      "firstTargetSuccessAfterVerificationMs": 3376.588957999833,
+      "recoveryAttempts": 1,
+      "clockUncertaintyMs": 41.81487500015646,
+      "mappingDriftMs": 0.8203269997611642,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16029.912042000331,
+      "signalDurationMs": 18.31374999997206,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": true,
+        "disabledRecoveryNoRestart": null,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "A-control-3",
+      "configuration": "A",
+      "fault": "control",
+      "repetition": 3,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/A-control-3",
+      "startedAt": "2026-11-04T09:53:05.213Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 750
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.06,
+          "p95": 4.551
+        },
+        "successfulLatencyMs": {
+          "p50": 3.06,
+          "p95": 4.551
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": null,
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 600
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.023,
+          "p95": 4.432
+        },
+        "successfulLatencyMs": {
+          "p50": 3.023,
+          "p95": 4.432
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:54:29.215Z",
+        "label": "A-control-3",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.547,
+        "instances": {
+          "backend-a": 770
+        },
+        "latencyAllMs": {
+          "p50": 3.064,
+          "p95": 4.552
+        },
+        "latencySuccessMs": {
+          "p50": 3.064,
+          "p95": 4.552
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": null,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.92841699998826,
+      "mappingDriftMs": 0.49045149981975555,
+      "stableClock": true,
+      "siblingProbes": 0,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": null,
+      "signalDurationMs": null,
+      "functionalChecks": {
+        "siblingAvailable": null,
+        "noFalseActionInControl": true,
+        "failureDetected": null,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "B-control-3",
+      "configuration": "B",
+      "fault": "control",
+      "repetition": 3,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/B-control-3",
+      "startedAt": "2026-11-04T09:54:30.492Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 375,
+          "backend-a": 375
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.298,
+          "p95": 4.764
+        },
+        "successfulLatencyMs": {
+          "p50": 3.298,
+          "p95": 4.764
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": null,
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 300,
+          "backend-a": 300
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.275,
+          "p95": 4.758
+        },
+        "successfulLatencyMs": {
+          "p50": 3.275,
+          "p95": 4.758
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:55:54.560Z",
+        "label": "B-control-3",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77002.143,
+        "instances": {
+          "backend-b": 385,
+          "backend-a": 385
+        },
+        "latencyAllMs": {
+          "p50": 3.29,
+          "p95": 4.764
+        },
+        "latencySuccessMs": {
+          "p50": 3.29,
+          "p95": 4.764
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": null,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.07681249966845,
+      "mappingDriftMs": -0.34113149903714657,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": null,
+      "signalDurationMs": null,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": true,
+        "failureDetected": null,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "C-control-3",
+      "configuration": "C",
+      "fault": "control",
+      "repetition": 3,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/C-control-3",
+      "startedAt": "2026-11-04T09:55:55.939Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 375,
+          "backend-b": 375
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.283,
+          "p95": 4.737
+        },
+        "successfulLatencyMs": {
+          "p50": 3.283,
+          "p95": 4.737
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": null,
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 300,
+          "backend-b": 300
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.254,
+          "p95": 4.654
+        },
+        "successfulLatencyMs": {
+          "p50": 3.254,
+          "p95": 4.654
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:57:20.017Z",
+        "label": "C-control-3",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.593,
+        "instances": {
+          "backend-a": 385,
+          "backend-b": 385
+        },
+        "latencyAllMs": {
+          "p50": 3.28,
+          "p95": 4.756
+        },
+        "latencySuccessMs": {
+          "p50": 3.28,
+          "p95": 4.756
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": null,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 40.52693750010803,
+      "mappingDriftMs": 2.581347499974072,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": null,
+      "signalDurationMs": null,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": true,
+        "failureDetected": null,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": null,
+        "disabledFaultPersists": null
+      }
+    },
+    {
+      "id": "A-crash-3",
+      "configuration": "A",
+      "fault": "crash",
+      "repetition": 3,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/A-crash-3",
+      "startedAt": "2026-11-04T09:57:21.361Z",
+      "whole": {
+        "requests": 750,
+        "successes": 150,
+        "failures": 600,
+        "successRate": 0.2,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 150,
+          "unknown": 600
+        },
+        "statuses": {
+          "200": 150,
+          "502": 590,
+          "504": 10
+        },
+        "latencyMs": {
+          "p50": 2.121,
+          "p95": 4.188
+        },
+        "successfulLatencyMs": {
+          "p50": 3.355,
+          "p95": 4.799
+        },
+        "longestFailureIntervalMs": 59959.489832999185
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "unknown": 600
+        },
+        "statuses": {
+          "502": 590,
+          "504": 10
+        },
+        "latencyMs": {
+          "p50": 2.079,
+          "p95": 3.353
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59959.489832999185
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 0,
+        "failures": 600,
+        "successRate": 0,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "unknown": 600
+        },
+        "statuses": {
+          "502": 590,
+          "504": 10
+        },
+        "latencyMs": {
+          "p50": 2.079,
+          "p95": 3.353
+        },
+        "successfulLatencyMs": {
+          "p50": null,
+          "p95": null
+        },
+        "longestFailureIntervalMs": 59959.489832999185
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T09:58:45.360Z",
+        "label": "A-crash-3",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 161,
+        "failures": 609,
+        "dropped": 0,
+        "successRate": 0.20909090909090908,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.994,
+        "instances": {
+          "backend-a": 161
+        },
+        "latencyAllMs": {
+          "p50": 2.122,
+          "p95": 4.197
+        },
+        "latencySuccessMs": {
+          "p50": 3.324,
+          "p95": 4.832
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1030.1235280008987,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": null,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.44239600002766,
+      "mappingDriftMs": 1.9414924997836351,
+      "stableClock": true,
+      "siblingProbes": 0,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16060.364082999527,
+      "signalDurationMs": 99.54050000011921,
+      "functionalChecks": {
+        "siblingAvailable": null,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "B-crash-3",
+      "configuration": "B",
+      "fault": "crash",
+      "repetition": 3,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/B-crash-3",
+      "startedAt": "2026-11-04T09:58:46.639Z",
+      "whole": {
+        "requests": 750,
+        "successes": 749,
+        "failures": 1,
+        "successRate": 0.9986666666666667,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 674,
+          "backend-a": 75,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 749,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.268,
+          "p95": 5.475
+        },
+        "successfulLatencyMs": {
+          "p50": 3.268,
+          "p95": 5.429
+        },
+        "longestFailureIntervalMs": 100.83762500062585
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 599,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.264,
+          "p95": 5.645
+        },
+        "successfulLatencyMs": {
+          "p50": 3.264,
+          "p95": 5.645
+        },
+        "longestFailureIntervalMs": 100.83762500062585
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 599,
+        "failures": 1,
+        "successRate": 0.9983333333333333,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 599,
+          "unknown": 1
+        },
+        "statuses": {
+          "200": 599,
+          "504": 1
+        },
+        "latencyMs": {
+          "p50": 3.264,
+          "p95": 5.645
+        },
+        "successfulLatencyMs": {
+          "p50": 3.264,
+          "p95": 5.645
+        },
+        "longestFailureIntervalMs": 100.83762500062585
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T10:00:10.686Z",
+        "label": "B-crash-3",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 769,
+        "failures": 1,
+        "dropped": 0,
+        "successRate": 0.9987012987012988,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77001.865,
+        "instances": {
+          "backend-a": 81,
+          "backend-b": 688
+        },
+        "latencyAllMs": {
+          "p50": 3.275,
+          "p95": 5.475
+        },
+        "latencySuccessMs": {
+          "p50": 3.275,
+          "p95": 5.429
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1025.508423499763,
+      "recoveryMs": null,
+      "recoveryObserved": false,
+      "firstSiblingSuccessMs": 38.97570800036192,
+      "firstTargetSuccessAfterVerificationMs": null,
+      "recoveryAttempts": 0,
+      "clockUncertaintyMs": 41.092666499782354,
+      "mappingDriftMs": 2.436411499977112,
+      "stableClock": true,
+      "siblingProbes": 119,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16063.276291999966,
+      "signalDurationMs": 90.63858299981803,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": null,
+        "disabledRecoveryNoRestart": true,
+        "disabledFaultPersists": true
+      }
+    },
+    {
+      "id": "C-crash-3",
+      "configuration": "C",
+      "fault": "crash",
+      "repetition": 3,
+      "valid": true,
+      "evidencePath": "results/milestone-3/validated/C-crash-3",
+      "startedAt": "2026-11-04T10:00:12.175Z",
+      "whole": {
+        "requests": 750,
+        "successes": 750,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 750,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-a": 360,
+          "backend-b": 390
+        },
+        "statuses": {
+          "200": 750
+        },
+        "latencyMs": {
+          "p50": 3.874,
+          "p95": 5.576
+        },
+        "successfulLatencyMs": {
+          "p50": 3.874,
+          "p95": 5.576
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "postFault": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 315,
+          "backend-a": 285
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.871,
+          "p95": 5.518
+        },
+        "successfulLatencyMs": {
+          "p50": 3.871,
+          "p95": 5.518
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "observation": {
+        "requests": 600,
+        "successes": 600,
+        "failures": 0,
+        "successRate": 1,
+        "skipped": 0,
+        "skippedReasons": {},
+        "scheduled": 600,
+        "achievedRequestsPerSecond": 10,
+        "instances": {
+          "backend-b": 315,
+          "backend-a": 285
+        },
+        "statuses": {
+          "200": 600
+        },
+        "latencyMs": {
+          "p50": 3.871,
+          "p95": 5.518
+        },
+        "successfulLatencyMs": {
+          "p50": 3.871,
+          "p95": 5.518
+        },
+        "longestFailureIntervalMs": 0
+      },
+      "rawWorkload": {
+        "type": "summary",
+        "timestamp": "2026-11-04T10:01:36.336Z",
+        "label": "C-crash-3",
+        "scheduled": 770,
+        "requests": 770,
+        "successes": 770,
+        "failures": 0,
+        "dropped": 0,
+        "successRate": 1,
+        "achievedRequestsPerSecond": 10,
+        "wallDurationMs": 77000.063,
+        "instances": {
+          "backend-b": 401,
+          "backend-a": 369
+        },
+        "latencyAllMs": {
+          "p50": 3.882,
+          "p95": 5.594
+        },
+        "latencySuccessMs": {
+          "p50": 3.882,
+          "p95": 5.594
+        },
+        "definitions": {
+          "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+          "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+          "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+          "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+          "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+        }
+      },
+      "guardRequests": 20,
+      "guardSkipped": 0,
+      "detectionMs": 1439.719299999997,
+      "recoveryMs": 2432.1655500000343,
+      "recoveryObserved": true,
+      "firstSiblingSuccessMs": 147.85366599913687,
+      "firstTargetSuccessAfterVerificationMs": 3150.0796659998596,
+      "recoveryAttempts": 1,
+      "clockUncertaintyMs": 40.6042500003241,
+      "mappingDriftMs": 4.009786499664187,
+      "stableClock": true,
+      "siblingProbes": 120,
+      "siblingFailedProbes": 0,
+      "actualFaultOffsetMs": 16054.791334000416,
+      "signalDurationMs": 79.75025000004098,
+      "functionalChecks": {
+        "siblingAvailable": true,
+        "noFalseActionInControl": null,
+        "failureDetected": true,
+        "recoveryVerified": true,
+        "disabledRecoveryNoRestart": null,
+        "disabledFaultPersists": null
+      }
+    }
+  ],
+  "groups": [
+    {
+      "configuration": "A",
+      "fault": "control",
+      "trials": 3,
+      "validTrials": 3,
+      "invalidTrials": 0,
+      "wholeSuccessRate": {
+        "min": 1,
+        "max": 1,
+        "values": [
+          1,
+          1,
+          1
+        ]
+      },
+      "postFaultSuccessRate": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "detectionMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "recoveryMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "p95LatencyMs": {
+        "min": 4.551,
+        "max": 6.015,
+        "values": [
+          6.015,
+          5.146,
+          4.551
+        ]
+      },
+      "recoveriesObserved": 0,
+      "skipped": 0
+    },
+    {
+      "configuration": "A",
+      "fault": "crash",
+      "trials": 3,
+      "validTrials": 3,
+      "invalidTrials": 0,
+      "wholeSuccessRate": {
+        "min": 0.2,
+        "max": 0.2,
+        "values": [
+          0.2,
+          0.2,
+          0.2
+        ]
+      },
+      "postFaultSuccessRate": {
+        "min": 0,
+        "max": 0,
+        "values": [
+          0,
+          0,
+          0
+        ]
+      },
+      "detectionMs": {
+        "min": 1028.0853610010818,
+        "max": 1047.5631324993446,
+        "values": [
+          1028.0853610010818,
+          1047.5631324993446,
+          1030.1235280008987
+        ]
+      },
+      "recoveryMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "p95LatencyMs": {
+        "min": 4.188,
+        "max": 4.537,
+        "values": [
+          4.537,
+          4.316,
+          4.188
+        ]
+      },
+      "recoveriesObserved": 0,
+      "skipped": 0
+    },
+    {
+      "configuration": "A",
+      "fault": "unhealthy",
+      "trials": 3,
+      "validTrials": 3,
+      "invalidTrials": 0,
+      "wholeSuccessRate": {
+        "min": 0.2,
+        "max": 0.2,
+        "values": [
+          0.2,
+          0.2,
+          0.2
+        ]
+      },
+      "postFaultSuccessRate": {
+        "min": 0,
+        "max": 0,
+        "values": [
+          0,
+          0,
+          0
+        ]
+      },
+      "detectionMs": {
+        "min": 1034.5283825006336,
+        "max": 1122.8242160007358,
+        "values": [
+          1034.5283825006336,
+          1051.1456955000758,
+          1122.8242160007358
+        ]
+      },
+      "recoveryMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "p95LatencyMs": {
+        "min": 4.439,
+        "max": 4.514,
+        "values": [
+          4.492,
+          4.514,
+          4.439
+        ]
+      },
+      "recoveriesObserved": 0,
+      "skipped": 0
+    },
+    {
+      "configuration": "B",
+      "fault": "control",
+      "trials": 3,
+      "validTrials": 3,
+      "invalidTrials": 0,
+      "wholeSuccessRate": {
+        "min": 1,
+        "max": 1,
+        "values": [
+          1,
+          1,
+          1
+        ]
+      },
+      "postFaultSuccessRate": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "detectionMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "recoveryMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "p95LatencyMs": {
+        "min": 4.734,
+        "max": 6.775,
+        "values": [
+          6.775,
+          4.734,
+          4.764
+        ]
+      },
+      "recoveriesObserved": 0,
+      "skipped": 0
+    },
+    {
+      "configuration": "B",
+      "fault": "crash",
+      "trials": 3,
+      "validTrials": 3,
+      "invalidTrials": 0,
+      "wholeSuccessRate": {
+        "min": 0.9986666666666667,
+        "max": 0.9986666666666667,
+        "values": [
+          0.9986666666666667,
+          0.9986666666666667,
+          0.9986666666666667
+        ]
+      },
+      "postFaultSuccessRate": {
+        "min": 0.9983333333333333,
+        "max": 0.9983333333333333,
+        "values": [
+          0.9983333333333333,
+          0.9983333333333333,
+          0.9983333333333333
+        ]
+      },
+      "detectionMs": {
+        "min": 1025.508423499763,
+        "max": 1478.2085484992713,
+        "values": [
+          1478.2085484992713,
+          1051.145507001318,
+          1025.508423499763
+        ]
+      },
+      "recoveryMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "p95LatencyMs": {
+        "min": 4.575,
+        "max": 5.475,
+        "values": [
+          4.831,
+          4.575,
+          5.475
+        ]
+      },
+      "recoveriesObserved": 0,
+      "skipped": 0
+    },
+    {
+      "configuration": "B",
+      "fault": "unhealthy",
+      "trials": 3,
+      "validTrials": 3,
+      "invalidTrials": 0,
+      "wholeSuccessRate": {
+        "min": 1,
+        "max": 1,
+        "values": [
+          1,
+          1,
+          1
+        ]
+      },
+      "postFaultSuccessRate": {
+        "min": 1,
+        "max": 1,
+        "values": [
+          1,
+          1,
+          1
+        ]
+      },
+      "detectionMs": {
+        "min": 1059.1349669992924,
+        "max": 1438.3610295001417,
+        "values": [
+          1438.3610295001417,
+          1059.1349669992924,
+          1072.946964500472
+        ]
+      },
+      "recoveryMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "p95LatencyMs": {
+        "min": 4.613,
+        "max": 4.846,
+        "values": [
+          4.846,
+          4.613,
+          4.636
+        ]
+      },
+      "recoveriesObserved": 0,
+      "skipped": 0
+    },
+    {
+      "configuration": "C",
+      "fault": "control",
+      "trials": 3,
+      "validTrials": 3,
+      "invalidTrials": 0,
+      "wholeSuccessRate": {
+        "min": 1,
+        "max": 1,
+        "values": [
+          1,
+          1,
+          1
+        ]
+      },
+      "postFaultSuccessRate": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "detectionMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "recoveryMs": {
+        "min": null,
+        "max": null,
+        "values": []
+      },
+      "p95LatencyMs": {
+        "min": 4.737,
+        "max": 5.503,
+        "values": [
+          5.503,
+          4.812,
+          4.737
+        ]
+      },
+      "recoveriesObserved": 0,
+      "skipped": 0
+    },
+    {
+      "configuration": "C",
+      "fault": "crash",
+      "trials": 3,
+      "validTrials": 3,
+      "invalidTrials": 0,
+      "wholeSuccessRate": {
+        "min": 0.9986666666666667,
+        "max": 1,
+        "values": [
+          0.9986666666666667,
+          0.9986666666666667,
+          1
+        ]
+      },
+      "postFaultSuccessRate": {
+        "min": 0.9983333333333333,
+        "max": 1,
+        "values": [
+          0.9983333333333333,
+          0.9983333333333333,
+          1
+        ]
+      },
+      "detectionMs": {
+        "min": 1433.008402501233,
+        "max": 1461.7917999997735,
+        "values": [
+          1461.7917999997735,
+          1433.008402501233,
+          1439.719299999997
+        ]
+      },
+      "recoveryMs": {
+        "min": 2432.1655500000343,
+        "max": 2459.245174999349,
+        "values": [
+          2459.245174999349,
+          2433.0090285008773,
+          2432.1655500000343
+        ]
+      },
+      "p95LatencyMs": {
+        "min": 4.93,
+        "max": 5.576,
+        "values": [
+          5.054,
+          4.93,
+          5.576
+        ]
+      },
+      "recoveriesObserved": 3,
+      "skipped": 0
+    },
+    {
+      "configuration": "C",
+      "fault": "unhealthy",
+      "trials": 3,
+      "validTrials": 3,
+      "invalidTrials": 0,
+      "wholeSuccessRate": {
+        "min": 1,
+        "max": 1,
+        "values": [
+          1,
+          1,
+          1
+        ]
+      },
+      "postFaultSuccessRate": {
+        "min": 1,
+        "max": 1,
+        "values": [
+          1,
+          1,
+          1
+        ]
+      },
+      "detectionMs": {
+        "min": 1050.5368415005505,
+        "max": 1066.79271500092,
+        "values": [
+          1050.5368415005505,
+          1056.6837160000578,
+          1066.79271500092
+        ]
+      },
+      "recoveryMs": {
+        "min": 2058.618175501004,
+        "max": 2069.5213410006836,
+        "values": [
+          2058.618175501004,
+          2063.791842000559,
+          2069.5213410006836
+        ]
+      },
+      "p95LatencyMs": {
+        "min": 4.672,
+        "max": 4.813,
+        "values": [
+          4.813,
+          4.672,
+          4.686
+        ]
+      },
+      "recoveriesObserved": 3,
+      "skipped": 0
+    }
+  ],
+  "failedAttempts": [],
+  "evidenceHashes": {
+    "A-control-1/trial.json": "b7ae5308f8ad02f13fc0356496e3166b389abd5e0ce25e47ac9b39ebd8e71538",
+    "A-control-1/traffic.jsonl": "936b05f04ff0d50b519290b1f795d13c6c949f9b5dd0ec96f5f30211dbf07435",
+    "A-control-1/controller.events.jsonl": "ca5865ebdb63b1457952da491998842239d701f7489d588b1470c15aa1c67444",
+    "A-control-1/gate.events.jsonl": "b89fec7afc5f8adf1148fe20829e29ecbefc0de31c8bdbeaf269ff200fc56ec3",
+    "B-control-1/trial.json": "0f1b78cd83854954704d095071f7e0a035f17b7901297cbc51638aefac95e922",
+    "B-control-1/traffic.jsonl": "0976f2bb49ee64b5447beabee1f6ad2f39594ebfe5354fe9c9af2e4e30c6f866",
+    "B-control-1/controller.events.jsonl": "c84950bc203da5f647bf4df4dc985937c8433ebf7d7137bc0f8997e1234104e6",
+    "B-control-1/gate.events.jsonl": "9c96af547fe57bd2bb5a6e218aca014321e25d746d55c58c455efcec6fd70266",
+    "C-control-1/trial.json": "db691dae1a07ef9d266ad84a8c04bdff5d1fa919598996c7790e16ce6297dfd6",
+    "C-control-1/traffic.jsonl": "5a9d48311f5ad0e7aa9192a545822f5b606c708d41365a54a022a373e254a1be",
+    "C-control-1/controller.events.jsonl": "46ab95196518f741eec86a6750b56a9fbcf2298465f76908ba4e66a645d63887",
+    "C-control-1/gate.events.jsonl": "bf0ee0711ba22745e3c113e5ad7d60bc8185f5b659289b46bb1d4eb833a11912",
+    "A-crash-1/trial.json": "f15f5568d12ada5fab6c5afeabbbc954bcf02b746da0faf884817be478170ef8",
+    "A-crash-1/traffic.jsonl": "3f571a7c18dc361e6a2a3f9fb14f16302ed5476b58899f3af235b91fc80213d2",
+    "A-crash-1/controller.events.jsonl": "3e4adfb88d97bbec844b34ac21ed10bc75020ec97fcf70bdc4248bc4c5ede2f2",
+    "A-crash-1/gate.events.jsonl": "8659cd9e89b3ef8171c7b9b3709af8400045d4aca7bf4fc407b1dede2e2689f7",
+    "B-crash-1/trial.json": "8a57443572a1c6a5c914401239a9946cc2589c6a94119fa4ea08b8ef85032c94",
+    "B-crash-1/traffic.jsonl": "b3f948361bc3824a0da6de30f7b832c674febc1b366f827c22e772fb8e499f32",
+    "B-crash-1/controller.events.jsonl": "05ffcd7e9eb1a5363ae0f23abbc87b4dc62b0757ee2204b59a6565c1c32c3828",
+    "B-crash-1/gate.events.jsonl": "f1873192c00a582d0a7ae181bdcf2f83e407e43093caff97b82b073aa158e66a",
+    "C-crash-1/trial.json": "314386d164fbfbe58d1a6e0f5f9ad1664f1a603b6c470e92315327db2d556585",
+    "C-crash-1/traffic.jsonl": "845150aa6d4aec3a52879a2ab43cca38a58a7c769af2c757194b719a7a7adf6d",
+    "C-crash-1/controller.events.jsonl": "50e53f812135b7c3a2002d123d6082cb8e885cfc92bdf0e63e9e47d39b52860c",
+    "C-crash-1/gate.events.jsonl": "dc04c46076441d6ac9323147626d2dba852f619ce713760608427427b4da50e2",
+    "A-unhealthy-1/trial.json": "78f213d5705407d400cd8f664d22e82f0d6c2c176b1a136f14a0199239fcf195",
+    "A-unhealthy-1/traffic.jsonl": "ac657e6b98751096ade6153f1e43c0fe39cb8db3eddfd157df9079b9ac9fec17",
+    "A-unhealthy-1/controller.events.jsonl": "fe53186201be4d4c3ea3179dfc976143108f693b82caba210611c049a9e90229",
+    "A-unhealthy-1/gate.events.jsonl": "83da94ee88313b00e1777f0b395c8a6fc0e28a2ef6c20fab37ae2fd4fe35d96a",
+    "B-unhealthy-1/trial.json": "ed46976becefe869d7933be4c90af0a779b0cdfb7ccc5a8e27204993561e048e",
+    "B-unhealthy-1/traffic.jsonl": "3cbb043f3270f5b603fbe2f9df37bc4591b3d6c3889b8b49c7d90a0f9bcbbd90",
+    "B-unhealthy-1/controller.events.jsonl": "b2e32343b7e5bca091e6bf401dc8f73334de9a916586946c0a1c3879d3a71cdc",
+    "B-unhealthy-1/gate.events.jsonl": "a1b0c2d70ac8b05d7334b227d49f2817796aa184cb3158906d9d7b21c962a8ef",
+    "C-unhealthy-1/trial.json": "919418fc260588ee258a65ceefbb45b89e427e7cadad4228248eab060f3a92ff",
+    "C-unhealthy-1/traffic.jsonl": "a6605b20537cf5a936a1a2b9e4a12acf824292862084744f1b23cb539760d22f",
+    "C-unhealthy-1/controller.events.jsonl": "1d8efc781dcb3786dfe0c56682c19a26c601a9e7f967ac7e9583855ffb6c359d",
+    "C-unhealthy-1/gate.events.jsonl": "294672556634e14c08c59a46cb47768893c8590eed1728ff08361281b7aaa30b",
+    "A-crash-2/trial.json": "7e60d4f85d1064bb32d31ca856afb482bc78f785cbd3ae95c5c0a9d573a18efa",
+    "A-crash-2/traffic.jsonl": "1c0dde78caf097084ab959b24718e28ebf7c737caaa1a3212f4753137ac05a93",
+    "A-crash-2/controller.events.jsonl": "7aecdc0368637fee19b97465c66e71695082b5f2a9d57439d528e89171c2051a",
+    "A-crash-2/gate.events.jsonl": "2a30a41ea90440ec55b072bb30890c26d91b658544fcdf7e0b53014de4492a5d",
+    "B-crash-2/trial.json": "11808383ec2b8d4e54f09c76e1b4a1f5d13d21c6e6ae64485e3023625357af50",
+    "B-crash-2/traffic.jsonl": "ae80a083c33dd85036ce71a7702dd0d2393354d119ffd222d77c4d198435feee",
+    "B-crash-2/controller.events.jsonl": "9e4e9318a21f7323d2e68e7a211af6ac4572225590e8dda34715d9c8900d0c58",
+    "B-crash-2/gate.events.jsonl": "7b2388170f547f86c835287666d809579cdcd18dd2308db631817f75ac1ffaee",
+    "C-crash-2/trial.json": "13edcd63f1082cb3f546ad2bbfffb3b3ac5c304f695201c70eaad6c1bc3707a4",
+    "C-crash-2/traffic.jsonl": "1f8c2c736f6921343cf9d51faf173332e4b3696510ce3c43055d1fcd401ed57c",
+    "C-crash-2/controller.events.jsonl": "b07e3b59093f2e931adc4f229851c9a32dcc5954c2a827d0f04b4b9825cd06dd",
+    "C-crash-2/gate.events.jsonl": "24d804f704c152d3f56331585c30cf45f8d1b71e6aa0a305160ed279fb5a6b8c",
+    "A-unhealthy-2/trial.json": "be8ecb7d0efabe5420491bf359a3c770592c06a2dbf1516a225465e1502a9306",
+    "A-unhealthy-2/traffic.jsonl": "d118a71fe49f4717a41cebb27f0850dc9fcd87f2e66d97f79337bf0c8d63fdb7",
+    "A-unhealthy-2/controller.events.jsonl": "de4b908607c49ac065b745f7a8c19648445554962af0a8ad918ba6ea52cea48d",
+    "A-unhealthy-2/gate.events.jsonl": "388e38a5cbc04c30026df4470a389d395b2b691ff26e300382feb23f62fb249c",
+    "B-unhealthy-2/trial.json": "de82f6924aa08c1ace5c93164919b1c9d391e6b1a1748f16340c4f723dd64aea",
+    "B-unhealthy-2/traffic.jsonl": "7c935d30c8fd1fa97d364dfc645c7146b54581c6702beaa7a1ea983702f70ea0",
+    "B-unhealthy-2/controller.events.jsonl": "1dd92408513792dbef562e3d95a0ba139b01da9fba682c6dadcdf572c9646135",
+    "B-unhealthy-2/gate.events.jsonl": "58d87af30cc0c513ba68de74b4d855a4f1382e1658f97d6e56310b21f8bb0b7c",
+    "C-unhealthy-2/trial.json": "9294a244c876ac415e581d13c6ab46bdfee5b776842460cc718a245476cbf021",
+    "C-unhealthy-2/traffic.jsonl": "27ed9c4e6f3d16b9e3b6ecd757b192e36051eff376481c6bbf6a75d9e180dfb6",
+    "C-unhealthy-2/controller.events.jsonl": "d9a997ab0f2a4598be5f6dbafc0e3070de1c34965572f9721b776d562cdcd0ad",
+    "C-unhealthy-2/gate.events.jsonl": "698aa140108a3cc2c67ea72b812b4d99d5aabaeb5fe1ef52df8382d0d7faad87",
+    "A-control-2/trial.json": "d6edd1f8365afabdc0e632360037ad7857a873555838db3a5130a3460edb5661",
+    "A-control-2/traffic.jsonl": "9793dbed4f59793406787930c8df8846e45a102e57cbae217b1b649760a4190d",
+    "A-control-2/controller.events.jsonl": "2d645e87a5c02255e146618ca82d8ac78504f15ffd6f5f2875bf4f627ac487e6",
+    "A-control-2/gate.events.jsonl": "59be0f91c9225ea504768ff8b36cab1e8d8a2b77487199e9fec59dc6ad9eebc6",
+    "B-control-2/trial.json": "d3ec3bf92400226d78c5d48c54b60d88b738ccf8fd008dc86b86d9518e2dd43b",
+    "B-control-2/traffic.jsonl": "e8fb2d0313aff6872faa506a40e208d7c338c0e74ad8c8e040da53d56bc67e8b",
+    "B-control-2/controller.events.jsonl": "e0f4b1a190d98aa1d7b7cb8ad2465887e5cdcae12943dc5bf0122053110c1998",
+    "B-control-2/gate.events.jsonl": "0a2da6aaab8262851bef4f3cf6c33db490931651b547e679d3d5e5aa4ff0a601",
+    "C-control-2/trial.json": "d9b482d18ff9909d258eab9b3ae23cb683646e2dc77505d9e018653457d74a16",
+    "C-control-2/traffic.jsonl": "7711a567a97b5c89ccabdeee1c210e84d553cf11cc8eedc9fbf3d479f6e141a1",
+    "C-control-2/controller.events.jsonl": "b51569a4635cf0655e4559aa1d0a62ea8be41925e675401a0861024e3f6a5f57",
+    "C-control-2/gate.events.jsonl": "da616b330c288fe4c08509d35025aadb36121b6aecfa362808928ff51d36da3d",
+    "A-unhealthy-3/trial.json": "6e1cb95892c24ac7337d1de87e1e96b35bed75e259a31eaeddd63cadc19da169",
+    "A-unhealthy-3/traffic.jsonl": "8f3c9b98d0e683422542a2043669a5ecad08e0f61b230d0d4845d3f6792586c2",
+    "A-unhealthy-3/controller.events.jsonl": "4a315aeee1d8d2caa3629f8f2864d21f34f708294f3d6863689c25e489f9f9e3",
+    "A-unhealthy-3/gate.events.jsonl": "7263ec289bbb1768953b0709e49ccdf36f957e73aaa2ea00665bf3e929ee2860",
+    "B-unhealthy-3/trial.json": "3703469227c858179d840d6b964b5436ecfc8e112571c181565cf9798f3828ab",
+    "B-unhealthy-3/traffic.jsonl": "2ad544fabd8fb080add90b1ab53a2c3fb7a819411ce43bba506752780870beda",
+    "B-unhealthy-3/controller.events.jsonl": "7228b01574f23263581733e3d0586a3b7855daa8ed0b15f03a05e88ed13ade4a",
+    "B-unhealthy-3/gate.events.jsonl": "c05a290a10b886b20ccc7e0667ac0bdf3ed3bdf386b8b6bfb12d07cdc371868d",
+    "C-unhealthy-3/trial.json": "1d4e5796c615a34cb5d502461147a787596e1e997c061d2d144d2a20954ff23b",
+    "C-unhealthy-3/traffic.jsonl": "5f8b39050592779bb6a891fc7c6e1f2298cacc8707ba9f224637ea48fa470149",
+    "C-unhealthy-3/controller.events.jsonl": "2994eab1a5e09eef966328abf040e7d647a4ffc93fee831caf361bc1951f7d86",
+    "C-unhealthy-3/gate.events.jsonl": "ecbccffb3a301fb4aedf6550696bf4412c65cc90a8ec54a27088248f0652b5c8",
+    "A-control-3/trial.json": "af50d939f9555a2641b53c8bd8671499ad251826f6aaa7d767d65de2cd4055ab",
+    "A-control-3/traffic.jsonl": "b7d0ba09fc7e13613f79902524c801177a1c5b1bebb5c0c7b1e69cd90904e52b",
+    "A-control-3/controller.events.jsonl": "5d0458197f78e37e3dd6250427328abd7f1110fb731b10d3247290c3db0725b5",
+    "A-control-3/gate.events.jsonl": "d3a1423d4d5da8488dc2f8664c5639c07d4b692a6f4ec44108a4975308a5f31b",
+    "B-control-3/trial.json": "9c4708493ab4e51ff8a5f9429bbd38e505cf2c8ac2255935e448e5b31f36b988",
+    "B-control-3/traffic.jsonl": "11029bafc5a851abc44d2315fde86ad9093150fc538cbcbb6301ca64aff31571",
+    "B-control-3/controller.events.jsonl": "2661f843b04283661f7e8d15477bd663c67c58bbaaec488e419f57e9c0b7737f",
+    "B-control-3/gate.events.jsonl": "c946eb339221ab1b02a35fe997fb00d3fa4c025e43ae417bf83b100c14eda8fd",
+    "C-control-3/trial.json": "b4e1beae0009ff028239033037b233bea787cee6038b61138781c383cbf1bfeb",
+    "C-control-3/traffic.jsonl": "94188b892f8c07c7881f0a56aedef3e19281dbe3bc0e87dc5e7cbca3cc54fb34",
+    "C-control-3/controller.events.jsonl": "58800472bfe7e1608284b786975ea92c4882effcf7722cbfcd99c74f6d701f3d",
+    "C-control-3/gate.events.jsonl": "460df640f73e50859164898ac1e41939ce3928918a46ef4b40d363f322e1212f",
+    "A-crash-3/trial.json": "9f6cb98bc16bece248c4399991d17b83bb54a3a9f836a2fd2be5d2f93b1fcee4",
+    "A-crash-3/traffic.jsonl": "185de59333e8c1cfa6cd55974ee6be0cb82577d25c7037ae54768304874cba34",
+    "A-crash-3/controller.events.jsonl": "d37506b75c5082b85eb787a1df3fe6507c51b2ced558ebc4ed1d4ac213350651",
+    "A-crash-3/gate.events.jsonl": "7c828227935e1898ee64643df65619bd7c48bde1a6a0493a4b5b6babfa256d61",
+    "B-crash-3/trial.json": "75bdbe4e262b3c7c9c0b67901066d6798ee58f5d5bc8e88ebd3cf6c57fc9b011",
+    "B-crash-3/traffic.jsonl": "6610a6516b6f629efcffbe3e59f6cfa9a35ff1cc58d7fb26830afa2f1afa2175",
+    "B-crash-3/controller.events.jsonl": "669de799eabaec781804b7b037179ee73f468eeeeea5666acc03be46224b0d5c",
+    "B-crash-3/gate.events.jsonl": "db689873b754038c20887e3f60a9ad9511d481a06cda24126e98f2204d266d83",
+    "C-crash-3/trial.json": "13e3fc2ba430f28e28084da9966886f68d8affab63bed75cee4f2be1286ae6f4",
+    "C-crash-3/traffic.jsonl": "bce97e672bc650df1ebd4dfc69d106cfa91046be6f28f63e4fb544e9034339a2",
+    "C-crash-3/controller.events.jsonl": "156835d0d95ca1a10d3a892260fd63aea5ffb643aa7ee844687149dc23c04eb4",
+    "C-crash-3/gate.events.jsonl": "7f1142fc136a036f6f2a5c5dd4e6707455ecb9066f29838e65f4c7dfad4cd05e"
+  },
+  "limitations": [
+    "Three repetitions per group describe individual observations and ranges, not statistical significance.",
+    "All containers share one host and Docker VM; host failures are not protected.",
+    "Nginx passive traffic failover and readiness-verified backend recovery are different outcomes."
+  ]
+}

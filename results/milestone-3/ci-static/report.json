@@ -1,0 +1,40 @@
+{
+  "status": "passed",
+  "recordedAt": "2026-11-04T09:22:59.403Z",
+  "scope": "Local CI static checks and smoke-wrapper unit tests only; not a GitHub Actions run and not the Docker integration smoke.",
+  "checks": [
+    {
+      "command": "node --test tools/ci-smoke.test.mjs",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "command": "node tools/experiments-config.mjs",
+      "configurations": [
+        "A",
+        "B",
+        "C"
+      ],
+      "result": "passed: syntax, backend count, shared detection policy and isolation"
+    },
+    {
+      "command": ".cache/ci-tools/actionlint -color -shellcheck='' -pyflakes='' .github/workflows/ci.yml",
+      "exitCode": 0,
+      "version": "1.7.12",
+      "notes": "No workflow lint findings. External shellcheck and pyflakes integrations were disabled; no system linters installed."
+    }
+  ],
+  "actionlint": {
+    "source": "https://github.com/rhysd/actionlint/releases/tag/v1.7.12",
+    "archiveSha256": "aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f",
+    "installedAt": ".cache/ci-tools/actionlint"
+  },
+  "sourceHashes": {
+    ".github/workflows/ci.yml": "194641e0762b638cc58d6f0a5d9a034fcc1425758e64dbbcca7c3d9f61e4cb54",
+    "tools/ci-smoke.mjs": "5e1d254290f4eccce0159a4e0c7502ebaa0dfefc667cbf72f4b13017619f49fa",
+    "tools/ci-smoke.test.mjs": "f4fc86c00aac9b6f4c54b66f746ed734c4f7aa4cdd5ff0b9d4f90cee51ccaca5",
+    "tools/experiments-config.mjs": "2da37dda6574532922ecb61995e5fa3ffeb2baa26b8199e33037c57d69b8a72a"
+  },
+  "githubActionsRun": "not_run",
+  "integrationSmoke": "not_run_by_this_check"
+}

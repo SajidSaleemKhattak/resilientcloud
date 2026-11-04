@@ -51,6 +51,25 @@ function fixture(overrides = {}) {
   };
 }
 
+test('one-backend monitoring preserves detection settings and rejects unconfigured targets', async () => {
+  const one = loadConfig({ MONITORED_SERVICES: 'backend-a', RECOVERY_ENABLED: 'false' });
+  const two = loadConfig({ RECOVERY_ENABLED: 'false' });
+  assert.deepEqual({ ...one, services: two.services }, two);
+  for (const value of ['', 'backend-b', 'backend-a,foreign', 'backend-a,backend-a', 'backend-b,backend-a']) {
+    assert.throws(() => loadConfig({ MONITORED_SERVICES: value }), /MONITORED_SERVICES/);
+  }
+  const f = fixture(one);
+  await f.controller.initialize();
+  assert.deepEqual(Object.keys(f.controller.snapshot().backends), ['backend-a']);
+  await assert.rejects(f.controller.step('backend-b'), /invalid_service/);
+  f.setHealthy(false);
+  await f.step(); await f.step(); await f.step();
+  assert.equal(f.calls.length, 0);
+  assert.equal(f.store.events.filter(e => e.type === 'failure_confirmed').length, 1);
+  const changed = new RecoveryController({ ...f.dependencies, config: two });
+  await assert.rejects(changed.initialize(), /checkpoint_service_set_changed/);
+});
+
 test('threshold requires consecutive failures and transient readiness failure never restarts', async () => {
   const f = fixture();
   await f.controller.initialize();

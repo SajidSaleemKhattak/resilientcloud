@@ -1,0 +1,2 @@
+{"type":"start","startedAt":"2026-11-04T16:59:25.328Z","timeoutMs":600000,"hostPlatform":"darwin","hostArch":"arm64"}
+{"type":"finish","status":"passed","startedAt":"2026-11-04T16:59:25.328Z","finishedAt":"2026-11-04T17:01:25.219Z","hostPlatform":"darwin","hostArch":"arm64","deadlineMs":600000,"code":0,"signal":null,"timedOut":false,"durationMs":119889.10458300001,"validation":"validation/report.json","note":"Local execution is not a GitHub Actions run. Timed-out resources are retained for inspection; this wrapper performs no cleanup."}

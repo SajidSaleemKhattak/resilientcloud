@@ -23,7 +23,7 @@ services:
       APP_NETWORK: ${COMPOSE_PROJECT_NAME}_app
       DATA_DIR: /audit
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:ro
       - gate-runtime:/run/gate
       - gate-data:/audit
     healthcheck:

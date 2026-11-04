@@ -123,6 +123,7 @@ export async function runTraffic(input, emit) {
   const options = { ...defaults, ...input };
   validateOptions(options);
   const started = performance.now();
+  const originMonotonicMs = Number(process.hrtime.bigint()) / 1e6;
   const durationMs = options.duration * 1000;
   const interval = 1000 / options.rate;
   const scheduled = Math.ceil(durationMs / interval);
@@ -135,7 +136,7 @@ export async function runTraffic(input, emit) {
   let successes = 0;
   let dropped = 0;
   let writeFailure;
-  await emit({ type: 'start', schemaVersion: 1, timestamp: new Date().toISOString(), url: options.url, label: options.label, durationSeconds: options.duration, ratePerSecond: options.rate, concurrency: options.concurrency, timeoutMs: options.timeoutMs, clientRetries: 0 });
+  await emit({ type: 'start', schemaVersion: 1, originMonotonicMs, timestamp: new Date().toISOString(), url: options.url, label: options.label, durationSeconds: options.duration, ratePerSecond: options.rate, concurrency: options.concurrency, timeoutMs: options.timeoutMs, clientRetries: 0 });
   try {
     let slot = 0;
     while (slot < scheduled) {
@@ -147,7 +148,7 @@ export async function runTraffic(input, emit) {
       const reason = slot < newerSlotDue || elapsed >= durationMs ? 'scheduler_lag' : pending.size >= options.concurrency ? 'concurrency_limit' : null;
       if (reason) {
         dropped++;
-        await emit({ type: 'skipped', timestamp: new Date().toISOString(), elapsedMs: round(elapsed), slot, scheduledMs: round(due), reason });
+        await emit({ type: 'skipped', monotonicMs: originMonotonicMs + elapsed, timestamp: new Date().toISOString(), elapsedMs: round(elapsed), slot, scheduledMs: round(due), reason });
       } else {
         const requestSlot = slot;
         const timestamp = new Date().toISOString();
@@ -156,7 +157,7 @@ export async function runTraffic(input, emit) {
           latencies.push(result.latencyMs);
           if (result.success) { successes++; successfulLatencies.push(result.latencyMs); }
           if (result.instance) instances[result.instance] = (instances[result.instance] ?? 0) + 1;
-          await emit({ type: 'request', timestamp, elapsedMs: round(elapsed), completedElapsedMs: round(performance.now() - started), slot: requestSlot, scheduledMs: round(due), ...result });
+          await emit({ type: 'request', monotonicMs: originMonotonicMs + elapsed, timestamp, elapsedMs: round(elapsed), completedElapsedMs: round(performance.now() - started), slot: requestSlot, scheduledMs: round(due), ...result });
         }).catch(error => { writeFailure = error; }).finally(() => pending.delete(promise));
         pending.add(promise);
       }

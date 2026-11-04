@@ -56,7 +56,7 @@ Generate tables/charts from saved data only; retain commands, configuration, mac
 
 **Milestone 2 — isolated recovery (completed):** controller state transitions, bounded actions, Docker authorization gate, persisted events/checkpoints, read-only status, and security tests. Scenario C validated locally with controller recovery enabled and Docker restart policies disabled.
 
-**Milestone 3 — evidence and presentation (Day 2):** repeated A/B/C experiment matrix, actual comparisons, React/TypeScript dashboard, GitHub Actions, architecture diagram, and scholarship demo documentation. Prioritize reproducible CLI evidence over visual polish. If recovery cannot be validated in time, report it as incomplete and retain the measured baseline/failover results.
+**Milestone 3 — evidence and presentation (completed locally):** repeated A/B/C experiment matrix, actual comparisons, React/TypeScript dashboard, GitHub Actions, architecture diagram, and scholarship demo documentation. Reproducible CLI evidence and live telemetry are displayed separately from saved results.
 
 ### Milestone 1 progress
 
@@ -79,13 +79,31 @@ Generate tables/charts from saved data only; retain commands, configuration, mac
 
 **Milestone 2 completed, 2026-11-03.** Checkpoint evidence is `results/milestone-2/validated/`; earlier passing and failed attempts remain separate. Crash detection/recovery: 1.275/2.294 seconds; unhealthy: 1.303/2.294 seconds, using calibrated monotonic clocks (uncertainty about ±44–47 ms plus scheduling effects). Clock mapping is checked before/after each fault; idle sleep was prevented during the final run. Persistent failure consumed exactly two attempts and remained exhausted after controller restart. Disabled recovery issued no restarts; transient failure stayed below threshold. Of 710 actual client requests, 708 succeeded and 2 returned 504 during the enabled crash sample; no dropped slots. Healthy sibling probes stayed successful. No milestone-2 runtime blocker remains; offline rearming and component/host resilience remain limitations described in `docs/RECOVERY.md`.
 
-Milestone smoke checks are functional validation, not the three-repetition research experiment matrix above. Dashboard, CI, repeated comparisons and hosting evaluation remain pending. Cloud deployment still requires local validation, a confirmed zero-cost option, and explicit approval.
+Milestone-1/2 smoke checks are functional validation, separate from the milestone-3 repeated experiment matrix. Hosting evaluation remains deferred. Cloud deployment still requires local validation, a confirmed zero-cost option, and explicit approval.
+
+### Milestone 3 progress
+
+- [x] React/TypeScript responsive read-only dashboard: actual status/events, both instances, readiness, state, probe time, per-incident attempts, timeline, unknown/stale/disconnected/exhausted states, and a single-host limitation.
+- [x] Separate saved-evidence charts/tables generated from the experiment summary; invalid trials excluded from chart ranges, missing recovery shown as not observed, no substitute activity.
+- [x] Bounded read-only incident-history endpoint; dashboard/status isolation and public write/fault/recovery denial verified on the real stack.
+- [x] 27 fresh trials: three repetitions per A/B/C fault pair plus three controls per configuration; identical 15-second baseline/60-second observation, workload and detection parameters.
+- [x] Raw requests, skipped slots, monotonic fault/probe/recovery timing, identities, journals, effective configurations, image IDs and source/input hashes retained. Summary regeneration is byte-for-byte deterministic.
+- [x] 57 backend/controller/tool tests, 7 dashboard model tests, 9 browser fixture checks, type checks, production builds, Compose validation and workflow lint passed locally.
+- [x] Final real dashboard healthy/stale/disconnected desktop/mobile checks passed; screenshots and HTML reports use separate artifact paths.
+- [x] Bounded recovery integration smoke passed all 16 checks locally on macOS ARM64/Docker Linux containers; GitHub Actions execution remains unrun.
+- [x] Evidence index, README commands/results/architecture/limitations, two-minute demo, and local milestone checkpoint prepared.
+
+The full matrix at `results/milestone-3/validated/` completed with 27 valid trials, no retries/failed attempts, and zero skipped requests. It recorded 20,790 raw requests including guards, with 20,250 requests in the analysis windows. No-fault controls returned 100% whole-trial success. Scenario A had 20% whole-trial and 0% post-fault success for both faults, with no recovery observed. B had 99.867% whole/99.833% post-fault crash success and 100% unhealthy success; its failed backend did not recover. C had 99.867–100% whole/99.833–100% post-fault crash success and 100% unhealthy success. C verified recovery in all six fault trials: crashes 2.432–2.459 seconds, unhealthy services 2.059–2.070 seconds. Clock-mapping uncertainty was approximately ±41–44 ms, plus probe/command/scheduling effects. These three-repetition observations do not establish statistical significance or zero downtime.
+
+Earlier short runner smoke failures remain under `results/milestone-3/runner-smoke/`: they required Docker's slower health polling to agree immediately with verified readiness. The corrected nine-trial smoke is separate from the full matrix. GitHub Actions is configured but has not run on GitHub; local workflow checks cannot establish that result.
+
+**Milestone 3 completed locally, 2026-11-04.** Final live-dashboard evidence is `results/milestone-3/dashboard-final/`; the bounded integration report is `results/milestone-3/ci-local/`. All 57 backend/controller/tool tests, 7 dashboard model tests, 9 browser fixture checks, and four real browser checks passed. Two repeated saved-summary checks were deliberately skipped in stale/disconnected phases because the same summary had already been checked against all 27 actual trials in the healthy phase. The public dashboard has no mutation channel and no Docker/gate socket. Milestone-1/milestone-2 artifacts and checkpoints are preserved. No local runtime blocker remains. Actual GitHub-hosted CI and any future cloud deployment require subsequent authorized steps; hosting still needs a confirmed zero-cost option and explicit approval.
 
 ## Tests, CI, and documentation
 
 - Unit tests: failure thresholds, timeout handling, cooldown/retry limits, successful recovery verification, and refusal of unauthorized targets/actions.
 - Compose integration tests: routing to both instances, failover after crash, running-but-unhealthy detection, controller recovery, recovery-disabled behavior, and status/public-service isolation from Docker control. Verify socket/network exposure and target authorization, including foreign project containers and replaced container IDs.
-- GitHub Actions: pinned supported Node, `npm ci`, lint, TypeScript checks, unit tests, production builds, Compose configuration validation, and isolated Linux Compose smoke tests. Upload logs/results on failure. No cloud credentials or deployment jobs; test locally on ARM64 too.
+- GitHub Actions: pinned supported Node/Docker, lockfile `npm ci`, TypeScript checks, unit tests, production builds, browser states, Compose configuration validation, and bounded Linux Compose smoke tests. Upload logs/results on failure. The workflow itself is linted locally. No cloud credentials or deployment jobs; local ARM64 results are recorded separately from GitHub execution.
 - README: prerequisites and daemon startup, architecture/trust boundaries, start/stop/reset commands, experiment commands and metric definitions, actual results, limitations, troubleshooting, and a short scholarship demo narrative. Commit lockfiles, `.env.example`, and experiment scripts; exclude secrets and generated dependencies. Explain precisely what was measured and what remains unproven.
 
 **Completion criteria:** a fresh checkout can start locally, reproduce all three scenarios and both fault types, show genuine measurements, and demonstrate that public services cannot access Docker or request recovery of unrelated containers.

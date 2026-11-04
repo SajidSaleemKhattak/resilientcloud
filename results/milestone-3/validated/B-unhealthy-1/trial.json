@@ -1,0 +1,344 @@
+{
+  "id": "B-unhealthy-1",
+  "configuration": "B",
+  "fault": "unhealthy",
+  "repetition": 1,
+  "attempt": 1,
+  "evidencePath": "results/milestone-3/validated/B-unhealthy-1",
+  "startedAt": "2026-11-04T09:33:09.801Z",
+  "valid": true,
+  "completed": true,
+  "controllerConfig": {
+    "intervalMs": 500,
+    "probeTimeoutMs": 300,
+    "failureThreshold": 3,
+    "maxAttempts": 2,
+    "verifyTimeoutMs": 4000,
+    "verifySuccesses": 2,
+    "cooldownMs": 2000
+  },
+  "before": {
+    "a": {
+      "id": "b4972e35e1a6d40780e486702de71d2f7bafebc365e586bacb7ebab4be1dbf33",
+      "running": true,
+      "status": "running",
+      "exitCode": 0,
+      "health": "healthy",
+      "startedAt": "2026-11-04T09:33:10.149745751Z",
+      "restartCount": 0,
+      "restartPolicy": "no",
+      "image": "sha256:98bbdeefbc55962a236a5041af861f6900d024620944b420406071fbde937923",
+      "ip": "172.18.0.3"
+    },
+    "b": {
+      "id": "1cc2cd8c30184c0bb323129a25b8e581e51c4bc3c1c697d2ef1b3b3698f86293",
+      "running": true,
+      "status": "running",
+      "exitCode": 0,
+      "health": "healthy",
+      "startedAt": "2026-11-04T09:33:10.153098251Z",
+      "restartCount": 0,
+      "restartPolicy": "no",
+      "image": "sha256:98bbdeefbc55962a236a5041af861f6900d024620944b420406071fbde937923",
+      "ip": "172.18.0.2"
+    }
+  },
+  "initialStatus": {
+    "schemaVersion": 1,
+    "updatedAt": "2026-11-04T09:33:16.411Z",
+    "runId": "d349d1c6-2f86-4fcf-a405-56818a201934",
+    "recoveryEnabled": false,
+    "monitoredServices": [
+      "backend-a",
+      "backend-b"
+    ],
+    "config": {
+      "intervalMs": 500,
+      "probeTimeoutMs": 300,
+      "failureThreshold": 3,
+      "maxAttempts": 2,
+      "verifyTimeoutMs": 4000,
+      "verifySuccesses": 2,
+      "cooldownMs": 2000
+    },
+    "backends": {
+      "backend-a": {
+        "state": "healthy",
+        "failures": 0,
+        "attempts": 0,
+        "manualIntervention": false,
+        "containerId": "b4972e35e1a6d40780e486702de71d2f7bafebc365e586bacb7ebab4be1dbf33",
+        "lastProbe": {
+          "ok": true,
+          "reason": null,
+          "status": 200,
+          "instance": "backend-a",
+          "latencyMs": 1.8282090000002427,
+          "timestamp": "2026-11-04T09:33:16.411Z"
+        },
+        "lastReadyAt": "2026-11-04T09:33:16.411Z",
+        "failureConfirmedAt": null,
+        "recoveryVerifiedAt": null,
+        "verificationSuccesses": 0,
+        "verificationDeadline": null,
+        "attemptTargetId": null,
+        "restartOutcome": null,
+        "cooldownUntil": null,
+        "stableSince": null,
+        "observationAgeMs": 47,
+        "stale": false
+      },
+      "backend-b": {
+        "state": "healthy",
+        "failures": 0,
+        "attempts": 0,
+        "manualIntervention": false,
+        "containerId": "1cc2cd8c30184c0bb323129a25b8e581e51c4bc3c1c697d2ef1b3b3698f86293",
+        "lastProbe": {
+          "ok": true,
+          "reason": null,
+          "status": 200,
+          "instance": "backend-b",
+          "latencyMs": 1.5636249999997744,
+          "timestamp": "2026-11-04T09:33:16.411Z"
+        },
+        "lastReadyAt": "2026-11-04T09:33:16.411Z",
+        "failureConfirmedAt": null,
+        "recoveryVerifiedAt": null,
+        "verificationSuccesses": 0,
+        "verificationDeadline": null,
+        "attemptTargetId": null,
+        "restartOutcome": null,
+        "cooldownUntil": null,
+        "stableSince": null,
+        "observationAgeMs": 47,
+        "stale": false
+      }
+    },
+    "available": true,
+    "stale": false,
+    "ageMs": 47
+  },
+  "clockBefore": {
+    "hostBefore": 5892782.088875,
+    "hostAfter": 5892864.22,
+    "containerNow": 879405.855817,
+    "containerUtc": 1793784796790,
+    "offsetMs": -5013417.2986205,
+    "uncertaintyMs": 41.065562499687076,
+    "samples": [
+      {
+        "hostBefore": 5892606.021833,
+        "hostAfter": 5892694.785458,
+        "containerNow": 879236.182151,
+        "containerUtc": 1793784796621,
+        "offsetMs": -5013414.2214945005,
+        "uncertaintyMs": 44.38181250030175
+      },
+      {
+        "hostBefore": 5892694.787958,
+        "hostAfter": 5892782.086,
+        "containerNow": 879323.801026,
+        "containerUtc": 1793784796708,
+        "offsetMs": -5013414.635953,
+        "uncertaintyMs": 43.64902100013569
+      },
+      {
+        "hostBefore": 5892782.088875,
+        "hostAfter": 5892864.22,
+        "containerNow": 879405.855817,
+        "containerUtc": 1793784796790,
+        "offsetMs": -5013417.2986205,
+        "uncertaintyMs": 41.065562499687076
+      }
+    ]
+  },
+  "trafficOriginMonotonicMs": 5892951.122166,
+  "faultEvent": {
+    "type": "fault",
+    "timestamp": "2026-11-04T09:33:32.943Z",
+    "monotonicMs": 632793.273417,
+    "project": "resilientcloud-m3-b",
+    "service": "backend-a",
+    "containerId": "b4972e35e1a6d40780e486702de71d2f7bafebc365e586bacb7ebab4be1dbf33",
+    "mode": "unhealthy",
+    "signal": "SIGUSR2",
+    "completedAt": "2026-11-04T09:33:32.966Z",
+    "durationMs": 23.4173750000773,
+    "hostMonotonicMs": 5909007.230458
+  },
+  "anchorMonotonicMs": 5909007.230458,
+  "immediate": {
+    "id": "b4972e35e1a6d40780e486702de71d2f7bafebc365e586bacb7ebab4be1dbf33",
+    "running": true,
+    "status": "running",
+    "exitCode": 0,
+    "health": "healthy",
+    "startedAt": "2026-11-04T09:33:10.149745751Z",
+    "restartCount": 0,
+    "restartPolicy": "no",
+    "image": "sha256:98bbdeefbc55962a236a5041af861f6900d024620944b420406071fbde937923",
+    "ip": "172.18.0.3"
+  },
+  "unhealthyEndpoints": [
+    {
+      "path": "/live",
+      "status": 200
+    },
+    {
+      "path": "/ready",
+      "status": 503
+    },
+    {
+      "path": "/api",
+      "status": 503
+    }
+  ],
+  "windowStartMonotonicMs": 5894007.230458,
+  "windowEndMonotonicMs": 5969007.230458,
+  "clockAfter": {
+    "hostBefore": 5970161.83375,
+    "hostAfter": 5970250.342625,
+    "containerNow": 956791.87927,
+    "containerUtc": 1793784874175,
+    "offsetMs": -5013414.2089174995,
+    "uncertaintyMs": 44.254437499679625,
+    "samples": [
+      {
+        "hostBefore": 5969963.530875,
+        "hostAfter": 5970072.161916,
+        "containerNow": 956612.722145,
+        "containerUtc": 1793784873996,
+        "offsetMs": -5013405.1242504995,
+        "uncertaintyMs": 54.31552049983293
+      },
+      {
+        "hostBefore": 5970072.164791,
+        "hostAfter": 5970161.831208,
+        "containerNow": 956703.58402,
+        "containerUtc": 1793784874087,
+        "offsetMs": -5013413.4139795005,
+        "uncertaintyMs": 44.833208499941975
+      },
+      {
+        "hostBefore": 5970161.83375,
+        "hostAfter": 5970250.342625,
+        "containerNow": 956791.87927,
+        "containerUtc": 1793784874175,
+        "offsetMs": -5013414.2089174995,
+        "uncertaintyMs": 44.254437499679625
+      }
+    ]
+  },
+  "after": {
+    "a": {
+      "id": "b4972e35e1a6d40780e486702de71d2f7bafebc365e586bacb7ebab4be1dbf33",
+      "running": true,
+      "status": "running",
+      "exitCode": 0,
+      "health": "unhealthy",
+      "startedAt": "2026-11-04T09:33:10.149745751Z",
+      "restartCount": 0,
+      "restartPolicy": "no",
+      "image": "sha256:98bbdeefbc55962a236a5041af861f6900d024620944b420406071fbde937923",
+      "ip": "172.18.0.3"
+    },
+    "b": {
+      "id": "1cc2cd8c30184c0bb323129a25b8e581e51c4bc3c1c697d2ef1b3b3698f86293",
+      "running": true,
+      "status": "running",
+      "exitCode": 0,
+      "health": "healthy",
+      "startedAt": "2026-11-04T09:33:10.153098251Z",
+      "restartCount": 0,
+      "restartPolicy": "no",
+      "image": "sha256:98bbdeefbc55962a236a5041af861f6900d024620944b420406071fbde937923",
+      "ip": "172.18.0.2"
+    }
+  },
+  "finalStatus": {
+    "schemaVersion": 1,
+    "updatedAt": "2026-11-04T09:34:33.905Z",
+    "runId": "d349d1c6-2f86-4fcf-a405-56818a201934",
+    "recoveryEnabled": false,
+    "monitoredServices": [
+      "backend-a",
+      "backend-b"
+    ],
+    "config": {
+      "intervalMs": 500,
+      "probeTimeoutMs": 300,
+      "failureThreshold": 3,
+      "maxAttempts": 2,
+      "verifyTimeoutMs": 4000,
+      "verifySuccesses": 2,
+      "cooldownMs": 2000
+    },
+    "backends": {
+      "backend-a": {
+        "state": "suspected_failure",
+        "failures": 122,
+        "attempts": 0,
+        "manualIntervention": false,
+        "containerId": "b4972e35e1a6d40780e486702de71d2f7bafebc365e586bacb7ebab4be1dbf33",
+        "lastProbe": {
+          "ok": false,
+          "reason": "readiness_failed",
+          "status": 503,
+          "instance": "backend-a",
+          "latencyMs": 1.2996670000138693,
+          "timestamp": "2026-11-04T09:34:33.905Z"
+        },
+        "lastReadyAt": "2026-11-04T09:33:32.911Z",
+        "failureConfirmedAt": "2026-11-04T09:33:34.413Z",
+        "recoveryVerifiedAt": null,
+        "verificationSuccesses": 0,
+        "verificationDeadline": null,
+        "attemptTargetId": null,
+        "restartOutcome": null,
+        "cooldownUntil": null,
+        "stableSince": null,
+        "observationAgeMs": 329,
+        "stale": false
+      },
+      "backend-b": {
+        "state": "healthy",
+        "failures": 0,
+        "attempts": 0,
+        "manualIntervention": false,
+        "containerId": "1cc2cd8c30184c0bb323129a25b8e581e51c4bc3c1c697d2ef1b3b3698f86293",
+        "lastProbe": {
+          "ok": true,
+          "reason": null,
+          "status": 200,
+          "instance": "backend-b",
+          "latencyMs": 0.7738750000135042,
+          "timestamp": "2026-11-04T09:34:33.903Z"
+        },
+        "lastReadyAt": "2026-11-04T09:34:33.903Z",
+        "failureConfirmedAt": null,
+        "recoveryVerifiedAt": null,
+        "verificationSuccesses": 0,
+        "verificationDeadline": null,
+        "attemptTargetId": null,
+        "restartOutcome": null,
+        "cooldownUntil": null,
+        "stableSince": null,
+        "observationAgeMs": 331,
+        "stale": false
+      }
+    },
+    "available": true,
+    "stale": false,
+    "ageMs": 329
+  },
+  "functionalChecks": {
+    "siblingAvailable": true,
+    "noFalseActionInControl": null,
+    "failureDetected": true,
+    "recoveryVerified": null,
+    "disabledRecoveryNoRestart": true,
+    "disabledFaultPersists": true
+  },
+  "finishedAt": "2026-11-04T09:34:34.531Z"
+}

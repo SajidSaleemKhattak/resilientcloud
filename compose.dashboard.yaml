@@ -1,0 +1,10 @@
+services:
+  gateway:
+    volumes:
+      - ./nginx/dashboard.conf:/etc/nginx/nginx.conf:ro
+      - type: bind
+        source: ./dashboard/dist
+        target: /usr/share/nginx/html
+        read_only: true
+        bind:
+          create_host_path: false

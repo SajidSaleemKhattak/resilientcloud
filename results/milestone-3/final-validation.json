@@ -1,0 +1,64 @@
+{
+  "checkedAt": "2026-11-04T17:03:41.919Z",
+  "matrixSourceHashesMatch": true,
+  "dashboardSummaryMatches": true,
+  "previousMilestoneEvidence": "git diff --exit-code 751a74e -- results/milestone-1 results/milestone-2 passed",
+  "checks": {
+    "backendToolTests": {
+      "passed": 57,
+      "failed": 0
+    },
+    "dashboardModelTests": {
+      "passed": 7,
+      "failed": 0
+    },
+    "fixtureBrowserTests": {
+      "passed": 9,
+      "failed": 0
+    },
+    "liveBrowserTests": {
+      "passed": 4,
+      "intentionalSkips": 2,
+      "failed": 0
+    },
+    "boundedIntegration": {
+      "status": "passed",
+      "checks": 16
+    },
+    "finalDashboard": "passed",
+    "typeChecks": "passed",
+    "productionBuilds": "passed",
+    "composeConfigurations": [
+      "one",
+      "two",
+      "recovery",
+      "dashboard",
+      "A",
+      "B",
+      "C"
+    ],
+    "workflowLint": "passed"
+  },
+  "githubActionsRun": "not_run",
+  "remainingTestContainers": {
+    "resilientcloud-m3-a": [],
+    "resilientcloud-m3-b": [],
+    "resilientcloud-m3-c": [],
+    "resilientcloud-m3-ui": [],
+    "resilientcloud-m2": [],
+    "resilientcloud-m2-disabled": []
+  },
+  "dashboardSources": {
+    "dashboard/package.json": "d25fbe4edc554ecc789bd7d41e51b9e80dd1042c38dfb4d7f63a180146a7c2b4",
+    "dashboard/package-lock.json": "276e25464665ceb37914a2509f69829b9fb92a047cd9433e3f810c6eaecd6068",
+    "dashboard/playwright.config.ts": "0d056a40da2d0faf99ea1b87d542b97d52d92e99ca271f217ab0a35ec6277b17",
+    "nginx/dashboard.conf": "ac4e2f1ab7349ba054f01355f52ea5031c957d2a5a42acec2b8cd0cef5f42d79",
+    "compose.dashboard.yaml": "a7e488bf9a4fee7163065dfcb3d8237122957a1790991e8c7e5a85949cae4058",
+    "dashboard/src/App.tsx": "6f53ac2dbaba4c7667fa54a29a143cfd4c37a08942126bafd68648a632f8617f",
+    "dashboard/src/main.tsx": "e0a12b080d820a7519f87d494dadd6af075385a2fc9275283222267e2bad2ef0",
+    "dashboard/src/model.test.ts": "1c519d3ff7e1f539aa6bc3286ddd78666437891e481c3c1094c7e3b19865e6bd",
+    "dashboard/src/model.ts": "9eeeaa9c0fd4dcf4ca79fdacf4c81eeab67d8abf63e6db1cc578204a5f3d36fe",
+    "dashboard/src/styles.css": "751b83d1139483de6059cc519a293e2773171849ac0db2ef1ec27d08ac206220",
+    "dashboard/src/useResource.ts": "0fdee9f707088f216d88e4368da63f74fd708f03c35a1c2afd6fe3ddd7f8c8f7"
+  }
+}

@@ -1,0 +1,26 @@
+
+> resilientcloud@0.1.0 dashboard:test:browser
+> npm --prefix dashboard run test:browser
+
+
+> resilientcloud-dashboard@0.1.0 test:browser
+> playwright test
+
+[WebServer] (node:1841) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 9 tests using 1 worker
+
+(node:1842) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/dashboard.spec.ts:31:1 › loads observed identities and reads telemetry using GET without infrastructure controls (965ms)
+  ✓  2 tests/dashboard.spec.ts:54:1 › shows connecting while the first status request is pending (2.0s)
+  ✓  3 tests/dashboard.spec.ts:63:1 › empty and malformed telemetry remains unknown without generated activity (2.5s)
+  ✓  4 tests/dashboard.spec.ts:74:1 › stale telemetry and exhausted recovery budget have distinct visible states (188ms)
+  ✓  5 tests/dashboard.spec.ts:90:1 › a failed refresh retains last-known identity but removes current readiness (2.5s)
+  ✓  6 tests/dashboard.spec.ts:102:1 › incident timeline displays recorded failures and verification in journal order (178ms)
+  ✓  7 tests/dashboard.spec.ts:117:1 › saved charts distinguish whole/post-fault results and omit invalid trial points (314ms)
+  ✓  8 tests/dashboard.spec.ts:135:1 › saved summary missing, empty and malformed cases never substitute samples (237ms)
+  ✓  9 tests/dashboard.spec.ts:149:1 › mobile layout keeps navigation, telemetry and saved trial table usable at 390px and 320px (387ms)
+
+  9 passed (13.5s)

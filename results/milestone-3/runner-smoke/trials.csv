@@ -1,0 +1,6 @@
+id,configuration,fault,repetition,valid,wholeRequests,wholeSuccesses,wholeSuccessRate,postFaultRequests,postFaultSuccesses,postFaultSuccessRate,p95LatencyMs,detectionMs,recoveryMs,skipped
+A-control-1,A,control,1,true,40,40,1,,,,6.367,,,0
+B-control-1,B,control,1,true,40,40,1,,,,5.147,,,0
+C-control-1,C,control,1,true,40,40,1,,,,5.781,,,0
+A-crash-1,A,crash,1,true,40,10,0.25,30,0,0,504.457,1023.8406265079975,,0
+B-crash-1,B,crash,1,true,40,39,0.975,30,29,0.9666666666666667,502.493,1438.0379820168018,,0

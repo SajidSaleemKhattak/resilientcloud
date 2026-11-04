@@ -1,0 +1,2 @@
+{"type":"fault","timestamp":"2026-11-04T16:59:00.501Z","monotonicMs":14112.188709,"project":"resilientcloud-m3-ui","service":"backend-a","containerId":"c24ba00f0eded14ea8abe6bfeb9b8c83803257bba6e538a848d7c0f764013a6c","mode":"unhealthy","signal":"SIGUSR2","completedAt":"2026-11-04T16:59:00.521Z","durationMs":19.856125000000247}
+{"type":"finished","timestamp":"2026-11-04T16:59:16.421Z","status":"passed","exported":true}

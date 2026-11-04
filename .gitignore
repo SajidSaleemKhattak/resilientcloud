@@ -9,3 +9,6 @@ results/*
 !results/.gitkeep
 !results/milestone-1/
 !results/milestone-2/
+!results/milestone-3/
+dashboard/playwright-report/
+dashboard/test-results/

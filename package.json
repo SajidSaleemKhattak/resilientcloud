@@ -15,7 +15,16 @@
     "fault": "node tools/fault.mjs",
     "traffic": "node tools/traffic.mjs",
     "validate:m1": "node tools/validate-m1.mjs",
-    "validate:m2": "node tools/validate-m2.mjs"
+    "validate:m2": "node tools/validate-m2.mjs",
+    "dashboard:dev": "npm --prefix dashboard run dev",
+    "dashboard:build": "npm --prefix dashboard run build",
+    "dashboard:typecheck": "npm --prefix dashboard run typecheck",
+    "dashboard:test": "npm --prefix dashboard test",
+    "dashboard:test:browser": "npm --prefix dashboard run test:browser",
+    "experiments": "node tools/experiments.mjs",
+    "experiments:summarize": "node tools/experiments-summary.mjs",
+    "validate:ci": "node tools/ci-smoke.mjs",
+    "validate:dashboard": "node tools/validate-dashboard.mjs"
   },
   "dependencies": {
     "express": "5.3.0"

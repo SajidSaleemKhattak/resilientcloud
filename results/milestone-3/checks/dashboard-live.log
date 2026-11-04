@@ -1,0 +1,233 @@
+ Image resilientcloud-recovery:m2 Building 
+ Image resilientcloud-recovery:m2 Building 
+ Image resilientcloud-backend:m1 Building 
+ Image resilientcloud-backend:m1 Building 
+ Image resilientcloud-recovery:m2 Building 
+ Image resilientcloud-backend:m1 Built 
+ Image resilientcloud-backend:m1 Built 
+ Image resilientcloud-recovery:m2 Built 
+ Image resilientcloud-recovery:m2 Built 
+ Image resilientcloud-recovery:m2 Built 
+ Volume resilientcloud-m3-ui_controller-data Creating 
+ Network resilientcloud-m3-ui_edge Creating 
+ Volume resilientcloud-m3-ui_gate-data Creating 
+ Volume resilientcloud-m3-ui_gate-data Creating 
+ Volume resilientcloud-m3-ui_controller-data Creating 
+ Network resilientcloud-m3-ui_edge Creating 
+ Network resilientcloud-m3-ui_app Creating 
+ Volume resilientcloud-m3-ui_gate-runtime Creating 
+ Network resilientcloud-m3-ui_status-read Creating 
+ Network resilientcloud-m3-ui_status-read Creating 
+ Volume resilientcloud-m3-ui_gate-runtime Creating 
+ Network resilientcloud-m3-ui_app Creating 
+ Volume resilientcloud-m3-ui_gate-data Created 
+ Volume resilientcloud-m3-ui_gate-data Created 
+ Volume resilientcloud-m3-ui_controller-data Created 
+ Volume resilientcloud-m3-ui_controller-data Created 
+ Volume resilientcloud-m3-ui_gate-runtime Created 
+ Volume resilientcloud-m3-ui_gate-runtime Created 
+ Container resilientcloud-m3-ui-gate-1 Creating 
+ Network resilientcloud-m3-ui_edge Created 
+ Network resilientcloud-m3-ui_edge Created 
+ Network resilientcloud-m3-ui_app Created 
+ Network resilientcloud-m3-ui_app Created 
+ Container resilientcloud-m3-ui-backend-b-1 Creating 
+ Container resilientcloud-m3-ui-backend-a-1 Creating 
+ Network resilientcloud-m3-ui_status-read Created 
+ Network resilientcloud-m3-ui_status-read Created 
+ Container resilientcloud-m3-ui-status-1 Creating 
+ Container resilientcloud-m3-ui-gate-1 Created 
+ Container resilientcloud-m3-ui-controller-1 Creating 
+ Container resilientcloud-m3-ui-backend-a-1 Created 
+ Container resilientcloud-m3-ui-backend-b-1 Created 
+ Container resilientcloud-m3-ui-status-1 Created 
+ Container resilientcloud-m3-ui-gateway-1 Creating 
+ Container resilientcloud-m3-ui-controller-1 Created 
+ Container resilientcloud-m3-ui-gateway-1 Created 
+ Container resilientcloud-m3-ui-gate-1 Starting 
+ Container resilientcloud-m3-ui-backend-b-1 Starting 
+ Container resilientcloud-m3-ui-backend-a-1 Starting 
+ Container resilientcloud-m3-ui-status-1 Starting 
+ Container resilientcloud-m3-ui-gate-1 Started 
+ Container resilientcloud-m3-ui-gate-1 Waiting 
+ Container resilientcloud-m3-ui-backend-b-1 Started 
+ Container resilientcloud-m3-ui-backend-a-1 Started 
+ Container resilientcloud-m3-ui-status-1 Started 
+ Container resilientcloud-m3-ui-backend-b-1 Waiting 
+ Container resilientcloud-m3-ui-backend-a-1 Waiting 
+ Container resilientcloud-m3-ui-gate-1 Healthy 
+ Container resilientcloud-m3-ui-controller-1 Starting 
+ Container resilientcloud-m3-ui-controller-1 Started 
+ Container resilientcloud-m3-ui-backend-a-1 Healthy 
+ Container resilientcloud-m3-ui-backend-b-1 Healthy 
+ Container resilientcloud-m3-ui-gateway-1 Starting 
+ Container resilientcloud-m3-ui-gateway-1 Started 
+ Container resilientcloud-m3-ui-backend-a-1 Waiting 
+ Container resilientcloud-m3-ui-gateway-1 Waiting 
+ Container resilientcloud-m3-ui-backend-b-1 Waiting 
+ Container resilientcloud-m3-ui-controller-1 Waiting 
+ Container resilientcloud-m3-ui-status-1 Waiting 
+ Container resilientcloud-m3-ui-gate-1 Waiting 
+ Container resilientcloud-m3-ui-backend-a-1 Healthy 
+ Container resilientcloud-m3-ui-backend-b-1 Healthy 
+ Container resilientcloud-m3-ui-controller-1 Healthy 
+ Container resilientcloud-m3-ui-gate-1 Healthy 
+ Container resilientcloud-m3-ui-status-1 Healthy 
+ Container resilientcloud-m3-ui-gateway-1 Healthy 
+ Container resilientcloud-m3-ui-controller-1 Stopping 
+ Container resilientcloud-m3-ui-controller-1 Stopped 
+ Container resilientcloud-m3-ui-status-1 Stopping 
+ Container resilientcloud-m3-ui-status-1 Stopped 
+ Container resilientcloud-m3-ui-gateway-1 Stopping 
+ Container resilientcloud-m3-ui-controller-1 Stopping 
+ Container resilientcloud-m3-ui-controller-1 Stopped 
+ Container resilientcloud-m3-ui-controller-1 Removing 
+ Container resilientcloud-m3-ui-controller-1 Removed 
+ Container resilientcloud-m3-ui-gate-1 Stopping 
+ Container resilientcloud-m3-ui-gate-1 Stopped 
+ Container resilientcloud-m3-ui-gate-1 Removing 
+ Container resilientcloud-m3-ui-gate-1 Removed 
+ Container resilientcloud-m3-ui-gateway-1 Stopped 
+ Container resilientcloud-m3-ui-gateway-1 Removing 
+ Container resilientcloud-m3-ui-gateway-1 Removed 
+ Container resilientcloud-m3-ui-backend-a-1 Stopping 
+ Container resilientcloud-m3-ui-backend-b-1 Stopping 
+ Container resilientcloud-m3-ui-status-1 Stopping 
+ Container resilientcloud-m3-ui-status-1 Stopped 
+ Container resilientcloud-m3-ui-status-1 Removing 
+ Container resilientcloud-m3-ui-status-1 Removed 
+ Container resilientcloud-m3-ui-backend-a-1 Stopped 
+ Container resilientcloud-m3-ui-backend-a-1 Removing 
+ Container resilientcloud-m3-ui-backend-b-1 Stopped 
+ Container resilientcloud-m3-ui-backend-b-1 Removing 
+ Container resilientcloud-m3-ui-backend-a-1 Removed 
+ Container resilientcloud-m3-ui-backend-b-1 Removed 
+ Network resilientcloud-m3-ui_status-read Removing 
+ Network resilientcloud-m3-ui_edge Removing 
+ Volume resilientcloud-m3-ui_gate-runtime Removing 
+ Volume resilientcloud-m3-ui_gate-data Removing 
+ Volume resilientcloud-m3-ui_controller-data Removing 
+ Network resilientcloud-m3-ui_app Removing 
+ Volume resilientcloud-m3-ui_gate-data Removed 
+ Volume resilientcloud-m3-ui_controller-data Removed 
+ Volume resilientcloud-m3-ui_gate-runtime Removed 
+ Network resilientcloud-m3-ui_status-read Removed 
+ Network resilientcloud-m3-ui_edge Removed 
+ Network resilientcloud-m3-ui_app Removed 
+{
+  "status": "passed",
+  "startedAt": "2026-11-04T16:58:46.463Z",
+  "url": "http://127.0.0.1:18086",
+  "checks": [
+    "Read-only dashboard/status mounts; socket isolation; Docker restart policies disabled",
+    "Dashboard/assets/status/events/saved evidence load; public fault/recovery/write routes denied",
+    "Browser: actual healthy telemetry, desktop and mobile",
+    "Browser: actual stale telemetry, desktop and mobile",
+    "Browser: actual disconnected telemetry, desktop and mobile"
+  ],
+  "runtime": [
+    {
+      "service": "backend-a",
+      "id": "c24ba00f0eded14ea8abe6bfeb9b8c83803257bba6e538a848d7c0f764013a6c",
+      "image": "sha256:a3a6dadc3a3bc0c42ad99a5bb38d3e19d6d61c2a01f7b5d9da451be1f0c6dc76",
+      "mounts": [],
+      "networks": [
+        "resilientcloud-m3-ui_app"
+      ],
+      "restart": "no"
+    },
+    {
+      "service": "backend-b",
+      "id": "3dc71a38d3f24af8224233802216565a6665763ee25406d7ecbdb272ab405ba3",
+      "image": "sha256:a3a6dadc3a3bc0c42ad99a5bb38d3e19d6d61c2a01f7b5d9da451be1f0c6dc76",
+      "mounts": [],
+      "networks": [
+        "resilientcloud-m3-ui_app"
+      ],
+      "restart": "no"
+    },
+    {
+      "service": "controller",
+      "id": "929821604b00824ba98234dbb6d78d50ae2ee58b8525ef663468eb1db5b9d4a8",
+      "image": "sha256:e89e011008159ae24e34b03f59009425075d8e14c6e2f00d6a05dadf6a425925",
+      "mounts": [
+        {
+          "target": "/run/gate",
+          "writable": false
+        },
+        {
+          "target": "/data",
+          "writable": true
+        }
+      ],
+      "networks": [
+        "resilientcloud-m3-ui_app"
+      ],
+      "restart": "no"
+    },
+    {
+      "service": "gate",
+      "id": "8e22246fe6f0599be93674225069f8e8c775988ae7fa63811e450a010dcb992b",
+      "image": "sha256:e89e011008159ae24e34b03f59009425075d8e14c6e2f00d6a05dadf6a425925",
+      "mounts": [
+        {
+          "target": "/run/gate",
+          "writable": true
+        },
+        {
+          "target": "/audit",
+          "writable": true
+        },
+        {
+          "target": "/var/run/docker.sock",
+          "writable": false
+        }
+      ],
+      "networks": [
+        "none"
+      ],
+      "restart": "no"
+    },
+    {
+      "service": "gateway",
+      "id": "c7e043242d4e5b8f8704ddefc984cef960f7809cf3322507985e44b3037d3f7d",
+      "image": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+      "mounts": [
+        {
+          "target": "/etc/nginx/upstream.conf",
+          "writable": false
+        },
+        {
+          "target": "/usr/share/nginx/html",
+          "writable": false
+        },
+        {
+          "target": "/etc/nginx/nginx.conf",
+          "writable": false
+        }
+      ],
+      "networks": [
+        "resilientcloud-m3-ui_app",
+        "resilientcloud-m3-ui_edge",
+        "resilientcloud-m3-ui_status-read"
+      ],
+      "restart": "no"
+    },
+    {
+      "service": "status",
+      "id": "6a18495991c256e3a6067433f7048a5ff06d42b7168e8469fa9ec5518e48f621",
+      "image": "sha256:e89e011008159ae24e34b03f59009425075d8e14c6e2f00d6a05dadf6a425925",
+      "mounts": [
+        {
+          "target": "/data",
+          "writable": false
+        }
+      ],
+      "networks": [
+        "resilientcloud-m3-ui_status-read"
+      ],
+      "restart": "no"
+    }
+  ],
+  "finishedAt": "2026-11-04T16:59:16.421Z"
+}

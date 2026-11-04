@@ -1,0 +1,73 @@
+
+> resilientcloud@0.1.0 test
+> npm run build && node --test dist/backend/test/*.test.js tools/*.test.mjs recovery/*.test.mjs
+
+
+> resilientcloud@0.1.0 build
+> tsc
+
+✔ healthy service identifies its instance in body and response header (86.518625ms)
+✔ an unhealthy service stays alive, returns 503, and requires fresh state to recover (21.372833ms)
+✔ HTTP has no fault controls and does not accept application mutations (19.796625ms)
+✔ instance IDs cannot inject response headers (0.633334ms)
+✔ SIGUSR2 produces an unhealthy running process and a new process restores readiness (507.204584ms)
+✔ disabled fault injection ignores SIGUSR2 without changing readiness (128.296917ms)
+✔ SIGKILL terminates the backend process (138.364542ms)
+✔ persistent test fixture survives process recreation and requires fault opt-in (340.873167ms)
+✔ one-backend monitoring preserves detection settings and rejects unconfigured targets (4.388834ms)
+✔ threshold requires consecutive failures and transient readiness failure never restarts (0.601875ms)
+✔ Docker acceptance alone cannot establish recovery; repeated readiness and stable cooldown are required (1.21125ms)
+✔ persistent failure exhausts exactly the configured attempts and stays latched even if readiness returns (1.235417ms)
+✔ disabled recovery probes and confirms failures without issuing a restart (0.533542ms)
+✔ flapping during cooldown does not reset the incident budget (0.588459ms)
+✔ checkpoint resumes an in-flight consumed attempt without blindly restarting again (0.496958ms)
+✔ ambiguous restart timeout is verified before another bounded attempt; stale replacement is revalidated (0.471083ms)
+✔ inspection failure cannot cause an unvalidated restart; persistence failure prevents Docker mutation (0.395708ms)
+✔ verification refuses identity changing while readiness response is in flight (0.444041ms)
+✔ malformed persisted state fails closed and missing checkpoint with existing journal cannot reset budgets (10.985417ms)
+✔ persistent store serializes complete events and atomic status checkpoints (252.937792ms)
+✔ readiness validates HTTP status, backend identity and ready boolean, never just reachable process (0.665375ms)
+✔ HTTP helper has an absolute full-body timeout and response-size bound (65.130833ms)
+✔ configuration rejects unsafe or unbounded controls (0.849292ms)
+✔ verification caps I/O to remaining budget and rejects readiness completing after the deadline (1.994584ms)
+✔ wall-clock jumps cannot expire or extend the monotonic verification budget (1.47225ms)
+✔ wall-clock jumps cannot skip the stable cooldown (1.34225ms)
+✔ valid backend inspection exposes only approved fields and fixed filtered Docker requests (3.885292ms)
+✔ foreign or stale IDs never reach Docker restart; recreation needs fresh validation (0.72125ms)
+✔ mismatched labels, identity, network, inspect ID and ambiguous discovery fail closed (3.416167ms)
+✔ unsupported operation and target rejected before Docker; audit failure prevents restart (5.210708ms)
+✔ per-service operation lock prevents overlapping restart decisions (0.634666ms)
+✔ real Unix HTTP gate rejects raw Docker operations, URL tricks, bodies and public mutation paths (51.785166ms)
+✔ Docker socket transport enforces absolute timeout, response bound and HTTP errors (59.53425ms)
+✔ audit records survive writer recreation and remain valid timestamped JSONL (10.0765ms)
+✔ status is read-only, handles missing data, and labels stale snapshots (134.394666ms)
+✔ incident history bounds bytes and count, filters probes and omits partial writes (12.21225ms)
+✔ CI command preserves stdout/stderr and nonzero exit status (141.774125ms)
+✔ CI deadline terminates a stuck process even when SIGTERM is ignored (610.603291ms)
+✔ CI command refuses to overwrite diagnostics (59.758167ms)
+✔ CI command reports spawn failures without claiming success (1.377541ms)
+✔ CI deadline also terminates a descendant when its leader exits first (557.556875ms)
+✔ whole and post-fault metrics use actual launch windows and separately account for skipped schedules (14.045458ms)
+✔ failure and recovery timings use mapped controller events; survivor timing uses earliest completed response (0.368625ms)
+✔ absent recovery is null even in C, controls have no post-fault outcome and clock drift invalidates mapping (0.83975ms)
+✔ ranges exclude invalid trials and preserve unobserved recovery instead of coercing it to zero (1.189167ms)
+✔ saved summary regeneration is deterministic and hashes its original evidence (45.03225ms)
+✔ fault CLI accepts only the two backend services and known local projects (0.973375ms)
+✔ target checks reject foreign labels, wrong directory, role, service and malformed IDs (0.299625ms)
+✔ Compose wrapper refuses attached and separate project/file overrides (512.29425ms)
+✔ records actual HTTP outcomes, identities, and measured latency (257.4695ms)
+✔ timeouts and concurrency saturation produce failures and distinct skipped slots (264.77575ms)
+✔ preserves gateway attempt headers even when the client receives a successful response (101.121041ms)
+✔ falls back to body identity; aborted responses stay failures (202.137417ms)
+✔ scheduler delay records missed slots without issuing a catch-up burst (201.699625ms)
+✔ rejects malformed CLI arguments, unsafe paths, and nonlocal or credential-bearing URLs (1.683167ms)
+✔ output refuses overwrites and symlink parents/leaves (12.094959ms)
+✔ CLI serializes concurrent completions into complete JSONL and accounts for every scheduled slot (527.032125ms)
+ℹ tests 57
+ℹ suites 0
+ℹ pass 57
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2088.980458

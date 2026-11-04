@@ -1,0 +1,18 @@
+
+> resilientcloud@0.1.0 dashboard:build
+> npm --prefix dashboard run build
+
+
+> resilientcloud-dashboard@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 18 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.67 kB │ gzip:  0.39 kB
+dist/assets/index-DSJjLDug.css   26.16 kB │ gzip:  6.21 kB
+dist/assets/index-Cer6f8Tz.js   250.94 kB │ gzip: 77.50 kB
+
+✓ built in 526ms

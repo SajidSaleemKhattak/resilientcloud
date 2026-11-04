@@ -1,8 +1,46 @@
 # ResilientCloud
 
-A local failure-detection and recovery research prototype for a Cloud and Network Infrastructures master's scholarship application. Milestone 1 supplies Express backends and Nginx failover; milestone 2 adds an isolated recovery controller, private Docker gate, persisted events, and read-only status. The dashboard remains a later milestone. Docker restart policies remain disabled in every scenario.
+A local failure-detection and recovery research prototype for a Cloud and Network Infrastructures master's scholarship application. Express backends and Nginx demonstrate traffic failover; an isolated controller verifies backend recovery through a restricted Docker gate. The React/TypeScript dashboard reads actual telemetry and saved experiment results. Docker restart policies remain disabled in every scenario.
 
 Cloud deployment is **deferred until local validation and a zero-cost hosting option are confirmed**, followed by explicit approval to deploy. Two containers on one Mac do not protect against host, Docker VM, power, or host-network failure.
+
+## Start the read-only dashboard
+
+From this directory, with Docker Desktop running:
+
+```sh
+npm --userconfig="$PWD/.npmrc" --globalconfig=/dev/null ci
+npm --userconfig="$PWD/.npmrc" --globalconfig=/dev/null --prefix dashboard ci
+npm run dashboard:build
+npm run compose -- dashboard up -d --build
+```
+
+Open **http://127.0.0.1:8080**. The gateway serves the production dashboard; neither backend is published. If a previous `one`, `two`, or `recovery` scenario is running, stop it with its corresponding `npm run compose -- <scenario> down` first. Stopping retains the persisted event journal and recovery budgets.
+
+The live view reads `GET /status` and `GET /events`. It shows readiness, controller state, current-incident restart attempts, probe timestamps, container identity, and real journal events. Events are served newest-first, bounded to 100 incident records from a 512 KiB journal tail; probe records remain in raw evidence. Stale, missing, disconnected, and exhausted states are explicit. The topology illustrates configured routing, not measured traffic volume. There are no fault or recovery commands in the dashboard.
+
+**Saved experiments** reads a separate static `/experiments/summary.json`, generated from the committed matrix evidence. These values do not change when the live services change. Missing results produce an empty/error view rather than substitute activity. For React development, start the recovery stack and run `npm run dashboard:dev`; the loopback development server at http://127.0.0.1:5173 proxies status/event reads to port 8080.
+
+Stop with `npm run compose -- dashboard down`. See the [two-minute demonstration](docs/DEMO.md), [experiment protocol](docs/EXPERIMENTS.md), and [recovery design](docs/RECOVERY.md).
+
+## Repeated experiment results (milestone 3)
+
+The full [saved matrix](results/milestone-3/validated/summary.json) contains **27 fresh valid trials**: three crash trials, three unhealthy trials, and three no-fault controls for each configuration. Each analysis window has a 15-second baseline and 60-second observation at 10 requests/second. All configurations retain identical detection settings; A monitors only its single configured backend. Raw guard traffic, effective settings, clocks, identities, probes and recovery events are retained.
+
+| Configuration / fault | Whole-trial success range | Post-fault success range | Verified recovery from fault start |
+| --- | --- | --- | --- |
+| A: one backend, off / crash | 20.000% | 0.000% | Not observed |
+| A: one backend, off / unhealthy | 20.000% | 0.000% | Not observed |
+| B: two backends, off / crash | 99.867% | 99.833% | Not observed |
+| B: two backends, off / unhealthy | 100.000% | 100.000% | Not observed |
+| C: two backends, on / crash | 99.867–100.000% | 99.833–100.000% | 2.432–2.459 s |
+| C: two backends, on / unhealthy | 100.000% | 100.000% | 2.059–2.070 s |
+
+All nine no-fault controls had 100% whole-trial success and no false restart actions. No requests were skipped or trials retried. The 75-second analysis windows contain **20,250 requests: 16,645 successes and 3,605 failures**. Of those failures, 3,600 occurred in the intentionally unprotected A fault windows; five HTTP 504 responses occurred across B/C crash trials. The raw 77-second workloads contain 20,790 requests including explicitly separated guards. Sibling probes stayed healthy in B/C, with unchanged sibling container start times.
+
+Scenario B preserved most traffic while its failed instance remained failed; C additionally restored backend readiness in all six fault trials. The three repetitions do not establish that C improves request success over B. Clock calibration uncertainty was about ±41–44 ms, with further probe/command/scheduling effects. These results support neither guaranteed zero downtime nor protection against host failure.
+
+See [individual trial values and ranges](results/milestone-3/RESULTS.md), [CSV](results/milestone-3/validated/trials.csv), and [evidence index](results/milestone-3/README.md). To repeat the full matrix, use the commands in [EXPERIMENTS.md](docs/EXPERIMENTS.md); the shorter runner smoke is a separate check.
 
 ## Prerequisites and local setup
 
@@ -28,11 +66,19 @@ The provided Docker wrappers select the current local Unix-socket endpoint and u
 
 ```mermaid
 flowchart LR
-    Client[Local traffic generator] -->|127.0.0.1:8080/api| Gateway[Nginx gateway]
+    Browser[React dashboard] -->|GET status and events| Gateway[Nginx gateway: loopback 8080]
+    Client[Local traffic generator] -->|GET /api| Gateway
     subgraph Private[Internal Compose app network]
       Gateway --> A[Express backend-a]
       Gateway --> B[Express backend-b: two-backend scenario]
+      Controller[Recovery controller] -->|bounded readiness probes| A
+      Controller -->|bounded readiness probes| B
     end
+    Gateway -->|status-read network| Status[Read-only status service]
+    Controller -->|write journals and snapshot| Data[(Persistent controller volume)]
+    Data -->|read-only mount| Status
+    Controller -->|private Unix socket| Gate[Restricted Docker gate: no network]
+    Gate -->|validated backend inspect / restart only| Docker[Docker daemon]
     Operator[Local fault CLI] -. Docker signal to validated project backend .-> A
 ```
 
@@ -44,7 +90,7 @@ Only Nginx publishes a host port, bound to loopback. Backends have no published 
 | `GET /ready` | 200, `ready: true` | 503, `ready: false` | No |
 | `GET /live` | 200, `alive: true` | 200, `alive: true` | No |
 
-The gateway rejects other paths; there are no HTTP fault or restart controls. Instance identity is also returned in `X-Instance-Id`. Only read requests are allowed on the gateway's demo endpoint.
+The gateway rejects fault/restart paths; there are no HTTP fault or restart controls. The recovery scenario adds read-only status/events, and the dashboard scenario adds static UI/results. Instance identity is also returned in `X-Instance-Id`. Only read requests are allowed on the gateway's demo endpoint.
 
 Nginx uses passive failure detection: a failed request can cause an upstream to be avoided temporarily. Configured GET retries cover connection errors, timeouts, and HTTP 502/503/504, with at most two upstream attempts and a two-second retry window. Backend readiness checks are separate from Nginx's passive detection. A single available upstream cannot fail over to another instance.
 
@@ -193,12 +239,40 @@ Crash containers exited with code 137 and stayed stopped. Unhealthy containers s
 
 Recreation changed backend-a from `172.21.0.2` to `172.21.0.4` in the one-backend test and `172.19.0.2` to `172.19.0.5` in the two-backend test. Container IDs changed, traffic returned to backend-a, and gateway start times stayed unchanged. These addresses are recorded evidence, not configuration to reuse.
 
-No milestone 1 runtime checks remain blocked. These historical results are preserved unchanged. Milestone 2 adds the controller separately; dashboard, CI workflow, repeated trials, and hosting evaluation remain future work. The milestone-1 runner removed its own validation containers/networks; no unrelated Docker cleanup was used.
+No milestone 1 runtime checks remain blocked. These historical results are preserved unchanged. Milestone 2 adds the controller separately; milestone 3 supplies the dashboard, CI workflow, and repeated trials. Hosting evaluation remains deferred. The milestone-1 runner removed its own validation containers/networks; no unrelated Docker cleanup was used.
 
-These short samples are functional smoke checks, not the repeated research experiment matrix. They cannot establish zero downtime, production reliability, or statistically robust performance differences. Later milestones must compare one backend, two backends without automatic recovery, and two with automatic recovery using repeated trials and genuine saved measurements. No automatic-recovery results exist in milestone 1.
+These short samples are functional smoke checks, not the repeated research experiment matrix. They cannot establish zero downtime, production reliability, or statistically robust performance differences. The milestone-3 matrix separately compares one backend, two backends without automatic recovery, and two with automatic recovery. No automatic-recovery results exist in milestone 1.
 
-## Project files and next milestones
+## Tests and CI
+
+```sh
+npm run typecheck
+npm test
+npm run build
+npm run dashboard:typecheck
+npm run dashboard:test
+npm run dashboard:build
+node tools/experiments-config.mjs
+```
+
+Browser tests use a project-local Chromium download; no system installation is needed on this Mac:
+
+```sh
+PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/playwright" ./dashboard/node_modules/.bin/playwright install chromium
+PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/playwright" npm run dashboard:test:browser
+run_id="$(date -u +%Y%m%dT%H%M%SZ)"
+npm run validate:dashboard -- --out "results/dashboard-${run_id}"
+npm run validate:ci -- --out "results/ci-${run_id}"
+```
+
+The dashboard validator uses a fresh, isolated `resilientcloud-m3-ui` stack on loopback port 18086. It checks real telemetry, a real recovery timeline, public-route denial, desktop/mobile rendering, stale telemetry after stopping the controller, and disconnection after stopping the status service. It exports evidence before removing its own resources. The CI smoke wrapper runs the milestone-2 integration suite with a ten-minute deadline and retains diagnostics if it fails or times out.
+
+[GitHub Actions](.github/workflows/ci.yml) installs both lockfiles, checks types/tests, builds production outputs, validates Compose, checks browser states, and runs a bounded integration smoke on Linux. It pins Node, Docker, and action revisions; its only repository permission is `contents: read`. Diagnostic artifacts are uploaded even after failure. There are no deployment jobs or cloud credentials. **Local checks are not an actual GitHub Actions run; that remains unexecuted until the workflow runs on GitHub.**
+
+**Validated locally on 2026-11-04:** lockfile installs, type checks and production builds passed; 57 backend/controller/tool tests, 7 dashboard model tests, 9 browser fixture checks, and 16 bounded integration smoke checks passed. The [final real dashboard validation](results/milestone-3/dashboard-final/report.json) passed four browser checks covering actual healthy/stale/disconnected telemetry, all saved trial values, and desktop/mobile layout. The same saved-summary test was intentionally skipped in the latter two phases. Workflow lint and A/B/C Compose checks passed; [the local CI smoke report](results/milestone-3/ci-local/report.json) explicitly records macOS ARM64 execution rather than claiming a GitHub-hosted Linux run. Earlier failed attempts remain indexed separately.
+
+## Project files
 
 `backend/` contains the service and HTTP/process tests; `Dockerfile`, `compose*.yaml`, and `nginx/` define the runtime; `tools/` contains guarded Docker commands, failure injection, traffic generation, tests, and validation. Build output, dependencies, local caches, and ordinary new results are Git-ignored. The selected milestone evidence is retained for review.
 
-`recovery/`, `compose.recovery.yaml`, and `nginx/recovery.conf` add the controller, private gate, and read-only status service. `compose.persistent-test.yaml` is an opt-in local fault fixture. See [PLAN.md](PLAN.md) for remaining milestones: React/TypeScript dashboard, repeated comparisons, GitHub Actions, and final documentation. No deployment or publishing is part of these local commands.
+`recovery/`, `compose.recovery.yaml`, and `nginx/recovery.conf` add the controller, private gate, and read-only status service. `compose.persistent-test.yaml` is an opt-in local fault fixture. `dashboard/` and `compose.dashboard.yaml` add the React UI served by Nginx. `tools/experiments*.mjs` and `compose.experiment*.yaml` define repeated measurements; `.github/workflows/ci.yml` defines validation. See [PLAN.md](PLAN.md) for completion status. No deployment or publishing is part of these local commands.

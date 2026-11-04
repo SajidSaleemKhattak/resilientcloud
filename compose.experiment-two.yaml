@@ -1,0 +1,3 @@
+services:
+  backend-b:
+    image: ${EXPERIMENT_BACKEND_IMAGE:-resilientcloud-backend:m1}

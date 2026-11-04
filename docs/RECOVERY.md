@@ -6,7 +6,7 @@
 flowchart LR
     User[Local client] -->|loopback gateway| N[Nginx]
     N -->|GET /api| A[backend-a / backend-b]
-    N -->|GET /status| S[Read-only status]
+    N -->|GET /status and /events| S[Read-only status]
     C[Controller] -->|readiness probes| A
     C -->|private Unix socket| G[Gate: no network]
     G -->|validated inspect / restart| D[Docker socket]
@@ -54,7 +54,9 @@ Internal Docker listing is filtered discovery, never a public listing/proxy API.
 
 ## Evidence and timing
 
-The controller atomically checkpoints `/data/status.json` and appends fsynced `/data/controller.events.jsonl`; the gate appends `/audit/gate.events.jsonl`. Named volumes survive backend restart/recreation and ordinary Compose `down`. Status reports snapshot age and per-backend observation age/staleness. Missing/invalid data returns 503; observations become stale after five seconds.
+The controller atomically checkpoints `/data/status.json` and appends fsynced `/data/controller.events.jsonl`; the gate appends `/audit/gate.events.jsonl`. Named volumes survive backend restart/recreation and ordinary Compose `down`. Status reports snapshot age and per-backend observation age/staleness. Missing/invalid data returns 503; observations become stale after five seconds. Milestone 3 adds read-only `GET /events`, returning up to 100 incident records from a bounded 512 KiB journal tail. Incomplete final writes and probe records are omitted from that view; raw journals remain complete evidence.
+
+Milestone 3 also permits `MONITORED_SERVICES=backend-a` for the one-backend experiment; the default remains `backend-a,backend-b`. No other target set is accepted and changing the set against an existing checkpoint fails closed. Detection/recovery parameters remain identical across the experiment configurations. Only scenario C enables recovery.
 
 Events contain UTC timestamps; controller events also contain run IDs, process-relative elapsed time, and Linux monotonic timestamps. They distinguish probe failure, threshold confirmation, restart intent, Docker acceptance, verified readiness, cooldown and exhaustion. Docker `RestartCount` is not a counter of controller API restarts: attribution uses gate/controller journals and changed container start times with Docker policies disabled.
 
@@ -73,4 +75,4 @@ Tests use SIGKILL (crash), SIGUSR2 (running but unhealthy), brief SIGSTOP/SIGCON
 
 Separate trials disable controller recovery. Security tests use explicitly created local fixtures for foreign IDs, stale IDs and mismatched labels. Test volumes are archived before removal; failed evidence export preserves those volumes and records that fact. Pre-existing test projects/volumes cause refusal. Milestone-1 evidence is retained unchanged.
 
-These are functional smoke trials, not repeated statistical experiments. Controller/gate self-recovery, dashboard, log rotation and remote operator controls are not implemented. Docker VM/host failure defeats the entire prototype. Cloud deployment awaits local validation, a confirmed zero-cost option and explicit approval.
+Milestone-2 evidence consists of functional smoke trials. Milestone 3 separately adds the read-only dashboard and repeated comparisons documented in `EXPERIMENTS.md`. Controller/gate self-recovery, log rotation and remote operator controls are not implemented. Docker VM/host failure defeats the entire prototype. Cloud deployment awaits local validation, a confirmed zero-cost option and explicit approval.

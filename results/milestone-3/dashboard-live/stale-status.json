@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-04T16:59:07.250Z",
+  "runId": "d3d7e430-4e19-4614-8483-6a8086b64ff0",
+  "recoveryEnabled": true,
+  "monitoredServices": [
+    "backend-a",
+    "backend-b"
+  ],
+  "config": {
+    "intervalMs": 500,
+    "probeTimeoutMs": 300,
+    "failureThreshold": 3,
+    "maxAttempts": 2,
+    "verifyTimeoutMs": 4000,
+    "verifySuccesses": 2,
+    "cooldownMs": 2000
+  },
+  "backends": {
+    "backend-a": {
+      "state": "healthy",
+      "failures": 0,
+      "attempts": 0,
+      "manualIntervention": false,
+      "containerId": "c24ba00f0eded14ea8abe6bfeb9b8c83803257bba6e538a848d7c0f764013a6c",
+      "lastProbe": {
+        "ok": true,
+        "reason": null,
+        "status": 200,
+        "instance": "backend-a",
+        "latencyMs": 0.6882910000003903,
+        "timestamp": "2026-11-04T16:59:07.249Z"
+      },
+      "lastReadyAt": "2026-11-04T16:59:07.249Z",
+      "failureConfirmedAt": null,
+      "recoveryVerifiedAt": "2026-11-04T16:59:02.762Z",
+      "verificationSuccesses": 2,
+      "verificationDeadline": 1793811545870.9463,
+      "attemptTargetId": "c24ba00f0eded14ea8abe6bfeb9b8c83803257bba6e538a848d7c0f764013a6c",
+      "restartOutcome": "accepted",
+      "cooldownUntil": null,
+      "stableSince": null,
+      "observationAgeMs": 5079,
+      "stale": true
+    },
+    "backend-b": {
+      "state": "healthy",
+      "failures": 0,
+      "attempts": 0,
+      "manualIntervention": false,
+      "containerId": "3dc71a38d3f24af8224233802216565a6665763ee25406d7ecbdb272ab405ba3",
+      "lastProbe": {
+        "ok": true,
+        "reason": null,
+        "status": 200,
+        "instance": "backend-b",
+        "latencyMs": 0.565082999999504,
+        "timestamp": "2026-11-04T16:59:07.250Z"
+      },
+      "lastReadyAt": "2026-11-04T16:59:07.250Z",
+      "failureConfirmedAt": null,
+      "recoveryVerifiedAt": null,
+      "verificationSuccesses": 0,
+      "verificationDeadline": null,
+      "attemptTargetId": null,
+      "restartOutcome": null,
+      "cooldownUntil": null,
+      "stableSince": null,
+      "observationAgeMs": 5078,
+      "stale": true
+    }
+  },
+  "available": true,
+  "stale": true,
+  "ageMs": 5078
+}

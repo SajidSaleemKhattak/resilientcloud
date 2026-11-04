@@ -1,0 +1,2 @@
+Running bounded recovery integration smoke; output: results/milestone-3/ci-local/runner.log
+Integration smoke passed; report: results/milestone-3/ci-local/report.json

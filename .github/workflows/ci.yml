@@ -1,0 +1,100 @@
+name: Local prototype checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
+      NPM_CONFIG_GLOBALCONFIG: /dev/null
+      NPM_CONFIG_CACHE: ${{ github.workspace }}/.cache/npm
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.cache/playwright
+    steps:
+      - name: Check out source without retaining credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up pinned Node LTS
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24.22.2'
+          package-manager-cache: false
+
+      # The gate uses Docker API v1.53. Pin the test daemon instead of relying on
+      # the changing runner image. This setup only affects the disposable runner.
+      - name: Set up pinned Docker daemon
+        id: docker
+        uses: docker/setup-docker-action@7ec28a010822b4626af4874f9448a4b05ac6f3e5 # v5.6.0
+        with:
+          version: v29.7.2
+          set-host: true
+
+      - name: Install dependencies from both lockfiles
+        run: |
+          mkdir -p results/ci
+          npm ci --ignore-scripts 2>&1 | tee results/ci/install-backend.log
+          npm ci --prefix dashboard 2>&1 | tee results/ci/install-dashboard.log
+
+      - name: Type checks and unit tests
+        run: |
+          npm run typecheck 2>&1 | tee results/ci/typecheck-backend.log
+          npm --prefix dashboard run typecheck 2>&1 | tee results/ci/typecheck-dashboard.log
+          npm test 2>&1 | tee results/ci/tests-backend.log
+          npm --prefix dashboard test 2>&1 | tee results/ci/tests-dashboard.log
+
+      - name: Production builds
+        run: |
+          npm run build 2>&1 | tee results/ci/build-backend.log
+          npm --prefix dashboard run build 2>&1 | tee results/ci/build-dashboard.log
+
+      - name: Validate Compose configurations
+        env:
+          DOCKER_SOCKET: ${{ steps.docker.outputs.sock }}
+        run: |
+          node tools/compose.mjs one config --quiet
+          node tools/compose.mjs two config --quiet
+          node tools/compose.mjs recovery config --quiet
+          node tools/compose.mjs dashboard config --quiet
+          node tools/experiments-config.mjs
+
+      - name: Install browser for Linux UI checks
+        working-directory: dashboard
+        run: npx --no-install playwright install --with-deps chromium
+
+      - name: Dashboard browser states and mobile layout
+        run: npm --prefix dashboard run test:browser 2>&1 | tee results/ci/browser.log
+
+      - name: Bounded Linux recovery integration smoke
+        timeout-minutes: 12
+        env:
+          DOCKER_SOCKET: ${{ steps.docker.outputs.sock }}
+        run: node tools/ci-smoke.mjs --out results/ci/integration
+
+      - name: Retain diagnostics and browser artifacts
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: validation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            results/ci/
+            dashboard/test-results/
+            dashboard/playwright-report/
+          if-no-files-found: warn
+          retention-days: 7

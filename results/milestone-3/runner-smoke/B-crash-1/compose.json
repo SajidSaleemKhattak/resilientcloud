@@ -1,0 +1,391 @@
+{
+  "name": "resilientcloud-m3-b",
+  "networks": {
+    "app": {
+      "name": "resilientcloud-m3-b_app",
+      "ipam": {},
+      "internal": true
+    },
+    "edge": {
+      "name": "resilientcloud-m3-b_edge",
+      "ipam": {}
+    },
+    "status-read": {
+      "name": "resilientcloud-m3-b_status-read",
+      "ipam": {},
+      "internal": true
+    }
+  },
+  "services": {
+    "backend-a": {
+      "build": {
+        "context": "/Users/sajid/Projects/resilientcloud",
+        "dockerfile": "Dockerfile"
+      },
+      "cap_drop": [
+        "ALL"
+      ],
+      "cpus": 0.5,
+      "command": null,
+      "entrypoint": null,
+      "environment": {
+        "FAULT_INJECTION_ENABLED": "true",
+        "INSTANCE_ID": "backend-a",
+        "PORT": "3000"
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ],
+        "timeout": "1s",
+        "interval": "2s",
+        "retries": 2,
+        "start_period": "2s"
+      },
+      "image": "sha256:3e11d498e60bdb8c1543e77fdf7e6482d4ed2fab7d14f6f598d9c5cc972081b6",
+      "labels": {
+        "io.resilientcloud.role": "backend"
+      },
+      "mem_limit": "134217728",
+      "networks": {
+        "app": null
+      },
+      "read_only": true,
+      "restart": "no",
+      "security_opt": [
+        "no-new-privileges:true"
+      ]
+    },
+    "backend-b": {
+      "build": {
+        "context": "/Users/sajid/Projects/resilientcloud",
+        "dockerfile": "Dockerfile"
+      },
+      "cap_drop": [
+        "ALL"
+      ],
+      "cpus": 0.5,
+      "command": null,
+      "entrypoint": null,
+      "environment": {
+        "FAULT_INJECTION_ENABLED": "true",
+        "INSTANCE_ID": "backend-b",
+        "PORT": "3000"
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ],
+        "timeout": "1s",
+        "interval": "2s",
+        "retries": 2,
+        "start_period": "2s"
+      },
+      "image": "sha256:3e11d498e60bdb8c1543e77fdf7e6482d4ed2fab7d14f6f598d9c5cc972081b6",
+      "labels": {
+        "io.resilientcloud.role": "backend"
+      },
+      "mem_limit": "134217728",
+      "networks": {
+        "app": null
+      },
+      "read_only": true,
+      "restart": "no",
+      "security_opt": [
+        "no-new-privileges:true"
+      ]
+    },
+    "controller": {
+      "build": {
+        "context": "/Users/sajid/Projects/resilientcloud",
+        "dockerfile": "recovery/Dockerfile"
+      },
+      "cap_drop": [
+        "ALL"
+      ],
+      "cpus": 0.5,
+      "command": [
+        "node",
+        "recovery/controller.mjs"
+      ],
+      "depends_on": {
+        "gate": {
+          "condition": "service_healthy",
+          "required": true
+        }
+      },
+      "entrypoint": null,
+      "environment": {
+        "COOLDOWN_MS": "2000",
+        "DATA_DIR": "/data",
+        "FAILURE_THRESHOLD": "3",
+        "GATE_SOCKET": "/run/gate/gate.sock",
+        "GATE_TIMEOUT_MS": "14000",
+        "MAX_RESTART_ATTEMPTS": "2",
+        "MONITORED_SERVICES": "backend-a,backend-b",
+        "PROBE_INTERVAL_MS": "500",
+        "PROBE_TIMEOUT_MS": "300",
+        "RECOVERY_ENABLED": "false",
+        "VERIFY_TIMEOUT_MS": "4000"
+      },
+      "image": "sha256:c045765695b89b3ffe21fee77dc1d4b40efef8a0e4e7a035a380221ac9faf47a",
+      "mem_limit": "134217728",
+      "networks": {
+        "app": null
+      },
+      "read_only": true,
+      "restart": "no",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "volumes": [
+        {
+          "type": "volume",
+          "source": "gate-runtime",
+          "target": "/run/gate",
+          "read_only": true,
+          "volume": {}
+        },
+        {
+          "type": "volume",
+          "source": "controller-data",
+          "target": "/data",
+          "volume": {}
+        }
+      ]
+    },
+    "gate": {
+      "build": {
+        "context": "/Users/sajid/Projects/resilientcloud",
+        "dockerfile": "recovery/Dockerfile"
+      },
+      "cap_add": [
+        "CHOWN"
+      ],
+      "cap_drop": [
+        "ALL"
+      ],
+      "cpus": 0.5,
+      "command": [
+        "node",
+        "recovery/gate-server.mjs"
+      ],
+      "entrypoint": null,
+      "environment": {
+        "APP_NETWORK": "resilientcloud-m3-b_app",
+        "DATA_DIR": "/audit",
+        "PROJECT_DIRECTORY": "/Users/sajid/Projects/resilientcloud",
+        "PROJECT_NAME": "resilientcloud-m3-b"
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "node",
+          "-e",
+          "process.exit(require('node:fs').statSync('/run/gate/gate.sock').isSocket()?0:1)"
+        ],
+        "timeout": "1s",
+        "interval": "1s",
+        "retries": 10
+      },
+      "image": "sha256:c045765695b89b3ffe21fee77dc1d4b40efef8a0e4e7a035a380221ac9faf47a",
+      "mem_limit": "134217728",
+      "network_mode": "none",
+      "read_only": true,
+      "restart": "no",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "user": "0:0",
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/var/run/docker.sock",
+          "target": "/var/run/docker.sock",
+          "read_only": true,
+          "bind": {}
+        },
+        {
+          "type": "volume",
+          "source": "gate-runtime",
+          "target": "/run/gate",
+          "volume": {}
+        },
+        {
+          "type": "volume",
+          "source": "gate-data",
+          "target": "/audit",
+          "volume": {}
+        }
+      ]
+    },
+    "gateway": {
+      "cpus": 0.5,
+      "command": null,
+      "depends_on": {
+        "backend-a": {
+          "condition": "service_healthy",
+          "required": true
+        },
+        "backend-b": {
+          "condition": "service_healthy",
+          "required": true
+        },
+        "status": {
+          "condition": "service_started",
+          "required": true
+        }
+      },
+      "entrypoint": [
+        "nginx",
+        "-g",
+        "daemon off;"
+      ],
+      "image": "nginx:1.28-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+      "mem_limit": "67108864",
+      "networks": {
+        "app": null,
+        "edge": null,
+        "status-read": null
+      },
+      "ports": [
+        {
+          "mode": "ingress",
+          "host_ip": "127.0.0.1",
+          "target": 8080,
+          "published": "18085",
+          "protocol": "tcp"
+        }
+      ],
+      "read_only": true,
+      "restart": "no",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "tmpfs": [
+        "/var/cache/nginx",
+        "/var/run",
+        "/tmp"
+      ],
+      "volumes": [
+        {
+          "type": "bind",
+          "source": "/Users/sajid/Projects/resilientcloud/nginx/experiment.conf",
+          "target": "/etc/nginx/nginx.conf",
+          "read_only": true,
+          "bind": {}
+        },
+        {
+          "type": "bind",
+          "source": "/Users/sajid/Projects/resilientcloud/nginx/two.conf",
+          "target": "/etc/nginx/upstream.conf",
+          "read_only": true,
+          "bind": {}
+        }
+      ]
+    },
+    "status": {
+      "build": {
+        "context": "/Users/sajid/Projects/resilientcloud",
+        "dockerfile": "recovery/Dockerfile"
+      },
+      "cap_drop": [
+        "ALL"
+      ],
+      "cpus": 0.5,
+      "command": [
+        "node",
+        "recovery/status.mjs"
+      ],
+      "entrypoint": null,
+      "environment": {
+        "DATA_DIR": "/data"
+      },
+      "image": "sha256:c045765695b89b3ffe21fee77dc1d4b40efef8a0e4e7a035a380221ac9faf47a",
+      "mem_limit": "134217728",
+      "networks": {
+        "status-read": null
+      },
+      "read_only": true,
+      "restart": "no",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "volumes": [
+        {
+          "type": "volume",
+          "source": "controller-data",
+          "target": "/data",
+          "read_only": true,
+          "volume": {}
+        }
+      ]
+    }
+  },
+  "volumes": {
+    "controller-data": {
+      "name": "resilientcloud-m3-b_controller-data"
+    },
+    "gate-data": {
+      "name": "resilientcloud-m3-b_gate-data"
+    },
+    "gate-runtime": {
+      "name": "resilientcloud-m3-b_gate-runtime"
+    }
+  },
+  "x-backend": {
+    "build": ".",
+    "cap_drop": [
+      "ALL"
+    ],
+    "cpus": 0.5,
+    "healthcheck": {
+      "interval": "2s",
+      "retries": 2,
+      "start_period": "2s",
+      "test": [
+        "CMD",
+        "node",
+        "-e",
+        "fetch('http://127.0.0.1:3000/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      ],
+      "timeout": "1s"
+    },
+    "image": "resilientcloud-backend:m1",
+    "labels": {
+      "io.resilientcloud.role": "backend"
+    },
+    "mem_limit": "128m",
+    "networks": [
+      "app"
+    ],
+    "read_only": true,
+    "restart": "no",
+    "security_opt": [
+      "no-new-privileges:true"
+    ]
+  },
+  "x-recovery": {
+    "build": {
+      "context": ".",
+      "dockerfile": "recovery/Dockerfile"
+    },
+    "cap_drop": [
+      "ALL"
+    ],
+    "cpus": 0.5,
+    "image": "resilientcloud-recovery:m2",
+    "mem_limit": "128m",
+    "read_only": true,
+    "restart": "no",
+    "security_opt": [
+      "no-new-privileges:true"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+
+> resilientcloud@0.1.0 dashboard:test
+> npm --prefix dashboard test
+
+
+> resilientcloud-dashboard@0.1.0 test
+> node --test src/model.test.ts
+
+✔ fresh observations retain instance identity and readiness without inventing absent backends (1.761541ms)
+✔ stale, disconnected and missing probes cannot assert readiness (0.481875ms)
+✔ unknown controller states remain unknown; exhausted state and spent attempts stay visible (0.339083ms)
+✔ invalid and unavailable status is rejected rather than replaced with samples (2.214042ms)
+✔ timeline preserves journal order across UTC clock changes and allows an empty journal (0.28325ms)
+✔ saved outcomes preserve absent recovery, measured timing, and skipped raw slots (0.353ms)
+✔ saved summaries reject fabricated rates, inconsistent counts and missing verification timings (0.234375ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 150.273042
