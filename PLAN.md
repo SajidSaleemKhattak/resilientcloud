@@ -2,7 +2,7 @@
 
 ## Scope and prerequisites
 
-Build and demonstrate locally on a MacBook Air M2; cloud budget: $0. Cloud deployment is deferred until local validation and a genuinely zero-cost hosting option are confirmed, then requires explicit user approval. It is not permanently excluded. Keep project changes inside `resilientcloud`; do not access credentials or modify unrelated files. Use ARM64-compatible images and modest resource limits. This is a single-host prototype: it cannot protect against Mac, Docker VM, power, or host-network failure.
+Build and demonstrate locally on a MacBook Air M2; out-of-pocket cloud budget: $0. The user has now confirmed AWS Free plan, $100 credits and 182 days remaining; do not upgrade the plan. AWS deployment preparation is documented in `docs/AWS.md`, but provisioning/deployment still requires explicit approval and region/domain/admin details. Keep project changes inside `resilientcloud`; do not access credentials or modify unrelated files. Use ARM64-compatible images and modest resource limits. This is a single-host prototype: it cannot protect against Mac/EC2, Docker VM, power, or host-network failure.
 
 Environment checked on 2026-11-03:
 
@@ -100,6 +100,17 @@ Earlier short runner smoke failures remain under `results/milestone-3/runner-smo
 **Milestone 3 completed locally, 2026-11-04.** Final live-dashboard evidence is `results/milestone-3/dashboard-final/`; the bounded integration report is `results/milestone-3/ci-local/`. All 57 backend/controller/tool tests, 7 dashboard model tests, 9 browser fixture checks, and four real browser checks passed. Two repeated saved-summary checks were deliberately skipped in stale/disconnected phases because the same summary had already been checked against all 27 actual trials in the healthy phase. The public dashboard has no mutation channel and no Docker/gate socket. Milestone-1/milestone-2 artifacts and checkpoints are preserved. No local runtime blocker remains. Actual GitHub-hosted CI and any future cloud deployment require subsequent authorized steps; hosting still needs a confirmed zero-cost option and explicit approval.
 
 ## Tests, CI, and documentation
+
+### AWS preparation (2026-11-04; not deployed)
+
+- [x] Inspected the existing six-service Compose setup and unchanged recovery/traffic boundaries; completed experiment matrix and evidence preserved without rerunning it.
+- [x] Added a separate AWS overlay, version/digest-pinned TLS ingress, content-pinned ARM64 transfer bundle, disabled-by-default fault injection, authenticated SSH administration and a journal archive procedure. Local Compose remains unchanged.
+- [x] Short local seven-service profile/HTTPS check: 350/350 requests, no skips; sampled memory up to 277.31 MiB and configured memory ceilings 832 MiB. These are Docker Desktop samples, not EC2 or host-OS measurements.
+- [x] Official AWS Free-plan eligibility/prices checked. Proposed us-east-1 t4g.small (2 ARM64 vCPUs/2 GiB), Standard CPU credits, 20 GiB gp3. $17.51/730-hour month including IPv4; $104.80 for 182 days continuously exceeds $100. Eight hours/day with disk retained: approximately $41.31. No trial discount is assumed.
+- [x] Prepared access, bootstrap/start, identity/readiness/TLS verification, authenticated faults, event retention, shutdown and project-only cleanup instructions. Bundle/checksum/image save/load validated locally; actual EC2 launch, AWS quotas/account-specific availability and public certificate issuance remain unexecuted.
+- [ ] Confirm region, existing domain/DNS/contact email, administrator public IP/SSH key-pair choice and uptime schedule; obtain explicit deployment authorization while staying on Free plan.
+
+The existing controller/gate journals grow without built-in rotation; the local profile observed about 192 MiB/running day. A 20 GiB disk therefore requires the documented weekly archive/offload procedure and disk monitoring, not unlimited retention. No AWS account resources, private registries, DNS records, credentials or paid services were created/accessed; public pricing/docs and public container images were fetched.
 
 - Unit tests: failure thresholds, timeout handling, cooldown/retry limits, successful recovery verification, and refusal of unauthorized targets/actions.
 - Compose integration tests: routing to both instances, failover after crash, running-but-unhealthy detection, controller recovery, recovery-disabled behavior, and status/public-service isolation from Docker control. Verify socket/network exposure and target authorization, including foreign project containers and replaced container IDs.

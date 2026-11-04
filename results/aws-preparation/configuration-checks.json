@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-11-04T17:44:48.322Z",
+  "status": "passed",
+  "checks": [
+    {
+      "faultInjectionEnabled": "false",
+      "passed": true
+    },
+    {
+      "faultInjectionEnabled": "true",
+      "passed": true
+    }
+  ],
+  "scope": "Merged AWS configuration only, no authenticated AWS account inspection or provisioning",
+  "verified": [
+    "seven services",
+    "only HTTPS ingress public; gateway loopback",
+    "internal backend/status networks",
+    "private socket gate",
+    "no automatic restart policies",
+    "no on-instance builds/pulls",
+    "unchanged detection settings",
+    "admin-selected signal handler"
+  ]
+}

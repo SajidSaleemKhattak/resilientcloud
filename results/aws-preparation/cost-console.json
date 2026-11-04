@@ -1,0 +1,65 @@
+{
+  "asOf": "2026-11-04",
+  "region": "us-east-1",
+  "balanceUsd": 100,
+  "remainingDays": 182,
+  "assumptions": {
+    "instanceRate": 0.0168,
+    "ipv4Rate": 0.005,
+    "storageRate": 0.08,
+    "storageGiB": 20,
+    "planningMonthHours": 730,
+    "cpuMode": "standard (no surplus-credit fees)",
+    "trialDiscountAssumed": false,
+    "elasticIp": false,
+    "egress": "within the shared 100 GB/month internet-out allowance",
+    "excluded": "other AWS usage, taxes, domain purchase, snapshots, paid DNS/logging/load balancing"
+  },
+  "plans": {
+    "twoDays": {
+      "runningHours": 48,
+      "storageHours": 48,
+      "storageGiB": 20,
+      "compute": 0.8064,
+      "ipv4": 0.24,
+      "storage": 0.10520547945205481,
+      "total": 1.1516054794520547
+    },
+    "oneWeek": {
+      "runningHours": 168,
+      "storageHours": 168,
+      "storageGiB": 20,
+      "compute": 2.8224,
+      "ipv4": 0.84,
+      "storage": 0.3682191780821918,
+      "total": 4.030619178082191
+    },
+    "monthAlwaysOn": {
+      "runningHours": 730,
+      "storageHours": 730,
+      "storageGiB": 20,
+      "compute": 12.264,
+      "ipv4": 3.65,
+      "storage": 1.6,
+      "total": 17.514
+    },
+    "all182Days": {
+      "runningHours": 4368,
+      "storageHours": 4368,
+      "storageGiB": 20,
+      "compute": 73.38239999999999,
+      "ipv4": 21.84,
+      "storage": 9.573698630136986,
+      "total": 104.79609863013698
+    },
+    "eightHoursPerDay182Days": {
+      "runningHours": 1456,
+      "storageHours": 4368,
+      "storageGiB": 20,
+      "compute": 24.4608,
+      "ipv4": 7.28,
+      "storage": 9.573698630136986,
+      "total": 41.31449863013699
+    }
+  }
+}

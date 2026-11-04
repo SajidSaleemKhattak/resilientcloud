@@ -1,0 +1,13 @@
+{
+    admin off
+    persist_config off
+    email {$ACME_EMAIL}
+    servers {
+        protocols h1 h2
+    }
+}
+
+{$DEMO_DOMAIN} {
+    encode zstd gzip
+    reverse_proxy gateway:8080
+}

@@ -1,0 +1,151 @@
+ Network resilientcloud-aws-check_web Creating 
+ Volume resilientcloud-aws-check_tls-data Creating 
+ Network resilientcloud-aws-check_edge Creating 
+ Volume resilientcloud-aws-check_gate-data Creating 
+ Volume resilientcloud-aws-check_controller-data Creating 
+ Volume resilientcloud-aws-check_gate-runtime Creating 
+ Network resilientcloud-aws-check_status-read Creating 
+ Volume resilientcloud-aws-check_controller-data Creating 
+ Volume resilientcloud-aws-check_gate-runtime Creating 
+ Volume resilientcloud-aws-check_tls-data Creating 
+ Volume resilientcloud-aws-check_gate-data Creating 
+ Network resilientcloud-aws-check_web Creating 
+ Network resilientcloud-aws-check_app Creating 
+ Network resilientcloud-aws-check_app Creating 
+ Network resilientcloud-aws-check_status-read Creating 
+ Network resilientcloud-aws-check_edge Creating 
+ Volume resilientcloud-aws-check_controller-data Created 
+ Volume resilientcloud-aws-check_controller-data Created 
+ Volume resilientcloud-aws-check_gate-runtime Created 
+ Volume resilientcloud-aws-check_gate-runtime Created 
+ Volume resilientcloud-aws-check_gate-data Created 
+ Volume resilientcloud-aws-check_gate-data Created 
+ Container resilientcloud-aws-check-gate-1 Creating 
+ Volume resilientcloud-aws-check_tls-data Created 
+ Volume resilientcloud-aws-check_tls-data Created 
+ Network resilientcloud-aws-check_web Created 
+ Network resilientcloud-aws-check_web Created 
+ Network resilientcloud-aws-check_app Created 
+ Network resilientcloud-aws-check_app Created 
+ Container resilientcloud-aws-check-backend-b-1 Creating 
+ Container resilientcloud-aws-check-backend-a-1 Creating 
+ Network resilientcloud-aws-check_status-read Created 
+ Network resilientcloud-aws-check_status-read Created 
+ Container resilientcloud-aws-check-status-1 Creating 
+ Network resilientcloud-aws-check_edge Created 
+ Network resilientcloud-aws-check_edge Created 
+ Container resilientcloud-aws-check-gate-1 Created 
+ Container resilientcloud-aws-check-controller-1 Creating 
+ Container resilientcloud-aws-check-backend-b-1 Created 
+ Container resilientcloud-aws-check-backend-a-1 Created 
+ Container resilientcloud-aws-check-status-1 Created 
+ Container resilientcloud-aws-check-gateway-1 Creating 
+ Container resilientcloud-aws-check-controller-1 Created 
+ Container resilientcloud-aws-check-gateway-1 Created 
+ Container resilientcloud-aws-check-https-1 Creating 
+ Container resilientcloud-aws-check-https-1 Created 
+ Container resilientcloud-aws-check-status-1 Starting 
+ Container resilientcloud-aws-check-gate-1 Starting 
+ Container resilientcloud-aws-check-backend-a-1 Starting 
+ Container resilientcloud-aws-check-backend-b-1 Starting 
+ Container resilientcloud-aws-check-gate-1 Started 
+ Container resilientcloud-aws-check-gate-1 Waiting 
+ Container resilientcloud-aws-check-status-1 Started 
+ Container resilientcloud-aws-check-backend-a-1 Started 
+ Container resilientcloud-aws-check-backend-b-1 Started 
+ Container resilientcloud-aws-check-backend-b-1 Waiting 
+ Container resilientcloud-aws-check-backend-a-1 Waiting 
+ Container resilientcloud-aws-check-gate-1 Healthy 
+ Container resilientcloud-aws-check-controller-1 Starting 
+ Container resilientcloud-aws-check-controller-1 Started 
+ Container resilientcloud-aws-check-backend-b-1 Healthy 
+ Container resilientcloud-aws-check-backend-a-1 Healthy 
+ Container resilientcloud-aws-check-gateway-1 Starting 
+ Container resilientcloud-aws-check-gateway-1 Started 
+ Container resilientcloud-aws-check-https-1 Starting 
+ Container resilientcloud-aws-check-https-1 Started 
+ Container resilientcloud-aws-check-status-1 Waiting 
+ Container resilientcloud-aws-check-gate-1 Waiting 
+ Container resilientcloud-aws-check-controller-1 Waiting 
+ Container resilientcloud-aws-check-https-1 Waiting 
+ Container resilientcloud-aws-check-backend-a-1 Waiting 
+ Container resilientcloud-aws-check-gateway-1 Waiting 
+ Container resilientcloud-aws-check-backend-b-1 Waiting 
+ Container resilientcloud-aws-check-backend-a-1 Healthy 
+ Container resilientcloud-aws-check-status-1 Healthy 
+ Container resilientcloud-aws-check-https-1 Healthy 
+ Container resilientcloud-aws-check-controller-1 Healthy 
+ Container resilientcloud-aws-check-gate-1 Healthy 
+ Container resilientcloud-aws-check-backend-b-1 Healthy 
+ Container resilientcloud-aws-check-gateway-1 Healthy 
+ Container resilientcloud-aws-check-https-1 Stopping 
+ Container resilientcloud-aws-check-controller-1 Stopping 
+ Container resilientcloud-aws-check-controller-1 Stopped 
+ Container resilientcloud-aws-check-controller-1 Removing 
+ Container resilientcloud-aws-check-controller-1 Removed 
+ Container resilientcloud-aws-check-gate-1 Stopping 
+ Container resilientcloud-aws-check-https-1 Stopped 
+ Container resilientcloud-aws-check-https-1 Removing 
+ Container resilientcloud-aws-check-gate-1 Stopped 
+ Container resilientcloud-aws-check-gate-1 Removing 
+ Container resilientcloud-aws-check-https-1 Removed 
+ Container resilientcloud-aws-check-gateway-1 Stopping 
+ Container resilientcloud-aws-check-gate-1 Removed 
+ Container resilientcloud-aws-check-gateway-1 Stopped 
+ Container resilientcloud-aws-check-gateway-1 Removing 
+ Container resilientcloud-aws-check-gateway-1 Removed 
+ Container resilientcloud-aws-check-backend-b-1 Stopping 
+ Container resilientcloud-aws-check-backend-a-1 Stopping 
+ Container resilientcloud-aws-check-status-1 Stopping 
+ Container resilientcloud-aws-check-backend-b-1 Stopped 
+ Container resilientcloud-aws-check-backend-b-1 Removing 
+ Container resilientcloud-aws-check-status-1 Stopped 
+ Container resilientcloud-aws-check-status-1 Removing 
+ Container resilientcloud-aws-check-backend-b-1 Removed 
+ Container resilientcloud-aws-check-status-1 Removed 
+ Container resilientcloud-aws-check-backend-a-1 Stopped 
+ Container resilientcloud-aws-check-backend-a-1 Removing 
+ Container resilientcloud-aws-check-backend-a-1 Removed 
+ Network resilientcloud-aws-check_web Removing 
+ Network resilientcloud-aws-check_edge Removing 
+ Volume resilientcloud-aws-check_tls-data Removing 
+ Network resilientcloud-aws-check_status-read Removing 
+ Network resilientcloud-aws-check_app Removing 
+ Volume resilientcloud-aws-check_controller-data Removing 
+ Volume resilientcloud-aws-check_gate-runtime Removing 
+ Volume resilientcloud-aws-check_gate-data Removing 
+ Volume resilientcloud-aws-check_controller-data Removed 
+ Volume resilientcloud-aws-check_tls-data Removed 
+ Volume resilientcloud-aws-check_gate-runtime Removed 
+ Volume resilientcloud-aws-check_gate-data Removed 
+ Network resilientcloud-aws-check_web Removed 
+ Network resilientcloud-aws-check_edge Removed 
+ Network resilientcloud-aws-check_status-read Removed 
+ Network resilientcloud-aws-check_app Removed 
+{
+  "status": "passed",
+  "phases": {
+    "idle": {
+      "samples": 6,
+      "maxMemoryMiB": 277.31,
+      "maxCpuPercent": 47.11
+    },
+    "load": {
+      "samples": 5,
+      "maxMemoryMiB": 248.60000000000005,
+      "maxCpuPercent": 34.040000000000006
+    }
+  },
+  "journalGrowth": {
+    "before": {
+      "controller": 14428,
+      "gate": 6208
+    },
+    "after": {
+      "controller": 126367,
+      "gate": 60260
+    },
+    "seconds": 71.145153166,
+    "bytesPerSecond": 2333.131529180915
+  }
+}

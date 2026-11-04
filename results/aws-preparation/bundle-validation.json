@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-11-04T17:41:35.069Z",
+  "bundle": ".cache/aws-bundle-2026-11-04T17-34-47-139Z",
+  "sha256Checks": "passed",
+  "localSaveLoadRoundTrip": "passed",
+  "images": [
+    {
+      "tag": "resilientcloud-backend:aws",
+      "id": "sha256:28cd65da2e79ce53a2aa3a3a323a00fcdea5890b9815b0394b30f83134136b6d",
+      "architecture": "arm64",
+      "size": 62946437
+    },
+    {
+      "tag": "resilientcloud-recovery:aws",
+      "id": "sha256:81279e43f362c6b7965290679c7e2401b82ea5c9a2ef3183556a68af4257cbca",
+      "architecture": "arm64",
+      "size": 62288849
+    },
+    {
+      "tag": "resilientcloud-gateway:aws",
+      "id": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+      "architecture": "arm64",
+      "size": 25801709
+    },
+    {
+      "tag": "resilientcloud-https:aws",
+      "id": "sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5",
+      "architecture": "arm64",
+      "size": 23650827
+    }
+  ],
+  "notice": "Local image-store round trip only; no AWS transfer or deployment"
+}

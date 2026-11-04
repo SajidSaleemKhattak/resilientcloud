@@ -1,0 +1,1 @@
+The first isolated Caddy validate command used cap_drop ALL without NET_BIND_SERVICE and failed before execution: exec /usr/bin/caddy: operation not permitted. The official image executable carries that capability. The actual AWS configuration already includes NET_BIND_SERVICE; the corrected validation mirrors it. No runtime deployment policy was weakened.

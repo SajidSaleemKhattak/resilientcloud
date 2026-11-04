@@ -1,0 +1,568 @@
+{
+  "startedAt": "2026-11-04T17:29:53.333Z",
+  "status": "passed",
+  "scope": "Local Docker Desktop ARM64; sampled container usage, not EC2/OS measurements",
+  "phases": {
+    "idle": {
+      "durationMs": 35585.444375,
+      "samples": [
+        {
+          "timestamp": "2026-11-04T17:30:33.566Z",
+          "elapsedMs": 4628.486499999999,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 12.16,
+              "memoryBytes": 39090913.28
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 12.04,
+              "memoryBytes": 36270243.84
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 0.8,
+              "memoryBytes": 23131586.56
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 4.31,
+              "memoryBytes": 97475624.96
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0.01,
+              "memoryBytes": 11450449.92
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 0,
+              "memoryBytes": 15990784
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 22680698.88
+            }
+          ]
+        },
+        {
+          "timestamp": "2026-11-04T17:30:39.762Z",
+          "elapsedMs": 10825.079082999997,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 9.85,
+              "memoryBytes": 66207088.64
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 6.75,
+              "memoryBytes": 54022635.52
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 1.37,
+              "memoryBytes": 23184015.36
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 5.09,
+              "memoryBytes": 97244938.24
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0,
+              "memoryBytes": 11450449.92
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 0,
+              "memoryBytes": 15990784
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 22680698.88
+            }
+          ]
+        },
+        {
+          "timestamp": "2026-11-04T17:30:45.973Z",
+          "elapsedMs": 17035.871874999997,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 0.14,
+              "memoryBytes": 38765854.72
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 12.11,
+              "memoryBytes": 35829841.92
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 1.42,
+              "memoryBytes": 23781703.68
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 4.48,
+              "memoryBytes": 97328824.32
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0,
+              "memoryBytes": 11450449.92
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 0.01,
+              "memoryBytes": 15990784
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 22680698.88
+            }
+          ]
+        },
+        {
+          "timestamp": "2026-11-04T17:30:51.518Z",
+          "elapsedMs": 22580.409249999997,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 20.27,
+              "memoryBytes": 38912655.36
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 22.16,
+              "memoryBytes": 36354129.92
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 1.13,
+              "memoryBytes": 24557649.92
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 3.54,
+              "memoryBytes": 97412710.4
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0.01,
+              "memoryBytes": 11450449.92
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 0,
+              "memoryBytes": 15990784
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 22680698.88
+            }
+          ]
+        },
+        {
+          "timestamp": "2026-11-04T17:30:57.746Z",
+          "elapsedMs": 28808.404916,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 0.21,
+              "memoryBytes": 38944112.64
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 10.56,
+              "memoryBytes": 36154900.48
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 0.78,
+              "memoryBytes": 24735907.84
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 4.32,
+              "memoryBytes": 97507082.24
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0.04,
+              "memoryBytes": 11450449.92
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 0,
+              "memoryBytes": 15990784
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 22680698.88
+            }
+          ]
+        },
+        {
+          "timestamp": "2026-11-04T17:31:03.522Z",
+          "elapsedMs": 34584.60533300001,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 0.43,
+              "memoryBytes": 38765854.72
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 0.24,
+              "memoryBytes": 36364615.68
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 1.96,
+              "memoryBytes": 25438453.76
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 5.97,
+              "memoryBytes": 99646177.28
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0.04,
+              "memoryBytes": 11450449.92
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 0,
+              "memoryBytes": 15927869.44
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 22680698.88
+            }
+          ]
+        }
+      ],
+      "totalMemoryMiB": [
+        234.68999999999997,
+        277.31,
+        234.43999999999997,
+        235.9,
+        235.99999999999997,
+        238.67999999999998
+      ],
+      "totalCpuPercent": [
+        29.32,
+        23.060000000000002,
+        18.16,
+        47.11,
+        15.91,
+        8.639999999999999
+      ]
+    },
+    "load": {
+      "durationMs": 30028.176582999993,
+      "samples": [
+        {
+          "timestamp": "2026-11-04T17:31:09.706Z",
+          "elapsedMs": 5178.872541999997,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 0.55,
+              "memoryBytes": 39069941.76
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 0.48,
+              "memoryBytes": 36385587.2
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 0.71,
+              "memoryBytes": 25249710.08
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 4.43,
+              "memoryBytes": 97244938.24
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0.45,
+              "memoryBytes": 12886999.04
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 0.63,
+              "memoryBytes": 18853396.48
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 21957181.44
+            }
+          ]
+        },
+        {
+          "timestamp": "2026-11-04T17:31:15.895Z",
+          "elapsedMs": 11367.684416999997,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 12.69,
+              "memoryBytes": 38902169.6
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 13.83,
+              "memoryBytes": 36658216.96
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 1.28,
+              "memoryBytes": 26130513.92
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 4.19,
+              "memoryBytes": 98083799.04
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0.92,
+              "memoryBytes": 12404654.08
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 1.13,
+              "memoryBytes": 18821939.2
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 21852323.84
+            }
+          ]
+        },
+        {
+          "timestamp": "2026-11-04T17:31:21.505Z",
+          "elapsedMs": 16978.105500000005,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 0.76,
+              "memoryBytes": 39845888
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 0.88,
+              "memoryBytes": 36458987.52
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 0.89,
+              "memoryBytes": 26224885.76
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 3.72,
+              "memoryBytes": 104773713.92
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0.69,
+              "memoryBytes": 12467568.64
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 1.02,
+              "memoryBytes": 19052625.92
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 21852323.84
+            }
+          ]
+        },
+        {
+          "timestamp": "2026-11-04T17:31:27.681Z",
+          "elapsedMs": 23154.367083000005,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 0.81,
+              "memoryBytes": 40129003.52
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 0.81,
+              "memoryBytes": 36427530.24
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 1.06,
+              "memoryBytes": 27504148.48
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 3.73,
+              "memoryBytes": 97978941.44
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0.62,
+              "memoryBytes": 12457082.88
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 0.95,
+              "memoryBytes": 18926796.8
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 21852323.84
+            }
+          ]
+        },
+        {
+          "timestamp": "2026-11-04T17:31:33.554Z",
+          "elapsedMs": 29027.278707999998,
+          "containers": [
+            {
+              "name": "resilientcloud-aws-check-backend-a-1",
+              "cpuPercent": 11.62,
+              "memoryBytes": 39929774.08
+            },
+            {
+              "name": "resilientcloud-aws-check-backend-b-1",
+              "cpuPercent": 13.64,
+              "memoryBytes": 36658216.96
+            },
+            {
+              "name": "resilientcloud-aws-check-controller-1",
+              "cpuPercent": 0.86,
+              "memoryBytes": 27734835.2
+            },
+            {
+              "name": "resilientcloud-aws-check-gate-1",
+              "cpuPercent": 3.37,
+              "memoryBytes": 98608087.04
+            },
+            {
+              "name": "resilientcloud-aws-check-gateway-1",
+              "cpuPercent": 0.35,
+              "memoryBytes": 11985223.68
+            },
+            {
+              "name": "resilientcloud-aws-check-https-1",
+              "cpuPercent": 0.55,
+              "memoryBytes": 19188940.8
+            },
+            {
+              "name": "resilientcloud-aws-check-status-1",
+              "cpuPercent": 0,
+              "memoryBytes": 21852323.84
+            }
+          ]
+        }
+      ],
+      "totalMemoryMiB": [
+        239.98999999999998,
+        241.14000000000001,
+        248.60000000000005,
+        243.45000000000002,
+        244.10000000000002
+      ],
+      "totalCpuPercent": [
+        7.25,
+        34.040000000000006,
+        7.959999999999999,
+        7.98,
+        30.39
+      ]
+    }
+  },
+  "checks": [
+    "Local HTTPS with explicitly trusted test CA; dashboard/status/events/results/API load; mutation paths denied",
+    "Actual HTTPS workload: 10 requests/second, zero client retries, no failures or skipped slots"
+  ],
+  "runtime": {
+    "hostNode": "v25.8.2",
+    "docker": "29.7.2 aarch64"
+  },
+  "images": [
+    {
+      "id": "sha256:cd84be9210de792df03382126313c3d0e81f29a4fce5c0bdf86bf5d05125cec3",
+      "architecture": "arm64",
+      "size": 62946578
+    },
+    {
+      "id": "sha256:54d7f98c7c13d6b4decd1fa6e24e10b5316a43be91b73b578e43064944b5546e",
+      "architecture": "arm64",
+      "size": 62288991
+    },
+    {
+      "id": "sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5",
+      "architecture": "arm64",
+      "size": 23650827
+    }
+  ],
+  "traffic": {
+    "type": "summary",
+    "timestamp": "2026-11-04T17:31:39.646Z",
+    "label": "aws-sizing-https",
+    "scheduled": 350,
+    "requests": 350,
+    "successes": 350,
+    "failures": 0,
+    "dropped": 0,
+    "successRate": 1,
+    "achievedRequestsPerSecond": 10,
+    "wallDurationMs": 34999.159,
+    "instances": {
+      "backend-b": 175,
+      "backend-a": 175
+    },
+    "latencyAllMs": {
+      "p50": 4.064,
+      "p95": 7.413
+    },
+    "latencySuccessMs": {
+      "p50": 4.064,
+      "p95": 7.413
+    },
+    "definitions": {
+      "achievedRequestsPerSecond": "requests launched / configured durationSeconds; wallDurationMs includes draining outstanding requests",
+      "latency": "GET launch to complete body or terminal error; all includes HTTP errors and timeouts; success includes only complete 2xx responses; nearest-rank percentiles",
+      "dropped": "schedule slots skipped for concurrency or scheduler lag; excluded from request and success counts",
+      "upstreamAddr": "raw X-Upstream-Addr response header, or null when absent",
+      "upstreamStatus": "raw X-Upstream-Status response header; preserves multiple Nginx attempts even when final response succeeds; null when absent"
+    }
+  },
+  "journalGrowth": {
+    "before": {
+      "controller": 14428,
+      "gate": 6208
+    },
+    "after": {
+      "controller": 126367,
+      "gate": 60260
+    },
+    "seconds": 71.145153166,
+    "bytesPerSecond": 2333.131529180915
+  },
+  "finishedAt": "2026-11-04T17:31:44.108Z"
+}

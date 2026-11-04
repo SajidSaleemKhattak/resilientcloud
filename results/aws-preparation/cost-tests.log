@@ -1,0 +1,11 @@
+✔ monthly estimate includes compute, public IPv4 and provisioned EBS (0.717583ms)
+✔ stopping compute releases ephemeral IPv4 but does not stop storage credit consumption (0.110916ms)
+✔ invalid cost inputs fail rather than giving a misleading budget (0.184708ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83.392625

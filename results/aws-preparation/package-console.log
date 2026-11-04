@@ -1,0 +1,145 @@
+
+> resilientcloud-dashboard@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v8.3.5 building client environment for production...
+transforming...
+✓ 18 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.67 kB │ gzip:  0.39 kB
+dist/assets/index-DSJjLDug.css   26.16 kB │ gzip:  6.21 kB
+dist/assets/index-Cer6f8Tz.js   250.94 kB │ gzip: 77.50 kB
+
+✓ built in 83ms
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 700B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85
+#2 DONE 5.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 176B done
+#3 DONE 0.0s
+
+#4 [build 1/7] FROM docker.io/library/node:24-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85
+#4 resolve docker.io/library/node:24-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85 done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 51.98kB done
+#5 DONE 0.0s
+
+#6 [runtime 4/5] COPY --from=build --chown=node:node /app/node_modules ./node_modules
+#6 CACHED
+
+#7 [build 4/7] RUN npm ci --ignore-scripts
+#7 CACHED
+
+#8 [build 5/7] COPY tsconfig.json ./
+#8 CACHED
+
+#9 [build 7/7] RUN npm run build && npm prune --omit=dev --ignore-scripts
+#9 CACHED
+
+#10 [build 3/7] COPY package*.json ./
+#10 CACHED
+
+#11 [build 6/7] COPY backend/src ./backend/src
+#11 CACHED
+
+#12 [runtime 3/5] COPY --from=build --chown=node:node /app/package.json ./
+#12 CACHED
+
+#13 [build 2/7] WORKDIR /app
+#13 CACHED
+
+#14 [runtime 5/5] COPY --from=build --chown=node:node /app/dist ./dist
+#14 CACHED
+
+#15 exporting to image
+#15 exporting layers done
+#15 exporting manifest sha256:36f2b2f49f0691a21d125d03cd0a524b10f54b23bdf1e7ed5dfb962d1bfe7e1e done
+#15 exporting config sha256:8eb31a44fc762222bf9db73b536aee5e523aa8ec981e6e7f60458d919e16f3a3 done
+#15 exporting attestation manifest sha256:140471ea6044d6550b03cff1d736ac5019e9144bfa9a2796317468339cd267af done
+#15 exporting manifest list sha256:28cd65da2e79ce53a2aa3a3a323a00fcdea5890b9815b0394b30f83134136b6d done
+#15 naming to docker.io/library/resilientcloud-backend:aws done
+#15 unpacking to docker.io/library/resilientcloud-backend:aws done
+#15 DONE 0.0s
+
+View build details: docker-desktop://dashboard/build/default/default/pwz95lwikfdcohjchdos3vkc6
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 280B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 176B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 33.66kB done
+#4 DONE 0.0s
+
+#5 [1/4] FROM docker.io/library/node:24-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85
+#5 resolve docker.io/library/node:24-alpine@sha256:8a32c8cf649a49915a66e81e7a609223c708d0adabf288ee3f4077d765542f85 done
+#5 DONE 0.0s
+
+#6 [3/4] RUN mkdir -p /data /audit /run/gate && chown node:node /data
+#6 CACHED
+
+#7 [2/4] WORKDIR /app
+#7 CACHED
+
+#8 [4/4] COPY recovery ./recovery
+#8 CACHED
+
+#9 exporting to image
+#9 exporting layers done
+#9 exporting manifest sha256:d4c9397791ccb8f887cfafe29aab852b8ee011cf857447376a83cf98178b2e8c done
+#9 exporting config sha256:002bdb523b31cfd782d09ab2dc61422b5620c3240e137a33799f1f7022cd1b19 done
+#9 exporting attestation manifest sha256:d37f70c678f609b512fbfb32758e1e50b744f81016b89ee0a51f7cb4f672bf50 done
+#9 exporting manifest list sha256:81279e43f362c6b7965290679c7e2401b82ea5c9a2ef3183556a68af4257cbca done
+#9 naming to docker.io/library/resilientcloud-recovery:aws done
+#9 unpacking to docker.io/library/resilientcloud-recovery:aws done
+#9 DONE 0.0s
+
+View build details: docker-desktop://dashboard/build/default/default/w0amlpzefa4pkzfaxew3tzihj
+docker.io/library/nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236: Pulling from library/nginx
+Digest: sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+Status: Image is up to date for nginx@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+docker.io/library/nginx:1.28-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+docker.io/library/caddy@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5: Pulling from library/caddy
+Digest: sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5
+Status: Image is up to date for caddy@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5
+docker.io/library/caddy:2.11.7-alpine@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5
+{
+  "bundle": "/Users/sajid/Projects/resilientcloud/.cache/aws-bundle-2026-11-04T17-34-47-139Z",
+  "images": [
+    {
+      "tag": "resilientcloud-backend:aws",
+      "id": "sha256:28cd65da2e79ce53a2aa3a3a323a00fcdea5890b9815b0394b30f83134136b6d"
+    },
+    {
+      "tag": "resilientcloud-recovery:aws",
+      "id": "sha256:81279e43f362c6b7965290679c7e2401b82ea5c9a2ef3183556a68af4257cbca"
+    },
+    {
+      "tag": "resilientcloud-gateway:aws",
+      "id": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236"
+    },
+    {
+      "tag": "resilientcloud-https:aws",
+      "id": "sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5"
+    }
+  ],
+  "config": "passed",
+  "deployed": false
+}

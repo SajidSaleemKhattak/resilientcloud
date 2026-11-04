@@ -2,7 +2,7 @@
 
 A local failure-detection and recovery research prototype for a Cloud and Network Infrastructures master's scholarship application. Express backends and Nginx demonstrate traffic failover; an isolated controller verifies backend recovery through a restricted Docker gate. The React/TypeScript dashboard reads actual telemetry and saved experiment results. Docker restart policies remain disabled in every scenario.
 
-Cloud deployment is **deferred until local validation and a zero-cost hosting option are confirmed**, followed by explicit approval to deploy. Two containers on one Mac do not protect against host, Docker VM, power, or host-network failure.
+AWS deployment is **prepared but not authorized or performed**. The confirmed Free plan has $100 credits and 182 days remaining; it must remain on the Free plan. See the [AWS runbook and cost budget](docs/AWS.md): proposed ARM64 t4g.small, 2 GiB RAM, 20 GiB gp3, about $17.51 per 730-hour month including public IPv4. Continuous use for all 182 days exceeds $100; stop between demos. Deployment still needs region/domain/admin inputs and explicit approval. Two containers on one machine do not protect against host, Docker VM, power, or host-network failure.
 
 ## Start the read-only dashboard
 
