@@ -1,12 +1,24 @@
 # ResilientCloud
 
-A local failure-detection and recovery research prototype for a Cloud and Network Infrastructures master's scholarship application. Express backends and Nginx demonstrate traffic failover; an isolated controller verifies backend recovery through a restricted Docker gate. The React/TypeScript dashboard reads actual telemetry and saved experiment results. Docker restart policies remain disabled in every scenario.
+A failure-detection and automated-recovery prototype for a Cloud and Network Infrastructures master's scholarship application. Express backends and Nginx demonstrate traffic failover; an isolated controller confirms failures and verifies backend recovery through a restricted Docker gate. The React/TypeScript dashboard reads actual telemetry and saved experiment results. Docker restart policies remain disabled in every scenario.
 
 **Live AWS demo: https://resilientcloud.getscoop.app** — deployed to the user's existing **ap-southeast-2** t4g.small with trusted HTTPS and private backend/control services. Free plan and Standard CPU credits are retained. See the [active deployment and verification record](docs/AWS-DEPLOYMENT.md). The 48-hour stop deadline is **6 November 2026, 23:47:43 PKT / 18:47:43 UTC**; no automatic EC2 stop is configured. Sydney's estimated 48-hour cost is **$1.38 credits** including assumed 20 GiB storage and public IPv4. Two containers on one machine do not protect against host, Docker VM, power, or host-network failure. The [original preparation runbook](docs/AWS.md) retains the historical us-east-1 estimates; do not launch a second instance from it.
 
+The hosted demo is temporary and may be offline after its stop deadline. Its **live telemetry comes from EC2**; **Saved experiments contains the original local measurements**, not cloud benchmarks. There are no public fault controls or recovery commands.
+
+**Single-host limitation:** both backends and every supporting service share one host. The prototype does not protect against host, Docker VM, disk, power, network or availability-zone failure. Three repetitions per group provide descriptive evidence, not a production SLA or a guarantee of zero downtime.
+
+[Architecture](#architecture) · [Measured results](#repeated-experiment-results-milestone-3) · [Reproduce experiments](#reproduce-the-comparison-from-a-fresh-checkout) · [Tests and CI](#tests-and-ci) · [Two-minute demo](docs/DEMO.md)
+
 ## Start the read-only dashboard
 
-From this directory, with Docker Desktop running:
+Prerequisites: Node 24 LTS, npm, Docker and Compose. The validated Docker engine is 29.7.2; the recovery gate requires support for Docker API 1.53. ARM64 images run natively on the Mac M2 and Graviton; pinned base images are multiarchitecture. After cloning, enter the checkout directory:
+
+```sh
+cd resilientcloud
+```
+
+Start the local stack:
 
 ```sh
 npm --userconfig="$PWD/.npmrc" --globalconfig=/dev/null ci
@@ -22,6 +34,8 @@ The live view reads `GET /status` and `GET /events`. It shows readiness, control
 **Saved experiments** reads a separate static `/experiments/summary.json`, generated from the committed matrix evidence. These values do not change when the live services change. Missing results produce an empty/error view rather than substitute activity. For React development, start the recovery stack and run `npm run dashboard:dev`; the loopback development server at http://127.0.0.1:5173 proxies status/event reads to port 8080.
 
 Stop with `npm run compose -- dashboard down`. See the [two-minute demonstration](docs/DEMO.md), [experiment protocol](docs/EXPERIMENTS.md), and [recovery design](docs/RECOVERY.md).
+
+Use these commands on your local Docker host. Administration of the running EC2 deployment has a separate [runbook](docs/AWS-DEPLOYMENT.md). Local experiments intentionally enable signal-based fault injection; the AWS overlay disables it by default. Neither exposes an HTTP fault endpoint.
 
 ## Repeated experiment results (milestone 3)
 
@@ -42,14 +56,48 @@ Scenario B preserved most traffic while its failed instance remained failed; C a
 
 See [individual trial values and ranges](results/milestone-3/RESULTS.md), [CSV](results/milestone-3/validated/trials.csv), and [evidence index](results/milestone-3/README.md). To repeat the full matrix, use the commands in [EXPERIMENTS.md](docs/EXPERIMENTS.md); the shorter runner smoke is a separate check.
 
+## Reproduce the comparison from a fresh checkout
+
+Install both lockfiles and build the dashboard using the local setup above. Run the lightweight checks first:
+
+```sh
+npm run typecheck
+npm test
+npm run dashboard:test
+npm run dashboard:build
+node tools/experiments-config.mjs
+```
+
+To generate a new full comparison, stop the local dashboard stack first and reserve loopback port 18085. The runner creates fresh, dedicated test projects; it refuses existing test resources and never overwrites an evidence directory:
+
+```sh
+npm run compose -- dashboard down
+run_id="$(date -u +%Y%m%dT%H%M%SZ)"
+run_dir="results/milestone-3/run-${run_id}"
+node tools/experiments.mjs --out "$run_dir"
+node tools/experiments-summary.mjs "$run_dir"
+```
+
+Keep the machine awake; on macOS prefix the runner with `caffeinate -i`. Allow roughly 40 minutes. It runs three fresh trials for each A/B/C and crash/unhealthy pair, plus three no-fault controls per configuration, with identical workload, fault windows and detection parameters. Every request, skipped slot, probe, fault observation and recovery event is retained. Absent recovery stays `null`/“Not observed.”
+
+To display the new saved results locally:
+
+```sh
+cp "$run_dir/summary.json" dashboard/public/experiments/summary.json
+npm run dashboard:build
+npm run compose -- dashboard up -d --build
+```
+
+This intentionally replaces the dashboard's selected summary with your own measurement. Keep the original committed summary/evidence for comparison. Regenerating a summary from an existing saved run is sufficient for inspection; rerunning the matrix is optional and was not done for deployment/publication preparation. See [metric definitions and raw schema](docs/EXPERIMENTS.md).
+
 ## Prerequisites and local setup
 
-Use Git, a supported Node.js LTS release (Node 24 is used here), npm, Docker, and Docker Compose. On this MacBook Air M2, the existing Node v25.8.2 remains unchanged; Docker Desktop is now reachable and reports `aarch64`. The validated container runs Node v24.22.2. Node and Nginx images are pinned to multi-architecture digests in `Dockerfile` and `compose.yaml`, allowing native ARM64 builds without forcing AMD64 emulation.
+Use Git, a supported Node.js LTS release (Node 24 is used here), npm, Docker, and Docker Compose. The original validation host was a MacBook Air M2 with Node v25.8.2 and Docker Desktop reporting `aarch64`; the validated container runs Node v24.22.2. Node and Nginx images are pinned to multi-architecture digests in `Dockerfile` and `compose.yaml`, allowing native ARM64 builds without forcing AMD64 emulation.
 
 Run commands from this directory:
 
 ```sh
-cd /Users/sajid/Projects/resilientcloud
+# Run from the cloned resilientcloud repository root.
 docker info --format 'Server={{.ServerVersion}} Arch={{.Architecture}}'
 docker compose version
 npm --userconfig="$PWD/.npmrc" --globalconfig=/dev/null ci
@@ -67,6 +115,8 @@ The provided Docker wrappers select the current local Unix-socket endpoint and u
 ```mermaid
 flowchart LR
     Browser[React dashboard] -->|GET status and events| Gateway[Nginx gateway: loopback 8080]
+    Public[Public HTTPS client] --> TLS[Caddy: AWS ingress only]
+    TLS -->|private web network| Gateway
     Client[Local traffic generator] -->|GET /api| Gateway
     subgraph Private[Internal Compose app network]
       Gateway --> A[Express backend-a]
@@ -82,7 +132,9 @@ flowchart LR
     Operator[Local fault CLI] -. Docker signal to validated project backend .-> A
 ```
 
-Only Nginx publishes a host port, bound to loopback. Backends have no published ports and only join the internal `app` network. Nginx also joins an `edge` network so its host port is reachable; using only an internal network prevented host access during the initial validation attempt. In the one/two scenarios, no service mounts Docker's socket. In the recovery scenario, only the isolated gate mounts it; the controller reaches the gate through a private Unix socket. The local fault CLI validates the project name, service name, working-directory label, backend role label, and exact container ID before signalling a backend.
+In local Compose, only Nginx publishes a host port, bound to loopback. The AWS overlay additionally publishes Caddy on public TCP 80/443, while gateway port 8080 stays loopback-only. Backends have no published ports and only join the internal `app` network. Nginx also joins an `edge` network so its host port is reachable; using only internal networks prevented host access during validation/deployment. Status is on a separate internal read-only network. In the one/two scenarios, no service mounts Docker's socket. In recovery, only the isolated gate mounts it; the controller reaches the gate through a private Unix socket and has no public command server. The local fault CLI validates the project name, service name, working-directory label, backend role label, and exact container ID before signalling a backend.
+
+A read-only Docker socket mount still permits API mutations. The gate is therefore trusted: it authorizes only inspection/restart of freshly validated project backends and rejects foreign/stale/mismatched targets. Public Nginx/Caddy/status services have no Docker or gate socket. [Recovery states and trust boundary](docs/RECOVERY.md).
 
 | Endpoint | Healthy response | Injected unhealthy response | Exposed through gateway |
 | --- | --- | --- | --- |
@@ -270,6 +322,14 @@ The dashboard validator uses a fresh, isolated `resilientcloud-m3-ui` stack on l
 [GitHub Actions](.github/workflows/ci.yml) installs both lockfiles, checks types/tests, builds production outputs, validates Compose, checks browser states, and runs a bounded integration smoke on Linux. It pins Node, Docker, and action revisions; its only repository permission is `contents: read`. Diagnostic artifacts are uploaded even after failure. There are no deployment jobs or cloud credentials. **Local checks are not an actual GitHub Actions run; that remains unexecuted until the workflow runs on GitHub.**
 
 **Validated locally on 2026-11-04:** lockfile installs, type checks and production builds passed; 57 backend/controller/tool tests, 7 dashboard model tests, 9 browser fixture checks, and 16 bounded integration smoke checks passed. The [final real dashboard validation](results/milestone-3/dashboard-final/report.json) passed four browser checks covering actual healthy/stale/disconnected telemetry, all saved trial values, and desktop/mobile layout. The same saved-summary test was intentionally skipped in the latter two phases. Workflow lint and A/B/C Compose checks passed; [the local CI smoke report](results/milestone-3/ci-local/report.json) explicitly records macOS ARM64 execution rather than claiming a GitHub-hosted Linux run. Earlier failed attempts remain indexed separately.
+
+Subsequent AWS preparation added three cost-model tests: the [recorded backend/controller/tool suite](results/aws-preparation/tests.log) has **60 passing tests**. Deployment checks are [recorded separately](results/deployments/i-0cd68d680cd940476/deployment.json): they verify HTTPS, service isolation, routing and real browser telemetry without repeating fault experiments or changing the local results.
+
+## Publication and evidence hygiene
+
+Ignore rules cover common SSH/private-certificate filenames, runtime `.env` files, cloud/Docker credential directories and TLS state. The tracked project `.npmrc` contains cache/funding settings only; do not add registry authentication to it. A deliberately retained **public local-test CA certificate** supports the HTTPS test evidence; its private key is absent. No live TLS private keys, SSH private keys or registry credentials are required in this repository or by CI.
+
+Raw evidence intentionally retains public demo metadata, container/network identities and original local filesystem paths. Historical failed attempts and measured requests are preserved. See the [publication review](docs/PUBLICATION.md) for the tracked-file/history scan, archive inspection and ignore-rule checks. Do not force-add ignored runtime files when reproducing the project.
 
 ## Project files
 

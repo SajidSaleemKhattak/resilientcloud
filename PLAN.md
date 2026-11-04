@@ -131,6 +131,14 @@ The user supplied an already-running **i-0cd68d680cd940476** in **ap-southeast-2
 
 **Live URL: https://resilientcloud.getscoop.app.** Deployment checks passed; no current blocker remains. See `docs/AWS-DEPLOYMENT.md` and `results/deployments/i-0cd68d680cd940476/deployment.json`. Only the existing instance was used, with no new AWS resources or account-plan/credit-mode changes. Local Compose, backend/recovery policy and all completed experiment evidence are preserved.
 
+### GitHub publication preparation (2026-11-05; not pushed)
+
+- [x] Audited tracked files and reachable Git history, including saved archive contents; no actual credentials/private keys found. The intentionally retained public test-CA certificate and invalid parser-test URL were reviewed and kept.
+- [x] Independent Gitleaks scans found zero findings in history and the staged publication contents. Tooling stayed in ignored project cache; no source was uploaded for scanning.
+- [x] Strengthened credential/key/TLS-state ignore patterns and verified 36 ignore/allow cases. Existing raw evidence and checkpoints are unchanged.
+- [x] Updated the README with the temporary live URL, local/AWS architecture, measured comparisons, single-host/sample-size limitations and portable reproduction commands. Review details are in `docs/PUBLICATION.md` and `results/publication-review/`.
+- [ ] Configure the intended GitHub remote and obtain authorization for the actual push. **No remote is currently configured; no push or GitHub-hosted CI run has occurred.**
+
 - Unit tests: failure thresholds, timeout handling, cooldown/retry limits, successful recovery verification, and refusal of unauthorized targets/actions.
 - Compose integration tests: routing to both instances, failover after crash, running-but-unhealthy detection, controller recovery, recovery-disabled behavior, and status/public-service isolation from Docker control. Verify socket/network exposure and target authorization, including foreign project containers and replaced container IDs.
 - GitHub Actions: pinned supported Node/Docker, lockfile `npm ci`, TypeScript checks, unit tests, production builds, browser states, Compose configuration validation, and bounded Linux Compose smoke tests. Upload logs/results on failure. The workflow itself is linted locally. No cloud credentials or deployment jobs; local ARM64 results are recorded separately from GitHub execution.

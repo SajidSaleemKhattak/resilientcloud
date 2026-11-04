@@ -12,5 +12,36 @@ results/*
 !results/milestone-3/
 !results/aws-preparation/
 !results/deployments/
+!results/publication-review/
 dashboard/playwright-report/
 dashboard/test-results/
+
+# Credentials, SSH identities, and private/runtime certificate material.
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+*.der
+id_rsa
+id_ecdsa
+id_ed25519
+authorized_keys
+known_hosts
+.ssh/
+.aws/
+.docker/
+.netrc
+.envrc
+tls-data/
+caddy-data/
+caddy-config/
+.pki/
+letsencrypt/
+acme.json
+
+# Intentional PUBLIC local-test CA certificate; no corresponding private key.
+!results/aws-preparation/profile/test-public-root.crt

@@ -1,0 +1,71 @@
+{
+  "reviewedAt": "2026-11-05T00:43:35.868505+05:00",
+  "sourceCheckpoint": "dc36f00",
+  "readiness": "publication_contents_ready; no Git remote configured; no push authorized/performed",
+  "initialTrackedFiles": 677,
+  "reachableHistoryBlobs": 664,
+  "contentScan": {
+    "privateKeys": 0,
+    "actualCredentialCandidatesAfterManualReview": 0,
+    "knownPrivateContactOrAdminIpFound": false,
+    "archiveErrors": [],
+    "statistics": {
+      "tracked_content_items": 656,
+      "tracked_bytes": 34051103,
+      "tracked_archives": 15,
+      "tracked_archive_members": 30,
+      "history_content_items": 691,
+      "history_bytes": 34337650,
+      "history_archives": 15,
+      "history_archive_members": 30
+    },
+    "reviewedIntentionalItems": [
+      {
+        "file": "results/aws-preparation/profile/test-public-root.crt",
+        "classification": "Public local-test CA certificate only; private key absent",
+        "certificateParsedAsX509": true
+      },
+      {
+        "file": "tools/traffic.test.mjs",
+        "line": 91,
+        "classification": "Invalid loopback credential-shaped URL fixture that tests parser rejection"
+      }
+    ]
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "officialRelease": "https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1",
+    "archiveSha256": "b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5",
+    "officialArchiveChecksumVerified": true,
+    "scans": {
+      "history": {
+        "findings": 0,
+        "redactionPercent": 100,
+        "exitCode": 0
+      },
+      "staged": {
+        "findings": 0,
+        "redactionPercent": 100,
+        "exitCode": 0
+      }
+    },
+    "installation": "project-local ignored cache; no system install or code upload"
+  },
+  "ignoreCoverage": {
+    "checksPassed": 36,
+    "secretRuntimePathsIgnored": 29,
+    "intentionalPublicPathsAllowed": 7
+  },
+  "allExistingEvidenceUnchanged": true,
+  "localExperimentMatrixRerun": false,
+  "gitRemoteNames": [],
+  "pushed": false,
+  "historyRewritten": false,
+  "githubActionsRun": "not_run",
+  "licenseFileSelected": false,
+  "scopeNotes": [
+    "Screenshots are existing dashboard captures; automated text scan does not OCR pixels.",
+    "Operational metadata (public hostname/IP/EC2 ID, public host fingerprint, container/private bridge IDs, original local paths) is intentionally retained in evidence.",
+    "This is a pattern/rule audit plus reviewed configuration, not a guarantee about future additions."
+  ]
+}

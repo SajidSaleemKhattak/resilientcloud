@@ -1,0 +1,182 @@
+[
+  {
+    "path": "resilientcloud.pem",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "deploy/aws/host.pem",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "deploy/aws/host.key",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "deploy/aws/host.crt",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "deploy/aws/.env",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "deploy/aws/.env.production",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": ".env.local",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": ".cache/deployment-i-0cd68d680cd940476/runtime.env",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": ".cache/aws-bundle-example/images.tar",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": ".ssh/id_ed25519",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": ".aws/credentials",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": ".docker/config.json",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "id_rsa",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "id_ecdsa",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "id_ed25519",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "authorized_keys",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "known_hosts",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": ".netrc",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": ".envrc",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "tls-data/caddy/acme/account.json",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "caddy-data/pki/key.key",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "caddy-config/autosave.json",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": ".pki/private/test",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "letsencrypt/accounts/account.json",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "acme.json",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "certificate.p12",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "certificate.pfx",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "store.jks",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "store.keystore",
+    "expectedIgnored": true,
+    "passed": true
+  },
+  {
+    "path": "README.md",
+    "expectedIgnored": false,
+    "passed": true
+  },
+  {
+    "path": "deploy/aws/.env.example",
+    "expectedIgnored": false,
+    "passed": true
+  },
+  {
+    "path": "results/aws-preparation/profile/test-public-root.crt",
+    "expectedIgnored": false,
+    "passed": true
+  },
+  {
+    "path": "results/milestone-3/validated/summary.json",
+    "expectedIgnored": false,
+    "passed": true
+  },
+  {
+    "path": "results/deployments/i-0cd68d680cd940476/deployment.json",
+    "expectedIgnored": false,
+    "passed": true
+  },
+  {
+    "path": "package-lock.json",
+    "expectedIgnored": false,
+    "passed": true
+  },
+  {
+    "path": "dashboard/package-lock.json",
+    "expectedIgnored": false,
+    "passed": true
+  }
+]
