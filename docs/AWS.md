@@ -2,9 +2,11 @@
 
 **Prepared 2026-11-04; nothing has been provisioned or deployed.** The confirmed account has $100 credits and 182 days remaining. Keep the Free plan. The steps below are a reviewed runbook for a later, explicitly approved deployment; do not execute the launch/remote steps yet. Local Compose and all milestone evidence remain unchanged.
 
+**Confirmed next plan:** us-east-1, t4g.small and an initial 48-hour deployment. See [the exact launch checklist](AWS-LAUNCH.md). Local SSH-key preparation is pending, and provisioning must wait for the HTTPS/domain decision. The observed administrator public IP is intentionally kept out of repository files.
+
 ## Recommendation and measured basis
 
-Use **one `t4g.small`: 2 ARM64/Graviton2 vCPUs, 2 GiB RAM, 20 GiB encrypted gp3 root disk**, Linux On-Demand/shared tenancy, in **`us-east-1` (N. Virginia)**. This region is a pricing assumption awaiting confirmation, not a latency recommendation for Pakistan. Use gp3's included 3,000 IOPS/125 MiB/s; no provisioned extras. Build on the Mac M2 and transfer ARM64 images so this instance does not need Node/npm/build tools or a registry login.
+Use **one `t4g.small`: 2 ARM64/Graviton2 vCPUs, 2 GiB RAM, 20 GiB encrypted gp3 root disk**, Linux On-Demand/shared tenancy, in confirmed **`us-east-1` (N. Virginia)**. Use gp3's included 3,000 IOPS/125 MiB/s; no provisioned extras. Build on the Mac M2 and transfer ARM64 images so this instance does not need Node/npm/build tools or a registry login.
 
 The six existing container memory limits total **704 MiB**. The additional HTTPS ingress is capped at 128 MiB, giving **832 MiB** of container limits. These are ceilings, not measured consumption. The short [local ARM64 profile](../results/aws-preparation/profile/report.json) measured all seven containers through HTTPS:
 
@@ -253,10 +255,10 @@ For final cleanup after evidence download: run Compose down, terminate only the 
 
 ## Inputs still needed
 
-- Confirm the proposed **us-east-1** region (or request a fresh estimate for another region).
+- **Region and initial uptime confirmed:** us-east-1, 48 hours. No launch time exists yet.
 - Existing domain/subdomain, DNS control and certificate contact email for public HTTPS; no new paid domain is assumed.
-- Operator's current public IP `/32`, SSH public-key/key-pair choice, and who will administer the host. Do not provide private keys or access tokens.
-- Desired uptime/demo dates and other account credit consumption; the budget assumes this is the only metered workload.
+- Operator's public IP `/32` was identified in chat and deliberately not stored in the repository; recheck before launch. No local SSH key candidate was found in the scoped search, so the public-key/key-pair choice and administrator still need resolution. Do not provide private keys or access tokens.
+- Actual launch/demo dates and other account credit consumption; the budget assumes this is the only metered workload.
 - Future account-console confirmation of instance/AMI availability, Standard CPU mode and remaining balances, followed by explicit deployment authorization. Account eligibility is supported by AWS documentation; no authenticated AWS account inspection has been performed.
 
 All containers still share one EC2 host. This remains a service-recovery demonstration, not protection against EC2/OS/disk/AZ failure or a production availability guarantee.
