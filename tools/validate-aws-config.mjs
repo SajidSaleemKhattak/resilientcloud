@@ -21,7 +21,7 @@ for(const enabled of ['false','true']) {
   assert.deepEqual(Object.keys(config.services.status.networks),['status-read']);
   assert.ok(config.services.status.volumes.every(v=>v.read_only));
   assert.ok(!config.services.status.volumes.some(v=>v.target.includes('gate')));
-  assert.deepEqual(Object.keys(config.services.gateway.networks).sort(),['app','status-read','web']);
+  assert.deepEqual(Object.keys(config.services.gateway.networks).sort(),['app','edge','status-read','web']);
   assert.equal(config.services.gateway.ports.length,1);assert.equal(config.services.gateway.ports[0].host_ip,'127.0.0.1');
   assert.deepEqual(config.services.https.ports.map(p=>p.published).sort(),['443','80']);
   assert.ok(!config.services.https.volumes.some(v=>v.target.includes('docker')||v.target.includes('gate')));

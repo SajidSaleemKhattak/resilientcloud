@@ -41,7 +41,9 @@ services:
   gateway:
     pull_policy: never
     ports: !override ["127.0.0.1:8080:8080"]
-    networks: !override [app, status-read, web]
+    # Docker needs a non-internal bridge for the loopback host-port mapping.
+    # Only the ingress joins edge; backend/status/controller/gate boundaries stay private.
+    networks: !override [app, status-read, web, edge]
     logging: *logs
   https:
     image: caddy:2.11.7-alpine@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5

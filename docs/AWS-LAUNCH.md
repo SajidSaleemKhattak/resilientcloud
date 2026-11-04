@@ -1,8 +1,10 @@
 # Initial 48-hour EC2 launch checklist
 
-**Status: prepared, NOT launched.** The user confirmed **us-east-1**, the prepared **t4g.small** configuration, and an initial **48-hour** deployment window. **Wait for the HTTPS/domain decision before provisioning anything**, including an EC2 key pair, security group, instance or DNS record. Keep the account on the Free plan. This checklist specializes [AWS.md](AWS.md); its startup/verification/shutdown instructions still apply.
+**Historical pre-launch checklist.** The user subsequently supplied an already-running **ap-southeast-2** instance and authorized its deployment at **https://resilientcloud.getscoop.app**. See [the active deployment record](AWS-DEPLOYMENT.md). **Do not provision another instance/key/security group from this checklist.** The original us-east-1 proposal, missing-key check and HTTPS decision below describe the earlier planning state; they are not current blockers. Keep the Free plan and Standard CPU credits.
 
 ## Access preparation
+
+**Later resolved:** the user downloaded `resilientcloud.pem`; it was found in Downloads, set to mode 0400 and used outside the repository after the AWS console host-fingerprint comparison. No proposed new Ed25519 key/key-pair resource was generated. The paragraphs below retain the original scoped-search result and proposal.
 
 The local check found no `~/.ssh` directory, no key candidates in the home top level or the checked Downloads/Desktop/Documents/keys/project folders (up to three levels), and no loaded SSH-agent identities. This is a scoped search, not proof that no key exists anywhere on the Mac. Only filenames, metadata and public fingerprints were checked; no private-key contents were read or printed.
 
@@ -51,7 +53,7 @@ AWS documents t4g.small eligibility and the console's Advanced details → Credi
 
 If the AMI/type is not eligible, the subnet is unavailable, or the console requests a Paid-plan upgrade, stop for review. No authenticated AWS inspection has been performed, so regional AMI IDs, capacity, VPC/subnet IDs and account-specific quotas remain launch-time checks. Do not substitute a paid-plan resource to get past a restriction.
 
-## HTTPS decision still pending
+## Original HTTPS options — resolved by the supplied public hostname
 
 - **Existing public domain/subdomain:** provide its hostname, DNS control and certificate-contact email. Use the prepared Caddy overlay; open only the public ingress ports above and point an A record at the instance after approval.
 - **Private SSH preview:** port 22 only, with an SSH tunnel to gateway loopback 8080. This is encrypted private access, not a public browser-trusted HTTPS deployment. The public Caddy startup configuration must not be used blindly with a placeholder hostname; review the selected mode before launch.

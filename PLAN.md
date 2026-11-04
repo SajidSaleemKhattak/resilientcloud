@@ -110,9 +110,26 @@ Earlier short runner smoke failures remain under `results/milestone-3/runner-smo
 - [x] Prepared access, bootstrap/start, identity/readiness/TLS verification, authenticated faults, event retention, shutdown and project-only cleanup instructions. Bundle/checksum/image save/load validated locally; actual EC2 launch, AWS quotas/account-specific availability and public certificate issuance remain unexecuted.
 - [x] User confirmed us-east-1, prepared t4g.small and initial 48-hour window; approximately $1.15 total modeled credit use. Exact console settings are in `docs/AWS-LAUNCH.md`.
 - [x] Scoped local SSH-key search completed (no candidates/loaded identities found); public IPv4 checked through two sources and reported only in chat, not stored in project files. No key was generated or imported.
-- [ ] Resolve HTTPS/domain choice, local SSH key/public-key import and administrator access; recheck public IPv4 before launch. **Wait for HTTPS/domain decision before any provisioning.** Keep Free plan and CPU credits Standard.
+- [x] Later resolved through the user's existing Sydney instance, downloaded SSH key, hostname, certificate email and console host-fingerprint confirmation; deployment was explicitly authorized and completed as recorded below. Free plan and Standard CPU credits retained.
 
 The existing controller/gate journals grow without built-in rotation; the local profile observed about 192 MiB/running day. A 20 GiB disk therefore requires the documented weekly archive/offload procedure and disk monitoring, not unlimited retention. No AWS account resources, private registries, DNS records, credentials or paid services were created/accessed; public pricing/docs and public container images were fetched.
+
+### Existing EC2 deployment (completed and verified)
+
+The user supplied an already-running **i-0cd68d680cd940476** in **ap-southeast-2 (Sydney)**, Ubuntu 24.04 ARM64/t4g.small/Standard credits, public IPv4 **16.176.201.215**, hostname **resilientcloud.getscoop.app**. This supersedes the previously proposed us-east-1 target. Use only this existing instance and keep the Free plan; create no replacement instance or other AWS resources.
+
+- [x] Located `resilientcloud.pem` in Downloads; set owner-read-only mode 0400, kept outside the repository, and did not print private contents.
+- [x] Prepared ARM64 bundle checksums verified. Public DNS A points to the supplied IP; public DNS query shows no AAAA/CAA records. Earlier local OS resolver IPv4-mapped output was not a real AAAA record.
+- [x] Captured presented SSH **public** host fingerprints without authenticating or trusting them; separate deployment preflight records are under `results/deployments/i-0cd68d680cd940476/`.
+- [x] Compared the presented ED25519 host fingerprint exactly with the user's AWS console system-log value before authentication; strict host-key checking and a project-cache pin were used for all SSH/SCP connections.
+- [x] Received the certificate-contact email and stored it only in private runtime configuration; public Let's Encrypt certificate and hostname/chain verification passed.
+- [x] Verified instance ID/Ubuntu 24.04/ARM64/root disk; installed Docker 29.7.2 and Compose 5.7.0; transferred and checked the ARM64 bundle/images; started with fault injection false in both backends and restart policies disabled.
+- [x] Corrected deployment-only gateway networking after Docker suppressed the loopback port on internal-only bridges. Gateway joins edge with 127.0.0.1:8080; backend/status/controller/gate isolation remains intact. The initial failed check is preserved separately.
+- [x] Verified fresh healthy telemetry, 20/20 API requests from both identities, 24 public route checks, blocked external private ports, socket/network isolation, and real desktop/mobile browser rendering with zero browser errors. No fault experiments/matrix rerun occurred.
+- [x] User verified exactly three security-group inbound rules in the AWS console: restricted administrator SSH plus public HTTP/HTTPS; no other ingress. Administrator source IP/contact email/private keys are not committed.
+- [x] Recorded actual launch **2026-11-04 18:47:43 UTC**, stop deadline **2026-11-06 18:47:43 UTC / 23:47:43 PKT**, and Sydney estimated 48-hour credits **$1.38** separately from local experiments. **No automatic EC2 stop is scheduled; operator must stop via EC2 console by the deadline.**
+
+**Live URL: https://resilientcloud.getscoop.app.** Deployment checks passed; no current blocker remains. See `docs/AWS-DEPLOYMENT.md` and `results/deployments/i-0cd68d680cd940476/deployment.json`. Only the existing instance was used, with no new AWS resources or account-plan/credit-mode changes. Local Compose, backend/recovery policy and all completed experiment evidence are preserved.
 
 - Unit tests: failure thresholds, timeout handling, cooldown/retry limits, successful recovery verification, and refusal of unauthorized targets/actions.
 - Compose integration tests: routing to both instances, failover after crash, running-but-unhealthy detection, controller recovery, recovery-disabled behavior, and status/public-service isolation from Docker control. Verify socket/network exposure and target authorization, including foreign project containers and replaced container IDs.

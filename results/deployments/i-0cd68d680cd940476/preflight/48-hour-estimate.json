@@ -1,0 +1,23 @@
+{
+  "region": "ap-southeast-2",
+  "source": "Official regional AWS price list, retained in selected-prices.json",
+  "instanceHourlyUsd": 0.0212,
+  "gp3GiBMonthlyUsd": 0.096,
+  "publicIPv4HourlyUsd": 0.005,
+  "assumedDiskGiB": 20,
+  "diskSizeVerifiedOnInstance": true,
+  "hours": 48,
+  "computeUsd": 1.0176,
+  "publicIPv4Usd": 0.24,
+  "storageUsd": 0.12624657534246575,
+  "totalUsd": 1.3838465753424658,
+  "assumptions": [
+    "Standard CPU credits, user-reported",
+    "20 GiB gp3 assumed; remote verification pending",
+    "No promotional discount",
+    "No other account usage, taxes or excess transfer included"
+  ],
+  "launchTimeUtc": "2026-11-04T18:47:43Z",
+  "stopDeadlineUtc": "2026-11-06T18:47:43Z",
+  "volumeType": "gp3 assumed from the plan; not queried through AWS account APIs"
+}

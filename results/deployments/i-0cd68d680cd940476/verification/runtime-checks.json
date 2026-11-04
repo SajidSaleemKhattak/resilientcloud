@@ -1,0 +1,345 @@
+{
+  "checkedAt": "2026-11-04T19:06:39.641382+00:00",
+  "status": "passed",
+  "instanceId": "i-0cd68d680cd940476",
+  "containers": [
+    {
+      "service": "backend-a",
+      "id": "d7be48cc5f1d746e887d19287a648d0d6971bf907cf2844c52304a625928e555",
+      "image": "sha256:3d13924747d1a63af7c2f609db7979e5c0fe005237956c1bbb82f737956b86b1",
+      "startedAt": "2026-11-04T19:01:05.741832434Z",
+      "running": true,
+      "health": "healthy",
+      "restartPolicy": "no",
+      "ports": {},
+      "networks": [
+        "resilientcloud_app"
+      ],
+      "mounts": [],
+      "memoryLimitBytes": 134217728,
+      "faultInjectionEnabled": false
+    },
+    {
+      "service": "backend-b",
+      "id": "0f97b1da0f6694d394dda4106eaf9c3533a3eeeca09a8b2f1db22bf607c26ab7",
+      "image": "sha256:3d13924747d1a63af7c2f609db7979e5c0fe005237956c1bbb82f737956b86b1",
+      "startedAt": "2026-11-04T19:01:05.940054861Z",
+      "running": true,
+      "health": "healthy",
+      "restartPolicy": "no",
+      "ports": {},
+      "networks": [
+        "resilientcloud_app"
+      ],
+      "mounts": [],
+      "memoryLimitBytes": 134217728,
+      "faultInjectionEnabled": false
+    },
+    {
+      "service": "controller",
+      "id": "066ff6c0832359676381de3e7600af38b38dcb8e74cc79ed95dd0761b15fa73a",
+      "image": "sha256:e5f76be02e9f2b00ba8bb1e81abfe736395b2d17c6f5034ab518eeaf54e6c6ad",
+      "startedAt": "2026-11-04T19:01:13.060301061Z",
+      "running": true,
+      "health": null,
+      "restartPolicy": "no",
+      "ports": {},
+      "networks": [
+        "resilientcloud_app"
+      ],
+      "mounts": [
+        {
+          "target": "/run/gate",
+          "writable": false,
+          "type": "volume"
+        },
+        {
+          "target": "/data",
+          "writable": true,
+          "type": "volume"
+        }
+      ],
+      "memoryLimitBytes": 134217728,
+      "faultInjectionEnabled": null
+    },
+    {
+      "service": "gate",
+      "id": "cae3ffe126418b37b9a48921f4dfedb92ab15bdc2d0750db98c25a167e1225d7",
+      "image": "sha256:e5f76be02e9f2b00ba8bb1e81abfe736395b2d17c6f5034ab518eeaf54e6c6ad",
+      "startedAt": "2026-11-04T19:01:05.636540202Z",
+      "running": true,
+      "health": "healthy",
+      "restartPolicy": "no",
+      "ports": {},
+      "networks": [
+        "none"
+      ],
+      "mounts": [
+        {
+          "target": "/run/gate",
+          "writable": true,
+          "type": "volume"
+        },
+        {
+          "target": "/audit",
+          "writable": true,
+          "type": "volume"
+        },
+        {
+          "target": "/var/run/docker.sock",
+          "writable": false,
+          "type": "bind"
+        }
+      ],
+      "memoryLimitBytes": 134217728,
+      "faultInjectionEnabled": null
+    },
+    {
+      "service": "gateway",
+      "id": "3bf76f62aea4aab3382a3503a521e5eb6afb3cb650b69188bc83f165d0c9b293",
+      "image": "sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236",
+      "startedAt": "2026-11-04T19:03:59.877179657Z",
+      "running": true,
+      "health": null,
+      "restartPolicy": "no",
+      "ports": {
+        "8080/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "8080"
+          }
+        ]
+      },
+      "networks": [
+        "resilientcloud_app",
+        "resilientcloud_edge",
+        "resilientcloud_status-read",
+        "resilientcloud_web"
+      ],
+      "mounts": [
+        {
+          "target": "/usr/share/nginx/html",
+          "writable": false,
+          "type": "bind"
+        },
+        {
+          "target": "/etc/nginx/nginx.conf",
+          "writable": false,
+          "type": "bind"
+        },
+        {
+          "target": "/etc/nginx/upstream.conf",
+          "writable": false,
+          "type": "bind"
+        }
+      ],
+      "memoryLimitBytes": 67108864,
+      "faultInjectionEnabled": null
+    },
+    {
+      "service": "https",
+      "id": "545b1751b5ff983342626075b2beda20891f9109f30a22ec1bf0e0384517d208",
+      "image": "sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5",
+      "startedAt": "2026-11-04T19:01:13.214294055Z",
+      "running": true,
+      "health": null,
+      "restartPolicy": "no",
+      "ports": {
+        "443/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "443"
+          }
+        ],
+        "80/tcp": [
+          {
+            "HostIp": "",
+            "HostPort": "80"
+          }
+        ]
+      },
+      "networks": [
+        "resilientcloud_edge",
+        "resilientcloud_web"
+      ],
+      "mounts": [
+        {
+          "target": "/etc/caddy/Caddyfile",
+          "writable": false,
+          "type": "bind"
+        },
+        {
+          "target": "/data",
+          "writable": true,
+          "type": "volume"
+        }
+      ],
+      "memoryLimitBytes": 134217728,
+      "faultInjectionEnabled": null
+    },
+    {
+      "service": "status",
+      "id": "d9646d520227a245783764b14e304349c10d26e80b3dc0e248e616d292f65ddc",
+      "image": "sha256:e5f76be02e9f2b00ba8bb1e81abfe736395b2d17c6f5034ab518eeaf54e6c6ad",
+      "startedAt": "2026-11-04T19:01:12.73945643Z",
+      "running": true,
+      "health": null,
+      "restartPolicy": "no",
+      "ports": {},
+      "networks": [
+        "resilientcloud_status-read"
+      ],
+      "mounts": [
+        {
+          "target": "/data",
+          "writable": false,
+          "type": "volume"
+        }
+      ],
+      "memoryLimitBytes": 134217728,
+      "faultInjectionEnabled": null
+    }
+  ],
+  "liveStatus": {
+    "schemaVersion": 1,
+    "updatedAt": "2026-11-04T19:06:39.342Z",
+    "runId": "98d49df5-75f7-445d-bdbe-d9337b73f52d",
+    "recoveryEnabled": true,
+    "monitoredServices": [
+      "backend-a",
+      "backend-b"
+    ],
+    "config": {
+      "intervalMs": 500,
+      "probeTimeoutMs": 300,
+      "failureThreshold": 3,
+      "maxAttempts": 2,
+      "verifyTimeoutMs": 4000,
+      "verifySuccesses": 2,
+      "cooldownMs": 2000
+    },
+    "backends": {
+      "backend-a": {
+        "state": "healthy",
+        "failures": 0,
+        "attempts": 0,
+        "manualIntervention": false,
+        "containerId": "d7be48cc5f1d746e887d19287a648d0d6971bf907cf2844c52304a625928e555",
+        "lastProbe": {
+          "ok": true,
+          "reason": null,
+          "status": 200,
+          "instance": "backend-a",
+          "latencyMs": 3.3657810000004247,
+          "timestamp": "2026-11-04T19:06:39.342Z"
+        },
+        "lastReadyAt": "2026-11-04T19:06:39.342Z",
+        "failureConfirmedAt": null,
+        "recoveryVerifiedAt": null,
+        "verificationSuccesses": 0,
+        "verificationDeadline": null,
+        "attemptTargetId": null,
+        "restartOutcome": null,
+        "cooldownUntil": null,
+        "stableSince": null,
+        "observationAgeMs": 28,
+        "stale": false
+      },
+      "backend-b": {
+        "state": "healthy",
+        "failures": 0,
+        "attempts": 0,
+        "manualIntervention": false,
+        "containerId": "0f97b1da0f6694d394dda4106eaf9c3533a3eeeca09a8b2f1db22bf607c26ab7",
+        "lastProbe": {
+          "ok": true,
+          "reason": null,
+          "status": 200,
+          "instance": "backend-b",
+          "latencyMs": 1.640030000009574,
+          "timestamp": "2026-11-04T19:06:39.031Z"
+        },
+        "lastReadyAt": "2026-11-04T19:06:39.031Z",
+        "failureConfirmedAt": null,
+        "recoveryVerifiedAt": null,
+        "verificationSuccesses": 0,
+        "verificationDeadline": null,
+        "attemptTargetId": null,
+        "restartOutcome": null,
+        "cooldownUntil": null,
+        "stableSince": null,
+        "observationAgeMs": 339,
+        "stale": false
+      }
+    },
+    "available": true,
+    "stale": false,
+    "ageMs": 28
+  },
+  "controllerEventCounts": {
+    "controller_started": 1,
+    "container_revalidated": 2,
+    "probe": 1306,
+    "state_changed": 2
+  },
+  "dockerVersion": {
+    "Platform": {
+      "Name": "Docker Engine - Community"
+    },
+    "Version": "29.7.2",
+    "ApiVersion": "1.55",
+    "MinAPIVersion": "1.40",
+    "Os": "linux",
+    "Arch": "arm64",
+    "Components": [
+      {
+        "Name": "Engine",
+        "Version": "29.7.2",
+        "Details": {
+          "ApiVersion": "1.55",
+          "Arch": "arm64",
+          "BuildTime": "Wed Aug  5 18:28:15 2026",
+          "Experimental": "false",
+          "GitCommit": "6a43e3d",
+          "GoVersion": "go1.26.5",
+          "KernelVersion": "7.0.0-1014-aws",
+          "MinAPIVersion": "1.40",
+          "Module": "github.com/moby/moby/v2",
+          "ModuleVersion": "v2.0.0+unknown",
+          "Os": "linux"
+        }
+      },
+      {
+        "Name": "containerd",
+        "Version": "v2.4.2",
+        "Details": {
+          "GitCommit": "b7a25261e029d68978bbf290df0a62fc819b3c51"
+        }
+      },
+      {
+        "Name": "runc",
+        "Version": "1.5.2",
+        "Details": {
+          "GitCommit": "v1.5.2-0-g29dd3dc2"
+        }
+      },
+      {
+        "Name": "docker-init",
+        "Version": "0.19.0",
+        "Details": {
+          "GitCommit": "de40ad0"
+        }
+      }
+    ],
+    "GitCommit": "6a43e3d",
+    "GoVersion": "go1.26.5",
+    "KernelVersion": "7.0.0-1014-aws",
+    "BuildTime": "2026-08-05T18:28:15.000000000+00:00"
+  },
+  "memory": {
+    "MemTotal": 1924120576,
+    "MemAvailable": 1235304448
+  },
+  "disk": "Filesystem       1B-blocks       Used   Available Use% Mounted on\n/dev/root      19682557952 3417387008 16248393728  18% /\n",
+  "containerStats": "{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"9.26%\",\"Container\":\"d7be48cc5f1d746e887d19287a648d0d6971bf907cf2844c52304a625928e555\",\"ID\":\"d7be48cc5f1d\",\"MemPerc\":\"25.96%\",\"MemUsage\":\"33.23MiB / 128MiB\",\"Name\":\"resilientcloud-backend-a-1\",\"NetIO\":\"288kB / 397kB\",\"PIDs\":\"14\"}\n{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.13%\",\"Container\":\"0f97b1da0f6694d394dda4106eaf9c3533a3eeeca09a8b2f1db22bf607c26ab7\",\"ID\":\"0f97b1da0f66\",\"MemPerc\":\"16.54%\",\"MemUsage\":\"21.17MiB / 128MiB\",\"Name\":\"resilientcloud-backend-b-1\",\"NetIO\":\"287kB / 397kB\",\"PIDs\":\"7\"}\n{\"BlockIO\":\"0B / 11.3MB\",\"CPUPerc\":\"1.48%\",\"Container\":\"066ff6c0832359676381de3e7600af38b38dcb8e74cc79ed95dd0761b15fa73a\",\"ID\":\"066ff6c08323\",\"MemPerc\":\"16.61%\",\"MemUsage\":\"21.27MiB / 128MiB\",\"Name\":\"resilientcloud-controller-1\",\"NetIO\":\"795kB / 572kB\",\"PIDs\":\"11\"}\n{\"BlockIO\":\"0B / 291kB\",\"CPUPerc\":\"6.44%\",\"Container\":\"cae3ffe126418b37b9a48921f4dfedb92ab15bdc2d0750db98c25a167e1225d7\",\"ID\":\"cae3ffe12641\",\"MemPerc\":\"17.93%\",\"MemUsage\":\"22.95MiB / 128MiB\",\"Name\":\"resilientcloud-gate-1\",\"NetIO\":\"0B / 0B\",\"PIDs\":\"11\"}\n{\"BlockIO\":\"287kB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"3bf76f62aea4aab3382a3503a521e5eb6afb3cb650b69188bc83f165d0c9b293\",\"ID\":\"3bf76f62aea4\",\"MemPerc\":\"3.70%\",\"MemUsage\":\"2.367MiB / 64MiB\",\"Name\":\"resilientcloud-gateway-1\",\"NetIO\":\"46.4kB / 856kB\",\"PIDs\":\"2\"}\n{\"BlockIO\":\"0B / 65.5kB\",\"CPUPerc\":\"0.00%\",\"Container\":\"545b1751b5ff983342626075b2beda20891f9109f30a22ec1bf0e0384517d208\",\"ID\":\"545b1751b5ff\",\"MemPerc\":\"12.75%\",\"MemUsage\":\"16.32MiB / 128MiB\",\"Name\":\"resilientcloud-https-1\",\"NetIO\":\"1.48MB / 856kB\",\"PIDs\":\"7\"}\n{\"BlockIO\":\"0B / 0B\",\"CPUPerc\":\"0.14%\",\"Container\":\"d9646d520227a245783764b14e304349c10d26e80b3dc0e248e616d292f65ddc\",\"ID\":\"d9646d520227\",\"MemPerc\":\"15.17%\",\"MemUsage\":\"19.42MiB / 128MiB\",\"Name\":\"resilientcloud-status-1\",\"NetIO\":\"21.9kB / 52.1kB\",\"PIDs\":\"11\"}\n"
+}

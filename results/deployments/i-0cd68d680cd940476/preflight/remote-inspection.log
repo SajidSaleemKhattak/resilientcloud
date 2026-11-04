@@ -1,0 +1,16 @@
+architecture=aarch64
+os=ubuntu version=24.04
+utc=2026-11-04T18:56:11Z
+boot=2026-11-04 18:47:49
+               total        used        free      shared  buff/cache   available
+Mem:            1834         365        1276           0         335        1469
+Swap:              0           0           0
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        19G  2.1G   17G  12% /
+instance=i-0cd68d680cd940476
+project_directory=absent
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+LISTEN 0      4096         0.0.0.0:22        0.0.0.0:*          
+LISTEN 0      4096      127.0.0.54:53        0.0.0.0:*          
+LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*          
+LISTEN 0      4096            [::]:22           [::]:*          

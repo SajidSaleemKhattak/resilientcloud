@@ -11,5 +11,6 @@ results/*
 !results/milestone-2/
 !results/milestone-3/
 !results/aws-preparation/
+!results/deployments/
 dashboard/playwright-report/
 dashboard/test-results/

@@ -1,0 +1,60 @@
+{
+  "recordedAt": "2026-11-04T18:53:33.700822+00:00",
+  "instanceId": "i-0cd68d680cd940476",
+  "region": "ap-southeast-2",
+  "publicIPv4": "16.176.201.215",
+  "hostname": "resilientcloud.getscoop.app",
+  "sshUser": "ubuntu",
+  "userReportedPlatform": {
+    "os": "Ubuntu 24.04 ARM64",
+    "instanceType": "t4g.small",
+    "cpuCredits": "Standard",
+    "accountPlan": "Free"
+  },
+  "key": {
+    "filename": "resilientcloud.pem",
+    "location": "Downloads, outside repository",
+    "permissions": "0400",
+    "privateContentsPrinted": false,
+    "copiedIntoRepository": false
+  },
+  "bundleChecksumVerification": "passed for images.tar, files.tar.gz, release.json",
+  "dns": {
+    "A": [
+      "16.176.201.215"
+    ],
+    "AAAA": [],
+    "CAA": [],
+    "source": "public DNS-over-HTTPS query"
+  },
+  "hostFingerprint": {
+    "presented": [
+      "256 SHA256:C0iITjR16egiZekxE5qPEpE2NszzPF4XRotEoLWbDAo 16.176.201.215 (ECDSA)",
+      "3072 SHA256:1vPXGJcS400MCbuYAdn4DB8aEKdxg2eAsrZOSQk3Sqs 16.176.201.215 (RSA)",
+      "256 SHA256:8+GmTvPx10LOZhY8Nc4WTAFP02osV5bAy/4zFY23zf8 16.176.201.215 (ED25519)"
+    ],
+    "consoleVerified": true,
+    "trustedForAuthentication": true,
+    "verificationSource": "User-provided AWS console system log ED25519 fingerprint",
+    "verifiedSha256": "SHA256:8+GmTvPx10LOZhY8Nc4WTAFP02osV5bAy/4zFY23zf8",
+    "verifiedAt": "2026-11-04T18:55:41.754758+00:00"
+  },
+  "status": "completed_preflight_and_deployment_verified",
+  "remoteAuthenticated": true,
+  "dockerInstalledByThisAttempt": true,
+  "applicationStartedByThisAttempt": true,
+  "awsResourcesCreated": false,
+  "localExperimentsRerun": false,
+  "certificateContactConfigured": true,
+  "launchTimeUtc": "2026-11-04T18:47:43Z",
+  "stopDeadlineUtc": "2026-11-06T18:47:43Z",
+  "launchTimeSource": "User-provided EC2 console Launch time",
+  "securityGroup": {
+    "name": "resilientcloud-sg",
+    "verificationSource": "User checked AWS console",
+    "inboundRuleCount": 3,
+    "ssh22RestrictedToAdministrator32": true,
+    "http80AndHttps443Public": true,
+    "otherInboundRules": false
+  }
+}

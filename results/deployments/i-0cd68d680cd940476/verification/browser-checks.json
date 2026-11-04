@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-11-04T19:07:57.496Z",
+  "status": "passed",
+  "url": "https://resilientcloud.getscoop.app",
+  "actualTelemetryMatched": true,
+  "backends": [
+    "backend-a",
+    "backend-b"
+  ],
+  "desktop": true,
+  "mobile390px": true,
+  "noDocumentOverflow": true,
+  "readOnlyTelemetryRequests": [
+    {
+      "method": "GET",
+      "path": "/events"
+    },
+    {
+      "method": "GET",
+      "path": "/status"
+    }
+  ],
+  "consoleErrors": [],
+  "savedEvidence": {
+    "origin": "Original local experiments, separate from live EC2 telemetry",
+    "trials": 27,
+    "allThreeFaultTabsVerified": true
+  },
+  "noRequestInterceptionOrMockData": true
+}

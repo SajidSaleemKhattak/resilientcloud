@@ -1,0 +1,23 @@
+{
+  "attempts/README.md": "62fc54370d6674d9efb74e571bf8f4fa618db84a5872133d1ea5b570c09cd6fc",
+  "attempts/initial-start-loopback-check-failed.log": "b41a03b826708972eb49b5000d85e4a76a560f1f1fa2546d3a0ae2b734b6b5f8",
+  "attempts/loopback-diagnosis.log": "e58413b61cf36da923b14831f2e5c3a1d122e1280d3c7edd7ba77660ee744886",
+  "deployment.json": "0b5f4a393a549568e49757e76c24676997b703058f535affe07d349d862bf5e2",
+  "preflight/48-hour-estimate.json": "b3e54f6e1d8f4934d82152fb7eb123355b89207190e717c3953b6b90e47b00d5",
+  "preflight/checks.json": "1e38ec45c47c441f1455f35400bd12fc04a5e714e34dff7c6d590601227c2326",
+  "preflight/pricing-source.json": "1469d2c3d5e53b513041490951874c8844e935d90aa94c257c08e911ebe2c6ab",
+  "preflight/regional-price-rows.csv": "6e7fa2b8cc1f9fbc12f6724e0c7ac4c39431db95deab45951fab537ecee7651f",
+  "preflight/remote-inspection.log": "63883f22451cac7e78a6e93f3efd4dc44ba6d8aa898f1124db710f879d95b604",
+  "preflight/selected-prices.json": "a15c0c2975e9995f19a56f5122e2260ff8df1e0bb5bacbc14d1f62fae8433794",
+  "verification/aws-config-checks.json": "167ff82c433f1a3f8c364a2a0a998f504aee958440e0970735848d235776df3f",
+  "verification/browser-checks.json": "b30f23e8585b480230ba0a1fe20e0b19d9fc68aed34115ff1292a78c0d2e3f27",
+  "verification/docker-install.log": "c2a7160aecc674fc7b75b29c4c6350d83c6977d460e84a7cb901e29b8c561fc4",
+  "verification/ec2-desktop-live.png": "91399cd03898a36b2c88eedded0f39eb13132c5f6764957d1d45c042924e3fbd",
+  "verification/ec2-desktop-saved-local-evidence.png": "8cba80aa5b5ad5db3c11723bf8d6d16eaef8b50a0b9e8ff941aba512e9354af6",
+  "verification/ec2-mobile-live.png": "f6e68d97da2178c33e8ffd944739aaba797a4b2da85d1f9e1d7b578599ad6f3d",
+  "verification/ec2-mobile-saved-local-evidence.png": "8b0f888b229d97d24f3fac76f79b2e58766c8595ac11a83d4c380ec7e971bb76",
+  "verification/gateway-loopback-fix.log": "c46bd2fd20489b0ec85ce4b251196d8699b539fc0b022a892a0a07c4c98e51d8",
+  "verification/public-checks.json": "ebcbff23caed878f2c804ef73b6cfabdb96f7671cd751ae85ceb788169ce06d9",
+  "verification/runtime-checks.json": "eb0521ced8e791a7d534074973e2791febb31a3e1b3dcf76ccc11c5f5ad8a658",
+  "verification/service-logs.log": "532e649c974a7d3b7578e31d587f09110a2c90d82813afa1d7f04a79baa40967"
+}

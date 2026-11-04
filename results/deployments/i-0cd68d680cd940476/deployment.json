@@ -1,0 +1,54 @@
+{
+  "status": "deployed_and_verified",
+  "verifiedAt": "2026-11-04T19:11:05.566367+00:00",
+  "url": "https://resilientcloud.getscoop.app",
+  "instanceId": "i-0cd68d680cd940476",
+  "region": "ap-southeast-2",
+  "sshHostFingerprintVerifiedAgainstUserConsole": true,
+  "runtime": {
+    "docker": "29.7.2",
+    "dockerApi": "1.55",
+    "compose": "5.7.0",
+    "platform": "Ubuntu 24.04 ARM64"
+  },
+  "plan": {
+    "account": "Free, user-confirmed; no plan-changing AWS operations performed",
+    "cpuCredits": "Standard, user-confirmed",
+    "newAwsResourcesCreated": false,
+    "instanceLaunchTimeUtc": "2026-11-04T18:47:43Z",
+    "stopDeadlineUtc": "2026-11-06T18:47:43Z",
+    "stopDeadlinePkt": "2026-11-06T23:47:43+05:00",
+    "automaticEc2StopScheduled": false,
+    "stopAction": "Operator must stop the existing instance through EC2 console by deadline",
+    "estimated48HourCreditsUsd": 1.3838465753424658
+  },
+  "checks": {
+    "bundleChecksums": true,
+    "arm64ImageIdentities": true,
+    "letsencryptTrustedCertificate": true,
+    "httpRedirect": true,
+    "backendsHealthy": true,
+    "freshReadOnlyTelemetry": true,
+    "bothInstancesServeApi": true,
+    "apiSmokeSuccessfulRequests": 20,
+    "publicRouteChecks": 24,
+    "privatePortsNotReachable": true,
+    "onlyGateHasDockerSocket": true,
+    "statusHasNoGateOrDockerSocket": true,
+    "restartPoliciesDisabled": true,
+    "faultInjectionDisabled": true,
+    "desktopMobileBrowser": true,
+    "browserConsoleErrors": 0,
+    "saved27LocalTrialsRemainSeparate": true
+  },
+  "deploymentCorrection": {
+    "initialFailure": "Loopback 8080 check failed: Docker suppressed published port on internal-only gateway networks",
+    "fix": "Gateway also joins existing edge bridge; port remains bound to 127.0.0.1. Backend/status/controller/gate boundaries unchanged.",
+    "file": "deploy/aws/compose.aws.yaml",
+    "sha256": "3d9e9a569d8502ca7f9d276d5567c35f20a8c1ec971b03a872ef12dd1890a673",
+    "newBackendImagesBuilt": false
+  },
+  "localExperimentMatrixRerun": false,
+  "remoteFaultExperimentsPerformed": false,
+  "blockers": []
+}

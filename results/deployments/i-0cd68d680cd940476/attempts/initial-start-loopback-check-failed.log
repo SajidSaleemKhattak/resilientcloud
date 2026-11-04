@@ -1,0 +1,134 @@
+images.tar: OK
+files.tar.gz: OK
+release.json: OK
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+tar: Ignoring unknown extended header keyword 'LIBARCHIVE.xattr.com.apple.provenance'
+Loaded image: resilientcloud-backend:aws
+Loaded image: resilientcloud-recovery:aws
+Loaded image: resilientcloud-gateway:aws
+Loaded image: resilientcloud-https:aws
+Verified all four ARM64 runtime image identities
+ Network resilientcloud_app Creating 
+ Network resilientcloud_app Creating 
+ Volume resilientcloud_gate-runtime Creating 
+ Volume resilientcloud_gate-runtime Creating 
+ Volume resilientcloud_gate-data Creating 
+ Volume resilientcloud_gate-data Creating 
+ Volume resilientcloud_gate-runtime Created 
+ Volume resilientcloud_gate-runtime Created 
+ Volume resilientcloud_gate-data Created 
+ Volume resilientcloud_gate-data Created 
+ Container resilientcloud-gate-1 Creating 
+ Network resilientcloud_app Created 
+ Network resilientcloud_app Created 
+ Container resilientcloud-backend-a-1 Creating 
+ Container resilientcloud-backend-b-1 Creating 
+ Container resilientcloud-backend-b-1 Created 
+ Container resilientcloud-backend-a-1 Created 
+ Container resilientcloud-gate-1 Created 
+ Container resilientcloud-gate-1 Starting 
+ Container resilientcloud-backend-a-1 Starting 
+ Container resilientcloud-backend-b-1 Starting 
+ Container resilientcloud-gate-1 Started 
+ Container resilientcloud-backend-a-1 Started 
+ Container resilientcloud-backend-b-1 Started 
+ Container resilientcloud-backend-b-1 Waiting 
+ Container resilientcloud-gate-1 Waiting 
+ Container resilientcloud-backend-a-1 Waiting 
+ Container resilientcloud-gate-1 Healthy 
+ Container resilientcloud-backend-a-1 Healthy 
+ Container resilientcloud-backend-b-1 Healthy 
+ Container resilientcloud-backend-a-1 Running 
+ Container resilientcloud-backend-b-1 Running 
+ Container resilientcloud-gate-1 Running 
+ Volume resilientcloud_tls-data Creating 
+ Volume resilientcloud_tls-data Creating 
+ Volume resilientcloud_controller-data Creating 
+ Volume resilientcloud_controller-data Creating 
+ Network resilientcloud_edge Creating 
+ Network resilientcloud_edge Creating 
+ Network resilientcloud_status-read Creating 
+ Network resilientcloud_status-read Creating 
+ Network resilientcloud_web Creating 
+ Network resilientcloud_web Creating 
+ Volume resilientcloud_controller-data Created 
+ Volume resilientcloud_controller-data Created 
+ Container resilientcloud-controller-1 Creating 
+ Volume resilientcloud_tls-data Created 
+ Volume resilientcloud_tls-data Created 
+ Network resilientcloud_edge Created 
+ Network resilientcloud_edge Created 
+ Network resilientcloud_status-read Created 
+ Network resilientcloud_status-read Created 
+ Container resilientcloud-status-1 Creating 
+ Container resilientcloud-controller-1 Created 
+ Network resilientcloud_web Created 
+ Network resilientcloud_web Created 
+ Container resilientcloud-status-1 Created 
+ Container resilientcloud-gateway-1 Creating 
+ Container resilientcloud-gateway-1 Created 
+ Container resilientcloud-https-1 Creating 
+ Container resilientcloud-https-1 Created 
+ Container resilientcloud-gate-1 Waiting 
+ Container resilientcloud-backend-a-1 Waiting 
+ Container resilientcloud-status-1 Starting 
+ Container resilientcloud-backend-b-1 Waiting 
+ Container resilientcloud-backend-a-1 Healthy 
+ Container resilientcloud-gate-1 Healthy 
+ Container resilientcloud-controller-1 Starting 
+ Container resilientcloud-backend-b-1 Healthy 
+ Container resilientcloud-status-1 Started 
+ Container resilientcloud-gateway-1 Starting 
+ Container resilientcloud-gateway-1 Started 
+ Container resilientcloud-https-1 Starting 
+ Container resilientcloud-controller-1 Started 
+ Container resilientcloud-https-1 Started 
+ Container resilientcloud-status-1 Waiting 
+ Container resilientcloud-https-1 Waiting 
+ Container resilientcloud-backend-a-1 Waiting 
+ Container resilientcloud-gateway-1 Waiting 
+ Container resilientcloud-backend-b-1 Waiting 
+ Container resilientcloud-gate-1 Waiting 
+ Container resilientcloud-controller-1 Waiting 
+ Container resilientcloud-status-1 Healthy 
+ Container resilientcloud-gate-1 Healthy 
+ Container resilientcloud-backend-a-1 Healthy 
+ Container resilientcloud-controller-1 Healthy 
+ Container resilientcloud-https-1 Healthy 
+ Container resilientcloud-gateway-1 Healthy 
+ Container resilientcloud-backend-b-1 Healthy 
+NAME                          IMAGE                                                                     COMMAND                  SERVICE      CREATED         STATUS                   PORTS
+resilientcloud-backend-a-1    sha256:3d13924747d1a63af7c2f609db7979e5c0fe005237956c1bbb82f737956b86b1   "docker-entrypoint.s…"   backend-a    9 seconds ago   Up 8 seconds (healthy)   3000/tcp
+resilientcloud-backend-b-1    sha256:3d13924747d1a63af7c2f609db7979e5c0fe005237956c1bbb82f737956b86b1   "docker-entrypoint.s…"   backend-b    9 seconds ago   Up 8 seconds (healthy)   3000/tcp
+resilientcloud-controller-1   sha256:e5f76be02e9f2b00ba8bb1e81abfe736395b2d17c6f5034ab518eeaf54e6c6ad   "docker-entrypoint.s…"   controller   2 seconds ago   Up 1 second              
+resilientcloud-gate-1         sha256:e5f76be02e9f2b00ba8bb1e81abfe736395b2d17c6f5034ab518eeaf54e6c6ad   "docker-entrypoint.s…"   gate         9 seconds ago   Up 8 seconds (healthy)   
+resilientcloud-gateway-1      sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236   "nginx -g 'daemon of…"   gateway      2 seconds ago   Up 1 second              80/tcp, 8080/tcp
+resilientcloud-https-1        sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5   "caddy run --config …"   https        2 seconds ago   Up Less than a second    0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp, 443/udp, 2019/tcp
+resilientcloud-status-1       sha256:e5f76be02e9f2b00ba8bb1e81abfe736395b2d17c6f5034ab518eeaf54e6c6ad   "docker-entrypoint.s…"   status       2 seconds ago   Up 1 second              

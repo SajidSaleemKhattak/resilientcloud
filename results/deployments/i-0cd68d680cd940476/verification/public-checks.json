@@ -1,0 +1,491 @@
+{
+  "checkedAt": "2026-11-04T19:06:35.549223+00:00",
+  "url": "https://resilientcloud.getscoop.app",
+  "status": "passed",
+  "checks": [
+    {
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "latencyMs": 1404.796
+    },
+    {
+      "method": "GET",
+      "path": "/status",
+      "status": 200,
+      "latencyMs": 1292.764
+    },
+    {
+      "method": "GET",
+      "path": "/events",
+      "status": 200,
+      "latencyMs": 2808.784
+    },
+    {
+      "method": "GET",
+      "path": "/experiments/summary.json",
+      "status": 200,
+      "latencyMs": 3585.202
+    },
+    {
+      "method": "GET",
+      "path": "/favicon.svg",
+      "status": 200,
+      "latencyMs": 1518.102
+    },
+    {
+      "method": "POST",
+      "path": "/status",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "method": "PUT",
+      "path": "/status",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/status",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "method": "POST",
+      "path": "/events",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "method": "PUT",
+      "path": "/events",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/events",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "method": "POST",
+      "path": "/api",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "method": "PUT",
+      "path": "/api",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api",
+      "status": 403,
+      "expectedDenial": true
+    },
+    {
+      "method": "GET",
+      "path": "/fault",
+      "status": 404,
+      "expectedDenial": true
+    },
+    {
+      "method": "POST",
+      "path": "/fault",
+      "status": 404,
+      "expectedDenial": true
+    },
+    {
+      "method": "GET",
+      "path": "/restart",
+      "status": 404,
+      "expectedDenial": true
+    },
+    {
+      "method": "POST",
+      "path": "/restart",
+      "status": 404,
+      "expectedDenial": true
+    },
+    {
+      "method": "GET",
+      "path": "/ready",
+      "status": 404,
+      "expectedDenial": true
+    },
+    {
+      "method": "POST",
+      "path": "/ready",
+      "status": 404,
+      "expectedDenial": true
+    },
+    {
+      "method": "GET",
+      "path": "/live",
+      "status": 404,
+      "expectedDenial": true
+    },
+    {
+      "method": "POST",
+      "path": "/live",
+      "status": 404,
+      "expectedDenial": true
+    },
+    {
+      "method": "GET",
+      "path": "/v1/backends/backend-a/restart",
+      "status": 404,
+      "expectedDenial": true
+    },
+    {
+      "method": "POST",
+      "path": "/v1/backends/backend-a/restart",
+      "status": 404,
+      "expectedDenial": true
+    }
+  ],
+  "scope": "EC2 deployment smoke checks, not the completed local experiment matrix",
+  "tls": {
+    "chainAndHostnameVerified": true,
+    "protocol": "TLSv1.2",
+    "issuer": [
+      [
+        [
+          "countryName",
+          "US"
+        ]
+      ],
+      [
+        [
+          "organizationName",
+          "Let's Encrypt"
+        ]
+      ],
+      [
+        [
+          "commonName",
+          "YE2"
+        ]
+      ]
+    ],
+    "subjectAltName": [
+      [
+        "DNS",
+        "resilientcloud.getscoop.app"
+      ]
+    ],
+    "notBefore": "Nov  4 18:02:46 2026 GMT",
+    "notAfter": "Feb  2 18:02:45 2027 GMT"
+  },
+  "httpRedirect": {
+    "status": 308,
+    "location": "https://resilientcloud.getscoop.app/"
+  },
+  "liveStatus": {
+    "schemaVersion": 1,
+    "updatedAt": "2026-11-04T19:06:39.835Z",
+    "runId": "98d49df5-75f7-445d-bdbe-d9337b73f52d",
+    "recoveryEnabled": true,
+    "monitoredServices": [
+      "backend-a",
+      "backend-b"
+    ],
+    "config": {
+      "intervalMs": 500,
+      "probeTimeoutMs": 300,
+      "failureThreshold": 3,
+      "maxAttempts": 2,
+      "verifyTimeoutMs": 4000,
+      "verifySuccesses": 2,
+      "cooldownMs": 2000
+    },
+    "backends": {
+      "backend-a": {
+        "state": "healthy",
+        "failures": 0,
+        "attempts": 0,
+        "manualIntervention": false,
+        "containerId": "d7be48cc5f1d746e887d19287a648d0d6971bf907cf2844c52304a625928e555",
+        "lastProbe": {
+          "ok": true,
+          "reason": null,
+          "status": 200,
+          "instance": "backend-a",
+          "latencyMs": 1.1486180000356399,
+          "timestamp": "2026-11-04T19:06:39.835Z"
+        },
+        "lastReadyAt": "2026-11-04T19:06:39.835Z",
+        "failureConfirmedAt": null,
+        "recoveryVerifiedAt": null,
+        "verificationSuccesses": 0,
+        "verificationDeadline": null,
+        "attemptTargetId": null,
+        "restartOutcome": null,
+        "cooldownUntil": null,
+        "stableSince": null,
+        "observationAgeMs": 5,
+        "stale": false
+      },
+      "backend-b": {
+        "state": "healthy",
+        "failures": 0,
+        "attempts": 0,
+        "manualIntervention": false,
+        "containerId": "0f97b1da0f6694d394dda4106eaf9c3533a3eeeca09a8b2f1db22bf607c26ab7",
+        "lastProbe": {
+          "ok": true,
+          "reason": null,
+          "status": 200,
+          "instance": "backend-b",
+          "latencyMs": 1.9301599999889731,
+          "timestamp": "2026-11-04T19:06:39.535Z"
+        },
+        "lastReadyAt": "2026-11-04T19:06:39.535Z",
+        "failureConfirmedAt": null,
+        "recoveryVerifiedAt": null,
+        "verificationSuccesses": 0,
+        "verificationDeadline": null,
+        "attemptTargetId": null,
+        "restartOutcome": null,
+        "cooldownUntil": null,
+        "stableSince": null,
+        "observationAgeMs": 305,
+        "stale": false
+      }
+    },
+    "available": true,
+    "stale": false,
+    "ageMs": 5
+  },
+  "incidentEvents": {
+    "available": true,
+    "events": [
+      {
+        "type": "state_changed",
+        "timestamp": "2026-11-04T19:01:13.576Z",
+        "elapsedMs": 116.76398300000005,
+        "monotonicMs": 804187.235,
+        "runId": "98d49df5-75f7-445d-bdbe-d9337b73f52d",
+        "service": "backend-b",
+        "state": "healthy",
+        "failures": 0,
+        "attempts": 0,
+        "containerId": "0f97b1da0f6694d394dda4106eaf9c3533a3eeeca09a8b2f1db22bf607c26ab7",
+        "previous": "suspected_failure",
+        "reason": "readiness_observed"
+      },
+      {
+        "type": "state_changed",
+        "timestamp": "2026-11-04T19:01:13.570Z",
+        "elapsedMs": 110.67782200000005,
+        "monotonicMs": 804181.152695,
+        "runId": "98d49df5-75f7-445d-bdbe-d9337b73f52d",
+        "service": "backend-a",
+        "state": "healthy",
+        "failures": 0,
+        "attempts": 0,
+        "containerId": "d7be48cc5f1d746e887d19287a648d0d6971bf907cf2844c52304a625928e555",
+        "previous": "suspected_failure",
+        "reason": "readiness_observed"
+      },
+      {
+        "type": "container_revalidated",
+        "timestamp": "2026-11-04T19:01:13.545Z",
+        "elapsedMs": 86.20049700000004,
+        "monotonicMs": 804156.671842,
+        "runId": "98d49df5-75f7-445d-bdbe-d9337b73f52d",
+        "service": "backend-b",
+        "state": "suspected_failure",
+        "failures": 0,
+        "attempts": 0,
+        "containerId": "0f97b1da0f6694d394dda4106eaf9c3533a3eeeca09a8b2f1db22bf607c26ab7",
+        "previousId": null,
+        "currentId": "0f97b1da0f6694d394dda4106eaf9c3533a3eeeca09a8b2f1db22bf607c26ab7"
+      },
+      {
+        "type": "container_revalidated",
+        "timestamp": "2026-11-04T19:01:13.540Z",
+        "elapsedMs": 81.34289000000001,
+        "monotonicMs": 804151.814637,
+        "runId": "98d49df5-75f7-445d-bdbe-d9337b73f52d",
+        "service": "backend-a",
+        "state": "suspected_failure",
+        "failures": 0,
+        "attempts": 0,
+        "containerId": "d7be48cc5f1d746e887d19287a648d0d6971bf907cf2844c52304a625928e555",
+        "previousId": null,
+        "currentId": "d7be48cc5f1d746e887d19287a648d0d6971bf907cf2844c52304a625928e555"
+      },
+      {
+        "type": "controller_started",
+        "timestamp": "2026-11-04T19:01:13.464Z",
+        "elapsedMs": 5.195261000000016,
+        "monotonicMs": 804075.679652,
+        "runId": "98d49df5-75f7-445d-bdbe-d9337b73f52d",
+        "resumed": false,
+        "recoveryEnabled": true
+      }
+    ],
+    "truncated": false,
+    "limit": 100,
+    "order": "newest_first"
+  },
+  "savedEvidence": {
+    "trials": 27,
+    "matrixStatus": "passed",
+    "origin": "Original local experiment evidence, not EC2 measurements"
+  },
+  "apiRoutingRequests": [
+    {
+      "sequence": 0,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1424.867
+    },
+    {
+      "sequence": 1,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 3072.118
+    },
+    {
+      "sequence": 2,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1512.685
+    },
+    {
+      "sequence": 3,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 1457.045
+    },
+    {
+      "sequence": 4,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1462.818
+    },
+    {
+      "sequence": 5,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 1407.104
+    },
+    {
+      "sequence": 6,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1387.711
+    },
+    {
+      "sequence": 7,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 1475.779
+    },
+    {
+      "sequence": 8,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1434.848
+    },
+    {
+      "sequence": 9,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 2487.054
+    },
+    {
+      "sequence": 10,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1311.073
+    },
+    {
+      "sequence": 11,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 1398.796
+    },
+    {
+      "sequence": 12,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1284.681
+    },
+    {
+      "sequence": 13,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 1316.947
+    },
+    {
+      "sequence": 14,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1274.401
+    },
+    {
+      "sequence": 15,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 1313.234
+    },
+    {
+      "sequence": 16,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1305.799
+    },
+    {
+      "sequence": 17,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 1291.053
+    },
+    {
+      "sequence": 18,
+      "status": 200,
+      "instance": "backend-a",
+      "latencyMs": 1345.964
+    },
+    {
+      "sequence": 19,
+      "status": 200,
+      "instance": "backend-b",
+      "latencyMs": 1339.505
+    }
+  ],
+  "privatePortChecks": [
+    {
+      "port": 3000,
+      "reachable": false
+    },
+    {
+      "port": 4000,
+      "reachable": false
+    },
+    {
+      "port": 8080,
+      "reachable": false
+    },
+    {
+      "port": 2019,
+      "reachable": false
+    },
+    {
+      "port": 2375,
+      "reachable": false
+    },
+    {
+      "port": 2376,
+      "reachable": false
+    }
+  ],
+  "finishedAt": "2026-11-04T19:07:54.054156+00:00"
+}

@@ -2,7 +2,7 @@
 
 A local failure-detection and recovery research prototype for a Cloud and Network Infrastructures master's scholarship application. Express backends and Nginx demonstrate traffic failover; an isolated controller verifies backend recovery through a restricted Docker gate. The React/TypeScript dashboard reads actual telemetry and saved experiment results. Docker restart policies remain disabled in every scenario.
 
-AWS deployment is **prepared but not authorized or performed**. The confirmed Free plan has $100 credits and 182 days remaining; it must remain on the Free plan. See the [AWS runbook and cost budget](docs/AWS.md): proposed ARM64 t4g.small, 2 GiB RAM, 20 GiB gp3, about $17.51 per 730-hour month including public IPv4. Continuous use for all 182 days exceeds $100; stop between demos. Deployment still needs region/domain/admin inputs and explicit approval. Two containers on one machine do not protect against host, Docker VM, power, or host-network failure.
+**Live AWS demo: https://resilientcloud.getscoop.app** — deployed to the user's existing **ap-southeast-2** t4g.small with trusted HTTPS and private backend/control services. Free plan and Standard CPU credits are retained. See the [active deployment and verification record](docs/AWS-DEPLOYMENT.md). The 48-hour stop deadline is **6 November 2026, 23:47:43 PKT / 18:47:43 UTC**; no automatic EC2 stop is configured. Sydney's estimated 48-hour cost is **$1.38 credits** including assumed 20 GiB storage and public IPv4. Two containers on one machine do not protect against host, Docker VM, power, or host-network failure. The [original preparation runbook](docs/AWS.md) retains the historical us-east-1 estimates; do not launch a second instance from it.
 
 ## Start the read-only dashboard
 

@@ -1,12 +1,12 @@
 # AWS deployment preparation — Free plan only
 
-**Prepared 2026-11-04; nothing has been provisioned or deployed.** The confirmed account has $100 credits and 182 days remaining. Keep the Free plan. The steps below are a reviewed runbook for a later, explicitly approved deployment; do not execute the launch/remote steps yet. Local Compose and all milestone evidence remain unchanged.
+**Original preparation runbook (2026-11-04).** Deployment has now been authorized and completed on the user's existing **ap-southeast-2** instance. See [AWS-DEPLOYMENT.md](AWS-DEPLOYMENT.md) for the working URL, actual checks and stop deadline. **Do not launch another instance or blindly repeat installation/extraction from this historical runbook.** Keep the Free plan. Local Compose and all milestone evidence remain unchanged.
 
-**Confirmed next plan:** us-east-1, t4g.small and an initial 48-hour deployment. See [the exact launch checklist](AWS-LAUNCH.md). Local SSH-key preparation is pending, and provisioning must wait for the HTTPS/domain decision. The observed administrator public IP is intentionally kept out of repository files.
+The original plan was us-east-1/t4g.small/48 hours. The user later supplied a running Sydney instance and `resilientcloud.getscoop.app`; its verified deployment supersedes those region/access placeholders. The observed administrator public IP and runtime certificate-contact email are intentionally kept out of repository files.
 
 ## Recommendation and measured basis
 
-Use **one `t4g.small`: 2 ARM64/Graviton2 vCPUs, 2 GiB RAM, 20 GiB encrypted gp3 root disk**, Linux On-Demand/shared tenancy, in confirmed **`us-east-1` (N. Virginia)**. Use gp3's included 3,000 IOPS/125 MiB/s; no provisioned extras. Build on the Mac M2 and transfer ARM64 images so this instance does not need Node/npm/build tools or a registry login.
+The original proposal was **one `t4g.small`: 2 ARM64/Graviton2 vCPUs, 2 GiB RAM, 20 GiB encrypted gp3 root disk**, Linux On-Demand/shared tenancy, in **`us-east-1` (N. Virginia)**. The actual existing instance uses the same size in **ap-southeast-2**; its regional price estimate is recorded separately. Use gp3's included 3,000 IOPS/125 MiB/s; no provisioned extras. Building on the Mac M2 and transferring ARM64 images avoids Node/npm/build tools or a registry login on EC2.
 
 The six existing container memory limits total **704 MiB**. The additional HTTPS ingress is capped at 128 MiB, giving **832 MiB** of container limits. These are ceilings, not measured consumption. The short [local ARM64 profile](../results/aws-preparation/profile/report.json) measured all seven containers through HTTPS:
 
@@ -74,6 +74,8 @@ flowchart LR
 
 Only Caddy publishes public TCP 80/443. Nginx's 8080 binding remains host-loopback-only for SSH administration. No backend/status/controller/gate port is published. Caddy has no Docker/gate socket or management API; Nginx still rejects fault/recovery routes and writes. The gate is still the only Docker-socket holder. Docker control remains trusted host administration; no remote Docker TCP listener is enabled.
 
+The gateway also joins the existing non-internal `edge` bridge because Docker suppresses the loopback host-port mapping for a container connected only to internal bridges. This was found during EC2 deployment; port 8080 stays explicitly bound to 127.0.0.1. No backend, status service, controller or Docker gate joins that edge network.
+
 Fault injection defaults **off** in the AWS overlay. An authenticated SSH administrator can explicitly enable the existing signal handler and use project-scoped Compose commands. Nothing enables fault controls over public HTTP. All seven restart policies remain `no`, so backend recovery is attributable to the existing controller. A host reboot needs explicit Compose startup; this is not a host-failure recovery system.
 
 `deploy/aws/compose.aws.yaml` is appended to the four existing Compose files. It adds HTTPS, bounded container logs and deployment defaults; local Compose files are not edited. The packaged `release.yaml` pins every runtime image to its content ID with pulling/building disabled. Caddy's upstream image is version/digest pinned during packaging. This avoids relying on registry digest metadata surviving `docker save`/`load`.
@@ -93,7 +95,7 @@ The script builds the dashboard and ARM64 backend/recovery images, pulls pinned 
 
 The bundle remains outside Git because it contains image binaries. Keep the source checkpoint and the release/checksum metadata together. The full experiment matrix is not rerun: application/recovery policy code is unchanged; this preparation adds deployment configuration and local HTTPS/resource checks.
 
-## 2. After approval: launch one instance in the console
+## 2. Original launch procedure — do not use for the active existing instance
 
 1. Confirm the account still says **Free plan**, credit/time balances are sufficient, and `us-east-1` is acceptable. In EC2's launch wizard verify `t4g.small` and the selected AMI are marked Free Tier eligible. Actual launch availability/quota has not been checked against this account.
 2. Choose **Ubuntu Server 24.04 LTS, ARM64, official Canonical, non-Pro**, shared Linux On-Demand, one t4g.small. Do not select a Marketplace/Windows image. Select/import your existing SSH public key; keep its private key only on your Mac. No EC2 IAM role or AWS access keys are needed by this application.
@@ -253,12 +255,10 @@ Then **stop the EC2 instance in the AWS console and confirm `Stopped`**. Compose
 
 For final cleanup after evidence download: run Compose down, terminate only the recorded demo instance, confirm its delete-on-termination root EBS volume was removed, and delete any retained project-only volumes/snapshots/Elastic IP allocations if you explicitly created them. Remove its DNS record and project security group when no longer referenced. No Elastic IP, snapshot, NAT gateway or load balancer is planned here. Verify the console has no remaining billable demo resources. Never run global Docker prune or remove unrelated AWS resources. Keep source/checkpoints/raw experiments on the Mac before Free-plan credits/time expire.
 
-## Inputs still needed
+## Preparation inputs resolved for the active deployment
 
-- **Region and initial uptime confirmed:** us-east-1, 48 hours. No launch time exists yet.
-- Existing domain/subdomain, DNS control and certificate contact email for public HTTPS; no new paid domain is assumed.
-- Operator's public IP `/32` was identified in chat and deliberately not stored in the repository; recheck before launch. No local SSH key candidate was found in the scoped search, so the public-key/key-pair choice and administrator still need resolution. Do not provide private keys or access tokens.
-- Actual launch/demo dates and other account credit consumption; the budget assumes this is the only metered workload.
-- Future account-console confirmation of instance/AMI availability, Standard CPU mode and remaining balances, followed by explicit deployment authorization. Account eligibility is supported by AWS documentation; no authenticated AWS account inspection has been performed.
+The user supplied an existing **ap-southeast-2** instance, `resilientcloud.getscoop.app`, a downloaded key, certificate email, console host fingerprint, security-group confirmation and actual launch time. These were used for the authorized deployment described in [AWS-DEPLOYMENT.md](AWS-DEPLOYMENT.md). No preparation input remains a deployment blocker. The administrator source IP and contact email remain outside committed files.
+
+The real launch was 2026-11-04 18:47:43 UTC; the 48-hour stop deadline is 2026-11-06 18:47:43 UTC. Remaining credit balance and Standard CPU mode are user-confirmed rather than obtained through authenticated AWS APIs. This work used verified SSH administration only and made no AWS account-plan changes.
 
 All containers still share one EC2 host. This remains a service-recovery demonstration, not protection against EC2/OS/disk/AZ failure or a production availability guarantee.
