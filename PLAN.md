@@ -127,17 +127,17 @@ The user supplied an already-running **i-0cd68d680cd940476** in **ap-southeast-2
 - [x] Corrected deployment-only gateway networking after Docker suppressed the loopback port on internal-only bridges. Gateway joins edge with 127.0.0.1:8080; backend/status/controller/gate isolation remains intact. The initial failed check is preserved separately.
 - [x] Verified fresh healthy telemetry, 20/20 API requests from both identities, 24 public route checks, blocked external private ports, socket/network isolation, and real desktop/mobile browser rendering with zero browser errors. No fault experiments/matrix rerun occurred.
 - [x] User verified exactly three security-group inbound rules in the AWS console: restricted administrator SSH plus public HTTP/HTTPS; no other ingress. Administrator source IP/contact email/private keys are not committed.
-- [x] Recorded actual launch **2026-11-04 18:47:43 UTC**, stop deadline **2026-11-06 18:47:43 UTC / 23:47:43 PKT**, and Sydney estimated 48-hour credits **$1.38** separately from local experiments. **No automatic EC2 stop is scheduled; operator must stop via EC2 console by the deadline.**
+- [x] Recorded actual launch **2026-11-04 18:47:43 UTC** and historical Sydney 48-hour credit estimate **$1.38** separately from local experiments. The initial stop plan is superseded: keep this instance running beyond 6 November, dependent on remaining credits and Free-plan expiry. No automatic stopping or plan upgrade is authorized.
 
 **Live URL: https://resilientcloud.getscoop.app.** Deployment checks passed; no current blocker remains. See `docs/AWS-DEPLOYMENT.md` and `results/deployments/i-0cd68d680cd940476/deployment.json`. Only the existing instance was used, with no new AWS resources or account-plan/credit-mode changes. Local Compose, backend/recovery policy and all completed experiment evidence are preserved.
 
-### GitHub publication preparation (2026-11-05; not pushed)
+### GitHub publication (2026-11-05)
 
 - [x] Audited tracked files and reachable Git history, including saved archive contents; no actual credentials/private keys found. The intentionally retained public test-CA certificate and invalid parser-test URL were reviewed and kept.
 - [x] Independent Gitleaks scans found zero findings in history and the staged publication contents. Tooling stayed in ignored project cache; no source was uploaded for scanning.
 - [x] Strengthened credential/key/TLS-state ignore patterns and verified 36 ignore/allow cases. Existing raw evidence and checkpoints are unchanged.
 - [x] Updated the README with the temporary live URL, local/AWS architecture, measured comparisons, single-host/sample-size limitations and portable reproduction commands. Review details are in `docs/PUBLICATION.md` and `results/publication-review/`.
-- [ ] Configure the intended GitHub remote and obtain authorization for the actual push. **No remote is currently configured; no push or GitHub-hosted CI run has occurred.**
+- [ ] Push the audited history to the user-authorized `https://github.com/SajidSaleemKhattak/resilientcloud.git` on `main` without force, then verify actual GitHub Actions. Remote inspection found no existing refs.
 
 - Unit tests: failure thresholds, timeout handling, cooldown/retry limits, successful recovery verification, and refusal of unauthorized targets/actions.
 - Compose integration tests: routing to both instances, failover after crash, running-but-unhealthy detection, controller recovery, recovery-disabled behavior, and status/public-service isolation from Docker control. Verify socket/network exposure and target authorization, including foreign project containers and replaced container IDs.

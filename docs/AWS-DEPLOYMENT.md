@@ -63,12 +63,14 @@ df -h /
 
 The runtime `.env` holds the provided certificate email and `RC_ENABLE_FAULTS=false`, mode 0600. No cloud credentials or registry login were installed. Keep public fault injection disabled. Do not recreate/enable backend fault handlers unless a separate authenticated demonstration is explicitly intended.
 
-## Forty-eight-hour deadline and cost
+## Ongoing hosting and credit limits
 
-- **Launch:** 4 November 2026, **18:47:43 UTC / 23:47:43 PKT**, supplied from the EC2 console.
-- **Stop by:** 6 November 2026, **18:47:43 UTC / 23:47:43 PKT**.
-- **No automatic EC2 stop is scheduled.** Stop this existing instance through the AWS console and verify **Stopped** by the deadline; Compose down alone does not stop compute billing. No scheduler/IAM resources were created.
+The user superseded the initial 48-hour stop plan on 5 November 2026: **keep the existing instance running beyond 6 November**. There is no scheduled stop deadline. **No automatic stopping is configured or authorized.** Keep the AWS **Free plan** and **Standard** CPU credits; do not upgrade the account plan.
 
-Current official Sydney rates yield approximately **$1.38** for 48 hours: compute $1.0176, public IPv4 $0.24, assumed 20 GiB gp3 about $0.1262. No promotional discount is assumed. Storage remains metered while the instance is stopped. These are estimates, excluding other usage/taxes/excess transfer; no authenticated billing balance was queried. See the separately saved [regional estimate](../results/deployments/i-0cd68d680cd940476/preflight/48-hour-estimate.json) and [official Sydney price list](https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/ap-southeast-2/index.csv).
+Hosting depends on the **remaining credit balance and actual Free-plan expiry shown in the AWS console**. The originally reported $100 and 182 days are not a current billing reading. Check Billing and Cost Management → Credits and the Free Tier account-plan/expiry details regularly; the remaining balance and expiry have not been queried through authenticated AWS APIs. Retain the weekly journal archive/offload procedure in [AWS.md](AWS.md) and monitor `df -h /` so extended hosting does not fill the disk.
 
-Before stopping, download any new logs/evidence needed. Run `sudo sh deploy/aws/compose.sh down` to preserve data/certificate volumes, then stop through EC2. Auto-assigned public IPv4 is released on stop; a later start needs an updated DNS A record and explicit Compose startup. Do not upgrade the Free plan, allocate paid extras, terminate before saving data, or clean unrelated Docker/AWS resources.
+Launch was 4 November 2026, 18:47:43 UTC. The original 48-hour estimate below is historical budgeting evidence, not a shutdown instruction. Immutable deployment records retain the earlier plan for provenance; this section is the current operating policy.
+
+The deployment-time official Sydney rates yielded approximately **$1.38** for 48 hours: compute $1.0176, public IPv4 $0.24, assumed 20 GiB gp3 about $0.1262. No promotional discount is assumed. Storage remains metered while the instance is stopped. These are estimates, excluding other usage/taxes/excess transfer; no authenticated billing balance was queried. See the separately saved [regional estimate](../results/deployments/i-0cd68d680cd940476/preflight/48-hour-estimate.json) and [official Sydney price list](https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/ap-southeast-2/index.csv).
+
+When shutdown is separately requested, first download any new logs/evidence needed. Run `sudo sh deploy/aws/compose.sh down` to preserve data/certificate volumes, then stop through EC2. Auto-assigned public IPv4 is released on stop; a later start needs an updated DNS A record and explicit Compose startup. Do not upgrade the Free plan, allocate paid extras, terminate before saving data, or clean unrelated Docker/AWS resources.

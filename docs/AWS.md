@@ -1,6 +1,6 @@
 # AWS deployment preparation — Free plan only
 
-**Original preparation runbook (2026-11-04).** Deployment has now been authorized and completed on the user's existing **ap-southeast-2** instance. See [AWS-DEPLOYMENT.md](AWS-DEPLOYMENT.md) for the working URL, actual checks and stop deadline. **Do not launch another instance or blindly repeat installation/extraction from this historical runbook.** Keep the Free plan. Local Compose and all milestone evidence remain unchanged.
+**Original preparation runbook (2026-11-04).** Deployment has now been authorized and completed on the user's existing **ap-southeast-2** instance. See [AWS-DEPLOYMENT.md](AWS-DEPLOYMENT.md) for the working URL, actual checks and current hosting policy. **Do not launch another instance or blindly repeat installation/extraction from this historical runbook.** Keep the Free plan. Local Compose and all milestone evidence remain unchanged.
 
 The original plan was us-east-1/t4g.small/48 hours. The user later supplied a running Sydney instance and `resilientcloud.getscoop.app`; its verified deployment supersedes those region/access placeholders. The observed administrator public IP and runtime certificate-contact email are intentionally kept out of repository files.
 
@@ -259,6 +259,6 @@ For final cleanup after evidence download: run Compose down, terminate only the 
 
 The user supplied an existing **ap-southeast-2** instance, `resilientcloud.getscoop.app`, a downloaded key, certificate email, console host fingerprint, security-group confirmation and actual launch time. These were used for the authorized deployment described in [AWS-DEPLOYMENT.md](AWS-DEPLOYMENT.md). No preparation input remains a deployment blocker. The administrator source IP and contact email remain outside committed files.
 
-The real launch was 2026-11-04 18:47:43 UTC; the 48-hour stop deadline is 2026-11-06 18:47:43 UTC. Remaining credit balance and Standard CPU mode are user-confirmed rather than obtained through authenticated AWS APIs. This work used verified SSH administration only and made no AWS account-plan changes.
+The real launch was 2026-11-04 18:47:43 UTC. The original 48-hour stop plan has been superseded: keep this instance running beyond 6 November, subject to remaining credits and Free-plan expiry. No automatic stopping is configured; see AWS-DEPLOYMENT.md for the current policy. Remaining credit balance and Standard CPU mode are user-confirmed rather than obtained through authenticated AWS APIs. This work used verified SSH administration only and made no AWS account-plan changes.
 
 All containers still share one EC2 host. This remains a service-recovery demonstration, not protection against EC2/OS/disk/AZ failure or a production availability guarantee.

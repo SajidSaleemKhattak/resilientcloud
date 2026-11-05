@@ -1,6 +1,6 @@
 # GitHub publication review
 
-Reviewed on **2026-11-05 (Asia/Karachi)**. Publication preparation does not authorize a GitHub push, creation of a public repository, or another deployment. The live EC2 application was not changed by this review.
+Reviewed on **2026-11-05 (Asia/Karachi)**. The initial review was preparation only. The user subsequently explicitly authorized publishing the full audited history to `https://github.com/SajidSaleemKhattak/resilientcloud.git` on `main` without force-pushing. The live EC2 application was not changed by this review.
 
 ## Secret and certificate review
 
@@ -33,8 +33,8 @@ Publication includes the live demo hostname/public IP, EC2 instance ID, public S
 
 ## README and publication state
 
-The README includes the temporary live URL and stop deadline, local/AWS architecture and Docker boundary, measured A/B/C comparisons with whole/post-fault rates, single-host/sample-size limitations, exact local startup/test commands, and reproduction commands for new evidence directories. Existing CI is validation-only; no successful GitHub-hosted run is claimed before the workflow actually runs there.
+The README includes the live URL and credit/Free-plan-limited hosting policy, local/AWS architecture and Docker boundary, measured A/B/C comparisons with whole/post-fault rates, single-host/sample-size limitations, exact local startup/test commands, and reproduction commands for new evidence directories. Existing CI is validation-only; no successful GitHub-hosted run is claimed before the workflow actually runs there.
 
-**Configured Git remote: none.** No remote was added or contacted, no repository was created, and no push was performed. Supply the intended GitHub repository URL and review the destination/visibility before a subsequent explicitly authorized push. No project license was selected as part of this security/documentation review.
+The destination was inspected before configuring origin: `git ls-remote` succeeded with no existing refs. Publication progress and the actual GitHub Actions result will be recorded separately from the original audit. No project license was selected as part of this review.
 
-The machine-readable review and ignore-path results are stored under `results/publication-review/`. This is a local publication audit; GitHub-hosted scanning/CI remain separate, future checks.
+The machine-readable review and ignore-path results are stored under `results/publication-review/`. Original audit/evidence snapshots are preserved unchanged.

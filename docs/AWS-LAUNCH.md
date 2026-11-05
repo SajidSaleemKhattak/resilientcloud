@@ -1,4 +1,4 @@
-# Initial 48-hour EC2 launch checklist
+# Historical EC2 launch checklist
 
 **Historical pre-launch checklist.** The user subsequently supplied an already-running **ap-southeast-2** instance and authorized its deployment at **https://resilientcloud.getscoop.app**. See [the active deployment record](AWS-DEPLOYMENT.md). **Do not provision another instance/key/security group from this checklist.** The original us-east-1 proposal, missing-key check and HTTPS decision below describe the earlier planning state; they are not current blockers. Keep the Free plan and Standard CPU credits.
 
@@ -60,9 +60,9 @@ If the AMI/type is not eligible, the subnet is unavailable, or the console reque
 
 No domain purchase, Route 53 hosted zone, certificate issuance, DNS update or AWS resource is authorized by this checklist.
 
-## Forty-eight-hour budget and stop plan
+## Historical forty-eight-hour budget
 
-Start the **48-hour EC2 runtime window at the console's instance launch time**, not when the dashboard becomes ready. Record that UTC timestamp and a stop deadline exactly 48 hours later after launch; no real launch or deadline exists yet. Set a personal reminder before the deadline. The prepared host has no automatic EC2 stop scheduler, so do not assume the `48h` tag or Compose shutdown will stop billing.
+The original 48-hour window is historical budgeting only. The user has since requested continued hosting beyond 6 November, limited by remaining credits and Free-plan expiry. There is no current stop deadline and no automatic stop scheduler. Follow [the active hosting policy](AWS-DEPLOYMENT.md#ongoing-hosting-and-credit-limits); keep the Free plan and Standard CPU credits.
 
 | Component | 48-hour estimate |
 | --- | --- |
@@ -74,4 +74,4 @@ Start the **48-hour EC2 runtime window at the console's instance launch time**, 
 
 This uses the existing public AWS price snapshot, no trial discount and no paid extras; storage proration, other usage, taxes and excess transfer can change the total. The [cost model](../results/aws-preparation/cost-estimate.json) retains the assumptions.
 
-Before hour 48: export any new EC2 evidence, run the project Compose `down` command, **stop the instance through EC2 and verify Stopped**, then check the credit balance. EBS remains approximately $1.60/month while retained; the auto-assigned public IPv4 is released on stop. If the demo is finished, terminate after saving evidence and verify deletion of its root EBS volume. Preserve local milestone evidence. Follow the scoped cleanup instructions in [AWS.md](AWS.md).
+Only when shutdown is separately requested: export any new EC2 evidence, run the project Compose `down` command, **stop the instance through EC2 and verify Stopped**, then check the credit balance. EBS remains approximately $1.60/month while retained; the auto-assigned public IPv4 is released on stop. If the demo is finished, terminate after saving evidence and verify deletion of its root EBS volume. Preserve local milestone evidence. Follow the scoped cleanup instructions in [AWS.md](AWS.md).
