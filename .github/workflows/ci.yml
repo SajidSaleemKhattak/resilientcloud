@@ -46,6 +46,18 @@ jobs:
           version: v29.7.2
           set-host: true
 
+      # setup-docker-action exports a unix:// URL; Compose bind mounts need a path.
+      - name: Resolve private Docker socket path
+        run: |
+          node --input-type=module <<'JS'
+          import { appendFileSync } from 'node:fs';
+          const endpoint = process.env.DOCKER_HOST ?? '';
+          if (!endpoint.startsWith('unix:///') || /[\r\n]/.test(endpoint)) {
+            throw new Error('CI requires a local Unix Docker socket');
+          }
+          appendFileSync(process.env.GITHUB_ENV, `DOCKER_SOCKET=${endpoint.slice('unix://'.length)}\n`);
+          JS
+
       - name: Install dependencies from both lockfiles
         run: |
           mkdir -p results/ci
@@ -65,8 +77,6 @@ jobs:
           npm --prefix dashboard run build 2>&1 | tee results/ci/build-dashboard.log
 
       - name: Validate Compose configurations
-        env:
-          DOCKER_SOCKET: ${{ steps.docker.outputs.sock }}
         run: |
           node tools/compose.mjs one config --quiet
           node tools/compose.mjs two config --quiet
@@ -83,8 +93,6 @@ jobs:
 
       - name: Bounded Linux recovery integration smoke
         timeout-minutes: 12
-        env:
-          DOCKER_SOCKET: ${{ steps.docker.outputs.sock }}
         run: node tools/ci-smoke.mjs --out results/ci/integration
 
       - name: Retain diagnostics and browser artifacts

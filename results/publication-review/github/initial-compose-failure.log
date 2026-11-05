@@ -1,0 +1,18 @@
+﻿2026-11-05T04:30:44.6985714Z ##[group]Run node tools/compose.mjs one config --quiet
+2026-11-05T04:30:44.6986222Z [36;1mnode tools/compose.mjs one config --quiet[0m
+2026-11-05T04:30:44.6986930Z [36;1mnode tools/compose.mjs two config --quiet[0m
+2026-11-05T04:30:44.6987357Z [36;1mnode tools/compose.mjs recovery config --quiet[0m
+2026-11-05T04:30:44.6987814Z [36;1mnode tools/compose.mjs dashboard config --quiet[0m
+2026-11-05T04:30:44.6988234Z [36;1mnode tools/experiments-config.mjs[0m
+2026-11-05T04:30:44.7009356Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-05T04:30:44.7009754Z env:
+2026-11-05T04:30:44.7010151Z   NPM_CONFIG_USERCONFIG: /home/runner/work/resilientcloud/resilientcloud/.npmrc
+2026-11-05T04:30:44.7010669Z   NPM_CONFIG_GLOBALCONFIG: /dev/null
+2026-11-05T04:30:44.7011144Z   NPM_CONFIG_CACHE: /home/runner/work/resilientcloud/resilientcloud/.cache/npm
+2026-11-05T04:30:44.7011874Z   PLAYWRIGHT_BROWSERS_PATH: /home/runner/work/resilientcloud/resilientcloud/.cache/playwright
+2026-11-05T04:30:44.7012631Z   DOCKER_HOST: unix:///home/runner/setup-docker-action/run-336b3184/docker.sock
+2026-11-05T04:30:44.7013253Z   DOCKER_SOCKET: unix:///home/runner/setup-docker-action/run-336b3184/docker.sock
+2026-11-05T04:30:44.7013735Z ##[endgroup]
+2026-11-05T04:30:46.4478477Z invalid spec: unix:///home/runner/setup-docker-action/run-336b3184/docker.sock:/var/run/docker.sock:ro: too many colons
+2026-11-05T04:30:46.4541525Z Command failed: docker compose --project-directory /home/runner/work/resilientcloud/resilientcloud -p resilientcloud -f /home/runner/work/resilientcloud/resilientcloud/compose.yaml -f /home/runner/work/resilientcloud/resilientcloud/compose.two.yaml -f /home/runner/work/resilientcloud/resilientcloud/compose.recovery.yaml config --quiet
+2026-11-05T04:30:46.4603899Z ##[error]Process completed with exit code 1.
