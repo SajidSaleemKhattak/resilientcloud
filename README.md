@@ -15,6 +15,7 @@ The hosted demo may become unavailable when credits run out or the Free plan exp
 Prerequisites: Node 24 LTS, npm, Docker and Compose. The validated Docker engine is 29.7.2; the recovery gate requires support for Docker API 1.53. ARM64 images run natively on the Mac M2 and Graviton; pinned base images are multiarchitecture. After cloning, enter the checkout directory:
 
 ```sh
+git clone https://github.com/SajidSaleemKhattak/resilientcloud.git
 cd resilientcloud
 ```
 
@@ -319,7 +320,7 @@ npm run validate:ci -- --out "results/ci-${run_id}"
 
 The dashboard validator uses a fresh, isolated `resilientcloud-m3-ui` stack on loopback port 18086. It checks real telemetry, a real recovery timeline, public-route denial, desktop/mobile rendering, stale telemetry after stopping the controller, and disconnection after stopping the status service. It exports evidence before removing its own resources. The CI smoke wrapper runs the milestone-2 integration suite with a ten-minute deadline and retains diagnostics if it fails or times out.
 
-[GitHub Actions](.github/workflows/ci.yml) installs both lockfiles, checks types/tests, builds production outputs, validates Compose, checks browser states, and runs a bounded integration smoke on Linux. It pins Node, Docker, and action revisions; its only repository permission is `contents: read`. Diagnostic artifacts are uploaded even after failure. There are no deployment jobs or cloud credentials. **Local checks are not an actual GitHub Actions run; that remains unexecuted until the workflow runs on GitHub.**
+[GitHub Actions](.github/workflows/ci.yml) installs both lockfiles, checks types/tests, builds production outputs, validates Compose, checks browser states, and runs a bounded integration smoke on Linux. It pins Node, Docker, and action revisions; its only repository permission is `contents: read`. Diagnostic artifacts are uploaded even after failure. There are no deployment jobs or cloud credentials. **GitHub-hosted Linux CI passed on 5 November 2026 at `a18d30b`: [actual successful run](https://github.com/SajidSaleemKhattak/resilientcloud/actions/runs/41968345721).** This is separate from the local ARM64 checks below. The initial socket-path configuration failure and successful retry are preserved in [publication evidence](results/publication-review/github/publication.json).
 
 **Validated locally on 2026-11-04:** lockfile installs, type checks and production builds passed; 57 backend/controller/tool tests, 7 dashboard model tests, 9 browser fixture checks, and 16 bounded integration smoke checks passed. The [final real dashboard validation](results/milestone-3/dashboard-final/report.json) passed four browser checks covering actual healthy/stale/disconnected telemetry, all saved trial values, and desktop/mobile layout. The same saved-summary test was intentionally skipped in the latter two phases. Workflow lint and A/B/C Compose checks passed; [the local CI smoke report](results/milestone-3/ci-local/report.json) explicitly records macOS ARM64 execution rather than claiming a GitHub-hosted Linux run. Earlier failed attempts remain indexed separately.
 

@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-11-05T04:37:46.419664+00:00",
+  "repository": "https://github.com/SajidSaleemKhattak/resilientcloud",
+  "branch": "main",
+  "validatedCommit": "a18d30b0caf1b02d042b1c4927977748332be343",
+  "historyPreserved": true,
+  "forcePush": false,
+  "remoteBeforePush": "git ls-remote succeeded with no existing refs",
+  "initialFailedRun": {
+    "id": 41968203088,
+    "url": "https://github.com/SajidSaleemKhattak/resilientcloud/actions/runs/41968203088",
+    "conclusion": "failure",
+    "cause": "Docker setup action socket output was a unix:// URL, not a bind-mount filesystem path."
+  },
+  "validatedRun": {
+    "id": 41968345721,
+    "url": "https://github.com/SajidSaleemKhattak/resilientcloud/actions/runs/41968345721",
+    "conclusion": "success",
+    "platform": "GitHub-hosted ubuntu-24.04 Linux",
+    "checks": [
+      "lockfile installs",
+      "TypeScript checks",
+      "unit tests",
+      "production builds",
+      "Compose A/B/C and isolation validation",
+      "9 dashboard browser checks",
+      "bounded Linux recovery integration smoke",
+      "diagnostic artifact upload"
+    ]
+  },
+  "localChecks": [
+    "actionlint",
+    "one/two/recovery/dashboard Compose validation",
+    "A/B/C detection policy and isolation checks",
+    "full reachable Git history Gitleaks: zero findings",
+    "tracked/archive pattern scan: only reviewed test URL and public certificate"
+  ],
+  "evidencePreserved": "All milestone-1/2/3, AWS-preparation and original per-instance deployment evidence unchanged from 70859a0.",
+  "hosting": {
+    "existingInstanceOnly": true,
+    "previousStopDeadlineSuperseded": true,
+    "keepRunningBeyond": "2026-11-06",
+    "automaticStoppingConfigured": false,
+    "plan": "Free",
+    "cpuCredits": "Standard",
+    "dependsOn": [
+      "remaining credits",
+      "Free-plan expiry"
+    ],
+    "currentBillingBalanceQueried": false
+  },
+  "liveHttpsChecks": {
+    "dashboard": 200,
+    "status": 200
+  }
+}

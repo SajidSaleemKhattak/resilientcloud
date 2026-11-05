@@ -137,7 +137,9 @@ The user supplied an already-running **i-0cd68d680cd940476** in **ap-southeast-2
 - [x] Independent Gitleaks scans found zero findings in history and the staged publication contents. Tooling stayed in ignored project cache; no source was uploaded for scanning.
 - [x] Strengthened credential/key/TLS-state ignore patterns and verified 36 ignore/allow cases. Existing raw evidence and checkpoints are unchanged.
 - [x] Updated the README with the temporary live URL, local/AWS architecture, measured comparisons, single-host/sample-size limitations and portable reproduction commands. Review details are in `docs/PUBLICATION.md` and `results/publication-review/`.
-- [ ] Push the audited history to the user-authorized `https://github.com/SajidSaleemKhattak/resilientcloud.git` on `main` without force, then verify actual GitHub Actions. Remote inspection found no existing refs.
+- [x] Configured origin as `https://github.com/SajidSaleemKhattak/resilientcloud.git`, inspected the empty remote, and pushed the full history on `main` without force.
+- [x] Actual GitHub-hosted Linux CI passed at `a18d30b` (run `41968345721`), including browser and bounded recovery smoke tests. Fixed only the CI Unix socket mount-path mismatch; preserved the initial failed run separately under `results/publication-review/github/`.
+- [x] Superseded the initial stop deadline with continued hosting beyond 6 November, dependent on remaining credits and Free-plan expiry. No automatic stopping, AWS changes, experiment-matrix rerun or plan upgrade.
 
 - Unit tests: failure thresholds, timeout handling, cooldown/retry limits, successful recovery verification, and refusal of unauthorized targets/actions.
 - Compose integration tests: routing to both instances, failover after crash, running-but-unhealthy detection, controller recovery, recovery-disabled behavior, and status/public-service isolation from Docker control. Verify socket/network exposure and target authorization, including foreign project containers and replaced container IDs.
